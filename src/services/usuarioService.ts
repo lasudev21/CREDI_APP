@@ -1,11 +1,11 @@
-import api from './api';
+import { ManageErrors } from "../utils/ErrorUtils";
+import api from "./api";
 
 export const getUsuarios = async () => {
   try {
-    const response = await api.get('usuarios');
+    const response = await api.get("usuarios");
     return response.data;
   } catch (error) {
-    console.log(error)
-    throw error;
+    await ManageErrors(error);
   }
 };

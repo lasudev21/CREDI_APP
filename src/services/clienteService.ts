@@ -1,3 +1,4 @@
+import { ManageErrors } from '../utils/ErrorUtils';
 import api from './api';
 
 export const getClientes = async () => {
@@ -5,7 +6,6 @@ export const getClientes = async () => {
     const response = await api.get('clientes');
     return response.data;
   } catch (error) {
-    console.log(error)
-    throw error;
+    await ManageErrors(error);
   }
 };

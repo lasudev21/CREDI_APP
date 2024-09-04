@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://credifenixdb.creditoscali.com/api/';
+const API_BASE_URL = 'http://credidb.creditoscali.com/api/';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

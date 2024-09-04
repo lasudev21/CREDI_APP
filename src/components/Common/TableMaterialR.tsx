@@ -6,12 +6,15 @@ import {
   MRT_TablePagination,
   useMaterialReactTable,
 } from "material-react-table";
+import { useEffect, useState } from "react";
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   isLoading: boolean;
+  enableButtons: boolean;
+  enablePagination: boolean;
   blockLeft: string[];
 }
 
@@ -19,8 +22,27 @@ const TableMaterialR: React.FC<Props> = ({
   columns,
   data,
   isLoading,
+  enableButtons,
+  enablePagination,
   blockLeft,
 }) => {
+  const [divHeight, setDivHeight] = useState<number>(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const calculatedHeight = window.innerHeight - (enablePagination ? 215 : 200);
+      setDivHeight(calculatedHeight);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const table = useMaterialReactTable({
     columns,
     data,
@@ -31,19 +53,32 @@ const TableMaterialR: React.FC<Props> = ({
     enableColumnOrdering: false,
     enableGrouping: false,
     enableColumnPinning: false,
-    enablePagination: true, //Para habilitar la paginación
+    enablePagination: enablePagination, //Para habilitar la paginación
     enableFacetedValues: true,
-    enableRowSelection: false,
+    enableRowSelection: false, //Para la seleccion de uno o varios registros
     columnFilterDisplayMode: "popover",
     enableBottomToolbar: false,
-    paginationDisplayMode: "pages",
-    muiTableContainerProps: { sx: { maxHeight: "485px" } },
+    enableStickyHeader: true,
+    // paginationDisplayMode: "pages",
+    muiTableContainerProps: { sx: { height: `${divHeight}px` } },
+    muiTableBodyRowProps: {
+      sx: {
+        height: "25px",
+        "&:hover": {
+          backgroundColor: "#e0e0e0", // Color de fondo al pasar el mouse por encima
+        },
+      },
+    },
     initialState: {
       density: "compact",
       showColumnFilters: true,
       showGlobalFilter: true,
       columnPinning: {
         left: blockLeft,
+      },
+      pagination: {
+        pageIndex: 0,
+        pageSize: 50, // Cantidad de registros por página
       },
     },
     muiSearchTextFieldProps: {
@@ -52,11 +87,11 @@ const TableMaterialR: React.FC<Props> = ({
     },
     muiPaginationProps: {
       color: "primary",
-      rowsPerPageOptions: [20, 50, 100, 1000],
+      rowsPerPageOptions: [50, 100, 500, 1000],
       shape: "rounded",
       variant: "outlined",
     },
-    enableRowActions: true,
+    enableRowActions: enableButtons, //habilitar botones
     renderRowActions: ({ row }) => (
       <Box>
         <IconButton onClick={() => console.info("Edit" + row.id)}>
@@ -75,10 +110,12 @@ const TableMaterialR: React.FC<Props> = ({
             justifyContent: "space-between",
             alignItems: "center",
             marginLeft: 2,
+            marginTop: 1,
+            marginBottom: 1,
           }}
         >
           <MRT_GlobalFilterTextField table={table} />
-          <MRT_TablePagination table={table} />
+          {enablePagination && <MRT_TablePagination table={table} />}
         </Box>
       );
     },

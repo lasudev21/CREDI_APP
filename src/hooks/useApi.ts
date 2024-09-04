@@ -1,9 +1,10 @@
 import { useState, useCallback } from 'react';
 import api from '../services/api';
+import { IErrorCallAPI } from '../types/IErrorCallAPI';
 
 interface ApiResponse<T> {
   data: T | null;
-  error: Error | null;
+  error: IErrorCallAPI | null;
   loading: boolean;
 }
 

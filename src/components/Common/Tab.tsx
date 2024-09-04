@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 interface Tab {
   label: string;
@@ -7,10 +7,11 @@ interface Tab {
 
 interface TabsProps {
   tabs: Tab[];
+  activeTab: number;
+  setActiveTab: Dispatch<SetStateAction<number>>;
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs }) => {
-  const [activeTab, setActiveTab] = useState(0);
+const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, setActiveTab }) => {
 
   return (
     <div className="w-full">

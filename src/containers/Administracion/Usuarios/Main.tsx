@@ -5,19 +5,28 @@ import CustomerDetails from "../../../components/Common/TableMaterialR";
 import { MRT_ColumnDef } from "material-react-table";
 import { IUsuario, IUsuarios } from "../../../types/IUsuario";
 import { getUsuarios } from "../../../services/usuarioService";
-import Tabs from "../../../components/Common/Tab";
-import { Switch } from "@mui/material";
+import Setting from "./Setting";
+import Card from "../../../components/Common/card";
+import { useUserStore } from "../../../store/UserStore";
+// import { useDashboardStore } from "../../../store/store";
 
 export default function Usuarios() {
-  const [clientes, setClientes] = useState<IUsuarios>();
   const [isLoading, setIsloading] = useState<boolean>(true);
+  const { usuarios, setClientes } = useUserStore((state) => ({
+    usuarios: state.usuarios,
+    setClientes: state.setClientes,
+  }));
+
+  // const [activeTab, setActiveTab] = useState(0);
 
   const columns = useMemo<MRT_ColumnDef<IUsuario>[]>(
     () => [
       {
         accessorKey: "id",
         header: "Id",
-        enableHiding: false,
+        enableHiding: false, // Evita que la columna se pueda mostrar
+        size: 0, // Tamaño de la columna (opcional)
+        columnVisibility: "hidden",
         enableColumnActions: false,
       },
       {
@@ -34,23 +43,27 @@ export default function Usuarios() {
       },
       {
         accessorKey: "telefono1",
+        size: 50,
         header: "Telefono",
         enableHiding: false,
         enableColumnActions: false,
       },
       {
         accessorKey: "login",
+        size: 50,
         header: "Login?",
         enableHiding: false,
         enableColumnActions: false,
         Cell: ({ renderedCellValue }) => (
-          <Switch checked={renderedCellValue && renderedCellValue} />
-        )
-      },
-      {
-        accessorKey: "created_at",
-        header: "Creado",
-        enableHiding: false,
+          <div className="flex items-center">
+            <input
+              id="default-checkbox"
+              type="checkbox"
+              checked={renderedCellValue ? true : false}
+              className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+            />
+          </div>
+        ),
       },
     ],
     []
@@ -58,7 +71,6 @@ export default function Usuarios() {
 
   useEffect(() => {
     const Clientes = async () => {
-      // const response = await getClientes();
       const response = await getUsuarios();
       const data: IUsuarios = response;
       setClientes(data);
@@ -68,21 +80,35 @@ export default function Usuarios() {
     Clientes();
   }, []);
 
-  const tabs = [
-    {
-      label: "Listado clientes",
-      content: (
-        <CustomerDetails
-          columns={columns}
-          data={clientes ? clientes.data : []}
-          isLoading={isLoading}
-          blockLeft={["mrt-row-expand", "mrt-row-select", "mrt-row-actions"]}
-        ></CustomerDetails>
-      ),
-    },
-    { label: "Tab 2", content: <div>Content of Tab 2</div> },
-    { label: "Tab 3", content: <div>Content of Tab 3</div> },
-  ];
-
-  return <Tabs tabs={tabs} />;
+  return (
+    <>
+      <Card
+        icons={[]}
+        title="Gestión de usuarios"
+        content={
+          <>
+            <div className="flex">
+              <div className="w-3/5">
+                <CustomerDetails
+                  columns={columns}
+                  data={usuarios ? usuarios.data : []}
+                  isLoading={isLoading}
+                  enableButtons={false}
+                  enablePagination={false}
+                  blockLeft={[
+                    "mrt-row-expand",
+                    "mrt-row-select",
+                    "mrt-row-actions",
+                  ]}
+                ></CustomerDetails>
+              </div>
+              <div className="w-2/5">
+                <Setting />
+              </div>
+            </div>
+          </>
+        }
+      />
+    </>
+  );
 }
