@@ -91,14 +91,16 @@ const Rutas = () => {
       pinned: "left",
       editable: true,
       width: 70,
-      cellStyle: { backgroundColor: '#f0f8ff' },
+      cellStyle: { backgroundColor: "#f0f8ff" },
       valueParser: (params) => {
-        const newValue = Number(params.newValue)
-        return isNaN(newValue) ? params.oldValue : newValue
+        const newValue = Number(params.newValue);
+        return isNaN(newValue) ? params.oldValue : newValue;
       },
       valueFormatter: (params: ValueFormatterParams) => {
-        return params.value !== null && params.value !== undefined ? params.value.toString() : ''
-      }
+        return params.value !== null && params.value !== undefined
+          ? params.value.toString()
+          : "";
+      },
     },
     {
       field: "mora",
@@ -267,6 +269,7 @@ const Rutas = () => {
               height={height}
               actionPagining={() => console.log("Hola")}
               totalRecords={totalRecord}
+              autoSize={false}
             />
           </div>
         </div>

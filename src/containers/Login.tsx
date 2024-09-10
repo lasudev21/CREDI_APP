@@ -1,42 +1,43 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDashboardStore } from "../store/DashboardStore";
-import { useApi } from "../hooks/useApi";
+import { Cookies } from "react-cookie";
+import { useApiNoAuth } from "../hooks/useApiNoAuth";
+
+const cookie = new Cookies();
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [selectedValue, setSelectedValue] = useState<number>(0);
-  const [selectedText, setSelectedText] = useState<string>("");
   const navigate = useNavigate();
   const setIsAuthenticated = useDashboardStore((state) => state.login);
   const setSessionData = useDashboardStore((state) => state.setSessionData);
   const sessionData = useDashboardStore((state) => state.sessionData);
-  const { loading, error, request } = useApi();
+  const { loading, error, request } = useApiNoAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (sessionData.apiURL != "") {
       try {
-        const data = await request("post", "/account/signin", {
+        const data = await request("post", `${sessionData.apiURL}/account/signin`, {
           username,
           password,
         });
 
-        console.log(data);
         localStorage.setItem("token", data.token);
         localStorage.setItem("rol", data.rol);
         localStorage.setItem("user", data.user);
         setIsAuthenticated();
         navigate("/");
+        // window.location.href = "/";
+        location.reload();
       } catch (err) {
         console.error("Login failed:", err);
       }
     }
   };
-
-  console.log(selectedValue, selectedText, sessionData);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -45,9 +46,11 @@ export default function Login() {
       event.target.options[event.target.selectedIndex].getAttribute("data-url");
 
     setSelectedValue(Number(value));
-    setSelectedText(text);
     if (value === "0") setSessionData({ apiURL: "", pageName: "" });
-    else setSessionData({ apiURL: url ? url : "", pageName: text });
+    else {
+      cookie.set("apiURL", url, { path: "/" });
+      setSessionData({ apiURL: url ? url : "", pageName: text });
+    }
   };
 
   return (

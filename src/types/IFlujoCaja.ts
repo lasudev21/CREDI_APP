@@ -44,3 +44,10 @@ export const FCVacio = {
   created_at: new Date(),
   updated_at: new Date(),
 };
+
+export interface ICreateFC {
+  Descripcion: string;
+  Tipo: number;
+  Valor: number;
+  Fecha: Date;
+}

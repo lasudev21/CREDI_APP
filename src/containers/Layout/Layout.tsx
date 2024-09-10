@@ -29,7 +29,7 @@ export function Layout() {
         setErrorsToast([]);
       });
     }
-  }, [errors]);
+  }, [errors, setErrorsToast]);
 
   return (
     <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>

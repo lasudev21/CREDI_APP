@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import api from '../services/api';
 import { IErrorCallAPI } from '../types/IErrorCallAPI';
+import apiNoAuth from '../services/apiNoAuth';
 
 interface ApiResponse<T> {
   data: T | null;
@@ -8,7 +8,7 @@ interface ApiResponse<T> {
   loading: boolean;
 }
 
-export function useApi<T>() {
+export function useApiNoAuth<T>() {
   const [state, setState] = useState<ApiResponse<T>>({
     data: null,
     error: null,
@@ -19,7 +19,7 @@ export function useApi<T>() {
     setState({ data: null, error: null, loading: true });
     console.log(url)
     try {
-      const response = await api[method](url, data);
+      const response = await apiNoAuth[method](url, data);
       setState({ data: response.data, error: null, loading: false });
       return response.data;
     } catch (error) {

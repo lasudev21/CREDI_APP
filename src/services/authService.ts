@@ -1,5 +1,8 @@
 import { useDashboardStore } from "../store/DashboardStore";
 import api from "./api";
+import { Cookies } from "react-cookie";
+
+const cookie = new Cookies();
 
 export const Login = async (username: string, password: string) => {
   // eslint-disable-next-line no-useless-catch
@@ -13,7 +16,10 @@ export const Login = async (username: string, password: string) => {
 
 export const Logout = async () => {
   try {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
+    localStorage.removeItem("rol");
+    localStorage.removeItem("user");
+    cookie.remove("apiURL");
     const { logout } = useDashboardStore.getState();
     logout();
     //window.location.href = "/login";

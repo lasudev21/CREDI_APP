@@ -9,7 +9,7 @@ import {
   IErrorsFU,
   IFlujoUtilidades,
 } from "../../../types/IFlujoUtilidades";
-import { NumberFormat } from "../../../utils/helper";
+import { DateFormat, NumberFormat } from "../../../utils/helper";
 import { ColDef, ValueFormatterParams } from "ag-grid-community";
 import { PlusCircleIcon, Save } from "lucide-react";
 import TableAGReact from "../../../components/Common/TableAGReact";
@@ -35,14 +35,25 @@ const FlujoUtilidades = () => {
   const [formData, setFormData] = useState<IDataFU>(FUVacio);
 
   const [colDefs] = useState<ColDef[]>([
-    { field: "descripcion", headerName: "Descripción", width: 250 },
+    {
+      field: "descripcion",
+      headerName: "Descripción",
+      width: 250,
+      sortable: false,
+      filter: "agTextColumnFilter",
+    },
     {
       field: "tipo",
       headerName: "Tipo",
       width: 100,
       cellRenderer: TypeAction,
     },
-    { field: "fecha", headerName: "Fecha", width: 150 },
+    {
+      field: "fecha",
+      headerName: "Fecha",
+      width: 150,
+      valueFormatter: DateFormat,
+    },
     {
       field: "valor",
       headerName: "Valor",
@@ -250,6 +261,7 @@ const FlujoUtilidades = () => {
             height={height}
             totalRecords={totalRecord}
             actionPagining={FlujoUtilidades}
+            autoSize={false}
           />
         </div>
       </div>

@@ -9,12 +9,14 @@ interface ILogin {
 
 interface DashboardStore {
   sessionData: ILogin;
+  openModal: boolean;
+  setOpenModal: (status: boolean) => void;
   darkMode: boolean;
   toggleDarkMode: () => void;
   loading: boolean;
   setLoader: (status: boolean) => void;
   showDrawer: boolean;
-  toggleDrawer: (status:boolean) => void;
+  toggleDrawer: (status: boolean) => void;
   errors: IToast[];
   setErrorsToast: (errors: IToast[]) => void;
   isAuthenticated: boolean;
@@ -27,12 +29,14 @@ export const useDashboardStore = create<DashboardStore>()(
   persist(
     (set) => ({
       sessionData: { apiURL: "", pageName: "" },
+      openModal: false,
+      setOpenModal: (status: boolean) => set(() => ({ openModal: status })),
       darkMode: false,
       toggleDarkMode: () => set((state) => ({ darkMode: !state.darkMode })),
       loading: false,
       setLoader: (status) => set(() => ({ loading: status })),
       showDrawer: false,
-      toggleDrawer: (status:boolean) => set(() => ({ showDrawer: status })),
+      toggleDrawer: (status: boolean) => set(() => ({ showDrawer: status })),
       errors: [],
       setErrorsToast: (errors) => set(() => ({ errors: errors })),
       isAuthenticated: false,

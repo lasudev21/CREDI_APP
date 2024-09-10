@@ -127,6 +127,7 @@ const Setting = () => {
               value={formData.titular ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-2">
@@ -137,6 +138,7 @@ const Setting = () => {
               value={formData.cc_titular ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-6">
@@ -147,6 +149,7 @@ const Setting = () => {
               value={formData.neg_titular ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-4">
@@ -157,6 +160,7 @@ const Setting = () => {
               value={formData.dir_cobro ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-4">
@@ -167,6 +171,7 @@ const Setting = () => {
               value={formData.barrio_cobro ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-4">
@@ -177,6 +182,7 @@ const Setting = () => {
               value={formData.tel_cobro ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-4">
@@ -187,6 +193,7 @@ const Setting = () => {
               value={formData.dir_casa ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-4">
@@ -197,6 +204,7 @@ const Setting = () => {
               value={formData.barrio_casa ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-4">
@@ -207,6 +215,7 @@ const Setting = () => {
               value={formData.tel_casa ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
         </div>
@@ -223,6 +232,7 @@ const Setting = () => {
               value={formData.fiador ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-2">
@@ -233,6 +243,7 @@ const Setting = () => {
               value={formData.cc_fiador ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-6">
@@ -243,6 +254,7 @@ const Setting = () => {
               value={formData.neg_fiador ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
 
@@ -254,6 +266,7 @@ const Setting = () => {
               value={formData.dir_fiador ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-4">
@@ -264,6 +277,7 @@ const Setting = () => {
               value={formData.barrio_fiador ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
           <div className="col-span-4">
@@ -274,6 +288,7 @@ const Setting = () => {
               value={formData.tel_fiador ?? ""}
               action={handleInputChange}
               errors={errors}
+              disabled={false}
             />
           </div>
         </div>

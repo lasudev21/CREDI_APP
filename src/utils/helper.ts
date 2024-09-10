@@ -1,11 +1,9 @@
 import moment from "moment";
 import { ICredito } from "../types/ICredito";
 import { ICreditoDetalle } from "../types/ICreditoDetalle";
+import { ValueFormatterParams } from "ag-grid-community";
 
-export function recalculate(
-  data: ICredito[],
-  cargue: boolean = false
-) {
+export function recalculate(data: ICredito[], cargue: boolean = false) {
   const res: ICredito[] = [];
   let cartera: number = 0;
 
@@ -30,7 +28,9 @@ export function recalculate(
           }
         );
         x.valor_ultimo_pago = ultimoPago[1].abono;
-        x.fecha_ultimo_pago = moment(ultimoPago[1].fecha_abono).format("YYYY-MM-DD");
+        x.fecha_ultimo_pago = moment(ultimoPago[1].fecha_abono).format(
+          "YYYY-MM-DD"
+        );
       } else {
         x.valor_ultimo_pago = 0;
         x.fecha_ultimo_pago = null;
@@ -66,6 +66,14 @@ export function recalculate(
   };
 }
 
-export function NumberFormat(value: number){
-  return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+export function NumberFormat(value: number) {
+  return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+}
+
+export function DateFormat(params: ValueFormatterParams) {
+  const date = new Date(params.value);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
 }

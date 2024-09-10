@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NumberFormat } from "../../../utils/helper";
+import { DateFormat, NumberFormat } from "../../../utils/helper";
 import { ColDef, ValueFormatterParams } from "ag-grid-community";
 import { PlusCircleIcon, Save } from "lucide-react";
 import TableAGReact from "../../../components/Common/TableAGReact";
@@ -13,7 +13,10 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { useFlujoCajaStore } from "../../../store/FlujoCajaStore";
-import { getFlujoCaja } from "../../../services/flujoCajaService";
+import {
+  getFlujoCaja,
+  postFlujoCaja,
+} from "../../../services/flujoCajaService";
 import {
   FCVacio,
   IDataFC,
@@ -21,23 +24,36 @@ import {
   IFlujoCaja,
 } from "../../../types/IFlujoCaja";
 import TypeAction from "../../../components/Common/TypeAction";
+import { IResponse } from "../../../types/IResponse";
+import { TypeToastEnum } from "../../../types/IToast";
 
 const FlujoCaja = () => {
   const { setData, page, totalRecord, data, sum } = useFlujoCajaStore();
-  const { setLoader } = useDashboardStore();
   const [height, setHeight] = useState<number>(0);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [formData, setFormData] = useState<IDataFC>(FCVacio);
+  const { setLoader, setErrorsToast } = useDashboardStore();
+  const [errors, setErrors] = useState<Partial<IErrorsFC>>({});
 
   const [colDefs] = useState<ColDef[]>([
-    { field: "descripcion", headerName: "Descripción", width: 250 },
+    {
+      field: "descripcion",
+      headerName: "Descripción",
+      width: 250,
+      filter: "agTextColumnFilter",
+    },
     {
       field: "tipo",
       headerName: "Tipo",
       width: 100,
       cellRenderer: TypeAction,
     },
-    { field: "fecha", headerName: "Fecha", width: 150 },
+    {
+      field: "fecha",
+      headerName: "Fecha",
+      width: 150,
+      valueFormatter: DateFormat,
+    },
     {
       field: "valor",
       headerName: "Valor",
@@ -47,8 +63,6 @@ const FlujoCaja = () => {
       },
     },
   ]);
-
-  const [errors, setErrors] = useState<Partial<IErrorsFC>>({});
 
   const handleInputChange = (property: string, newValue: string | number) => {
     setFormData((prevData) => ({
@@ -79,9 +93,8 @@ const FlujoCaja = () => {
     return errors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // setLoader(true);
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length > 0) {
@@ -89,6 +102,31 @@ const FlujoCaja = () => {
       setLoader(false);
       return;
     }
+
+    setErrors({});
+
+    setLoader(true);
+
+    const data: IResponse | null = await postFlujoCaja({
+      Descripcion: formData.descripcion,
+      Fecha: formData.fecha,
+      Tipo: formData.tipo,
+      Valor: formData.valor,
+    });
+
+    if (data) {
+      if (data.status === 200) {
+        setErrorsToast([
+          {
+            message: "Registro agregado con éxito",
+            type: TypeToastEnum.Susccess,
+          },
+        ]);
+        setFormData(FCVacio);
+        await FlujoCaja(page);
+      }
+    }
+    setLoader(false);
   };
 
   const FlujoCaja = async (_page: number) => {
@@ -220,6 +258,7 @@ const FlujoCaja = () => {
             height={height}
             totalRecords={totalRecord}
             actionPagining={FlujoCaja}
+            autoSize={false}
           />
         </div>
       </div>
