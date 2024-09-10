@@ -11,7 +11,7 @@ export function NavItem({ item }: { item: INavItem }) {
         <div className="relative">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-white dark:text-gray-200 hover:text-white dark:hover:text-white hover:bg-purple-500 dark:hover:bg-gray-700"
+            className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-white dark:text-gray-200 hover:text-white dark:hover:text-white hover:bg-sky-500 dark:hover:bg-gray-700"
             aria-expanded={isOpen}
             aria-haspopup="true"
           >
@@ -51,7 +51,7 @@ export function NavItem({ item }: { item: INavItem }) {
     return (
       <Link
         to={item.href}
-        className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-white dark:text-gray-200 hover:text-white dark:hover:text-white hover:bg-purple-500 dark:hover:bg-gray-700"
+        className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-white dark:text-gray-200 hover:text-white dark:hover:text-white hover:bg-sky-500 dark:hover:bg-gray-700"
       >
         <item.icon
           className="w-5 h-5 mr-2"

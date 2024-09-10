@@ -1,6 +1,10 @@
 import axios from 'axios';
+import { useDashboardStore } from '../store/DashboardStore';
 
-const API_BASE_URL = 'http://credidb.creditoscali.com/api/';
+const { sessionData } = useDashboardStore.getState();
+
+
+const API_BASE_URL = sessionData.apiURL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,

@@ -13,7 +13,7 @@ const ActionIcon: React.FC<IActionsIcons> = ({
   return (
     <IconComponent
       size={20}
-      className="h-6 w-6 hover:shadow-lg hover:bg-purple-50 transition-shadow duration-500 cursor-pointer "
+      className="h-6 w-6 hover:shadow-lg hover:bg-sky-50 transition-shadow duration-500 cursor-pointer "
       onClick={action}
     />
   );

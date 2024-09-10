@@ -37,7 +37,7 @@ export default function Clientes() {
               type="checkbox"
               onChange={() => {}}
               checked={renderedCellValue ? true : false}
-              className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
         ),
@@ -78,7 +78,7 @@ export default function Clientes() {
   );
 
   const AddClient = () => {
-    toggle();
+    toggle(true);
   };
 
   const icons: React.ReactNode[] = [
@@ -109,13 +109,13 @@ export default function Clientes() {
         texts={[
           <label key={'Label[0][0]'} className="mr-3">
             Total{" "}
-            <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
+            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300">
               {clientes?.data.length ?? 0}
             </span>
           </label>,
           <label key={'Label[0][1]'} className="mr-3">
             Con crédito activo{" "}
-            <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
+            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300">
               {clientes?.creditosActivos ?? 0}
             </span>
           </label>,

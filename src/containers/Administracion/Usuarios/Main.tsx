@@ -6,8 +6,8 @@ import { MRT_ColumnDef } from "material-react-table";
 import { IUsuario, IUsuarios } from "../../../types/IUsuario";
 import { getUsuarios } from "../../../services/usuarioService";
 import Setting from "./Setting";
-import Card from "../../../components/Common/card";
 import { useUserStore } from "../../../store/UserStore";
+import Card from "../../../components/Common/Card";
 // import { useDashboardStore } from "../../../store/store";
 
 export default function Usuarios() {
@@ -60,7 +60,7 @@ export default function Usuarios() {
               id="default-checkbox"
               type="checkbox"
               checked={renderedCellValue ? true : false}
-              className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
         ),
@@ -85,6 +85,7 @@ export default function Usuarios() {
       <Card
         icons={[]}
         title="Gestión de usuarios"
+        texts={[]}
         content={
           <>
             <div className="flex">

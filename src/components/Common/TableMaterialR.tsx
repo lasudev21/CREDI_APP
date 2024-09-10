@@ -30,7 +30,7 @@ const TableMaterialR: React.FC<Props> = ({
 
   useEffect(() => {
     const handleResize = () => {
-      const calculatedHeight = window.innerHeight - (enablePagination ? 215 : 200);
+      const calculatedHeight = window.innerHeight - (enablePagination ? 230 : 214);
       setDivHeight(calculatedHeight);
     };
 

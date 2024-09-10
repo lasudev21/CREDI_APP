@@ -7,8 +7,8 @@ export interface IUsuarios {
     id: number;
     nombres: string;
     apellidos: string;
-    telefono1: number;
-    telefono2?: number;
+    telefono1: number | null;
+    telefono2?: number | null;
     login: boolean;
     username: string;
     password: string;
@@ -29,4 +29,20 @@ export interface IUsuarios {
     ruta: string;
     email: string;
     rol: number;
+  }
+
+  export const UsuarioVacio = {
+    id: 0,
+    nombres: "",
+    apellidos: "",
+    telefono1: null,
+    telefono2: null,
+    login: false,
+    username: "",
+    password: "",
+    ruta: "",
+    created_at: new Date(),
+    Updated_at: new Date(),
+    email: "",
+    rol: 0,
   }

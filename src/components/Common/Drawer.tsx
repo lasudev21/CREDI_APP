@@ -7,7 +7,7 @@ interface DrawerProps {
   content: React.ReactNode;
 }
 
-const DrawerExample: React.FC<DrawerProps> = ({ title, content, size }) => {
+const Drawer: React.FC<DrawerProps> = ({ title, content, size }) => {
   const showDrawer = useDashboardStore((state) => state.showDrawer);
   const toggle = useDashboardStore((state) => state.toggleDrawer);
 
@@ -20,7 +20,6 @@ const DrawerExample: React.FC<DrawerProps> = ({ title, content, size }) => {
         }`}
       ></div>
 
-      {/* Drawer */}
       <div
         className={`fixed top-0 right-0 h-full ${size} bg-white z-20 shadow-lg transform transition-transform overflow-y-auto ${
           showDrawer ? "translate-x-0" : "translate-x-full"
@@ -28,10 +27,10 @@ const DrawerExample: React.FC<DrawerProps> = ({ title, content, size }) => {
       >
         <div className="p-4">
           <div className="flex">
-            <h2 className="text-lg font-semibold text-purple-800">{title}</h2>
+            <h2 className="text-lg font-semibold text-sky-800">{title}</h2>
             <button
               type="button"
-              onClick={toggle}
+              onClick={() => toggle(false)}
               data-drawer-hide="drawer-right-example"
               aria-controls="drawer-right-example"
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -45,9 +44,9 @@ const DrawerExample: React.FC<DrawerProps> = ({ title, content, size }) => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                 />
               </svg>
@@ -61,4 +60,4 @@ const DrawerExample: React.FC<DrawerProps> = ({ title, content, size }) => {
   );
 };
 
-export default DrawerExample;
+export default Drawer;

@@ -1,22 +1,8 @@
 import { useState } from "react";
-import { IErrorsUsuario, IUsuario } from "../../../types/IUsuario";
+import { IErrorsUsuario, IUsuario, UsuarioVacio } from "../../../types/IUsuario";
 
 const Setting = () => {
-  const [formData, setFormData] = useState<IUsuario>({
-    id: 0,
-    nombres: "",
-    apellidos: "",
-    telefono1: 0,
-    telefono2: 0,
-    login: false,
-    username: "",
-    password: "",
-    ruta: "",
-    created_at: new Date(),
-    Updated_at: new Date(),
-    email: "",
-    rol: 0,
-  });
+  const [formData, setFormData] = useState<IUsuario>(UsuarioVacio);
 
   const [errors, setErrors] = useState<Partial<IErrorsUsuario>>({});
 
@@ -146,7 +132,7 @@ const Setting = () => {
                 id="telefono1"
                 type="number"
                 name="telefono1"
-                value={formData.telefono1}
+                value={formData.telefono1 ? formData.telefono1 : ''}
                 onChange={handleChange}
                 className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
                   errors.telefono1 ? "border-red-500" : ""
@@ -173,7 +159,7 @@ const Setting = () => {
                 id="telefono2"
                 type="number"
                 name="telefono2"
-                value={formData.telefono2}
+                value={formData.telefono2 ? formData.telefono2 : ''}
                 onChange={handleChange}
                 className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
                   errors.telefono2 ? "border-red-500" : ""

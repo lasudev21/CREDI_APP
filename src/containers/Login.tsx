@@ -6,42 +6,58 @@ import { useApi } from "../hooks/useApi";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedValue, setSelectedValue] = useState<number>(0);
+  const [selectedText, setSelectedText] = useState<string>("");
   const navigate = useNavigate();
   const setIsAuthenticated = useDashboardStore((state) => state.login);
+  const setSessionData = useDashboardStore((state) => state.setSessionData);
+  const sessionData = useDashboardStore((state) => state.sessionData);
   const { loading, error, request } = useApi();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const data = await request("post", "/account/signin", {
-        username,
-        password,
-      });
-      console.log(data);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("rol", data.rol);
-      localStorage.setItem("user", data.user);
-      setIsAuthenticated();
-      navigate("/");
-    } catch (err) {
-      console.error("Login failed:", err);
+
+    if (sessionData.apiURL != "") {
+      try {
+        const data = await request("post", "/account/signin", {
+          username,
+          password,
+        });
+
+        console.log(data);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("rol", data.rol);
+        localStorage.setItem("user", data.user);
+        setIsAuthenticated();
+        navigate("/");
+      } catch (err) {
+        console.error("Login failed:", err);
+      }
     }
+  };
+
+  console.log(selectedValue, selectedText, sessionData);
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    const text = event.target.options[event.target.selectedIndex].text;
+    const url =
+      event.target.options[event.target.selectedIndex].getAttribute("data-url");
+
+    setSelectedValue(Number(value));
+    setSelectedText(text);
+    if (value === "0") setSessionData({ apiURL: "", pageName: "" });
+    else setSessionData({ apiURL: url ? url : "", pageName: text });
   };
 
   return (
     <div className="h-screen md:flex">
-      <div className="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden">
+      <div className="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-sky-700 i justify-around items-center hidden">
         <div>
           <h1 className="text-white font-bold text-4xl font-sans">CrediApp</h1>
           <p className="text-white mt-1">
             Una nueva versión de tu app para gestion de carteras...
           </p>
-          {/* <button
-            type="submit"
-            className="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2"
-          >
-            Read More
-          </button> */}
         </div>
         <div className="absolute -bottom-32 -left-40 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
         <div className="absolute -bottom-40 -left-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
@@ -62,15 +78,80 @@ export default function Login() {
           <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
+              fill="#cac4c4"
+              viewBox="0 0 52 52"
+              className="h-5 w-5 text-gray-400"
+              enableBackground="new 0 0 52 52"
+              stroke="#cac4c4"
+            >
+              <g
+                id="SVGRepo_bgCarrier"
+                strokeWidth="0"
+              />
+
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              <g id="SVGRepo_iconCarrier">
+                <path d="M21,4H7C5.3,4,4,5.3,4,7v40c0,0.5,0.5,1,1,1h4c0.6,0,1-0.4,1-1v-6c0-0.6,0.4-1,1-1h6c0.6,0,1,0.4,1,1v6 c0,0.6,0.4,1,1,1h3c1.1,0,2-0.9,2-2V7C24,5.3,22.7,4,21,4z M12,35.5c0,0.3-0.2,0.5-0.5,0.5h-3C8.2,36,8,35.8,8,35.5v-5 C8,30.2,8.2,30,8.5,30h3c0.3,0,0.5,0.2,0.5,0.5V35.5z M12,25.5c0,0.3-0.2,0.5-0.5,0.5h-3C8.2,26,8,25.8,8,25.5v-5 C8,20.2,8.2,20,8.5,20h3c0.3,0,0.5,0.2,0.5,0.5V25.5z M12,15.5c0,0.3-0.2,0.5-0.5,0.5h-3C8.2,16,8,15.8,8,15.5v-5 C8,10.2,8.2,10,8.5,10h3c0.3,0,0.5,0.2,0.5,0.5V15.5z M20,35.5c0,0.3-0.2,0.5-0.5,0.5h-3c-0.3,0-0.5-0.2-0.5-0.5v-5 c0-0.3,0.2-0.5,0.5-0.5h3c0.3,0,0.5,0.2,0.5,0.5V35.5z M20,25.5c0,0.3-0.2,0.5-0.5,0.5h-3c-0.3,0-0.5-0.2-0.5-0.5v-5 c0-0.3,0.2-0.5,0.5-0.5h3c0.3,0,0.5,0.2,0.5,0.5V25.5z M20,15.5c0,0.3-0.2,0.5-0.5,0.5h-3c-0.3,0-0.5-0.2-0.5-0.5v-5 c0-0.3,0.2-0.5,0.5-0.5h3c0.3,0,0.5,0.2,0.5,0.5V15.5z" />{" "}
+                <path d="M45,14H31c-1.7,0-3,1.3-3,3v30c0,0.5,0.5,1,1,1h4c0.6,0,1-0.4,1-1v-6c0-0.6,0.4-1,1-1h6c0.6,0,1,0.4,1,1v6 c0,0.6,0.4,1,1,1h3c1.1,0,2-0.9,2-2V17C48,15.3,46.7,14,45,14z M36,35.5c0,0.3-0.2,0.5-0.5,0.5h-3c-0.3,0-0.5-0.2-0.5-0.5v-5 c0-0.3,0.2-0.5,0.5-0.5h3c0.3,0,0.5,0.2,0.5,0.5V35.5z M36,25.5c0,0.3-0.2,0.5-0.5,0.5h-3c-0.3,0-0.5-0.2-0.5-0.5v-5 c0-0.3,0.2-0.5,0.5-0.5h3c0.3,0,0.5,0.2,0.5,0.5V25.5z M44,35.5c0,0.3-0.2,0.5-0.5,0.5h-3c-0.3,0-0.5-0.2-0.5-0.5v-5 c0-0.3,0.2-0.5,0.5-0.5h3c0.3,0,0.5,0.2,0.5,0.5V35.5z M44,25.5c0,0.3-0.2,0.5-0.5,0.5h-3c-0.3,0-0.5-0.2-0.5-0.5v-5 c0-0.3,0.2-0.5,0.5-0.5h3c0.3,0,0.5,0.2,0.5,0.5V25.5z" />{" "}
+              </g>
+            </svg>
+            <select
+              className="w-full pl-2 outline-none border-none"
+              value={selectedValue}
+              onChange={handleChange}
+              id="company"
+              name="company"
+              required
+            >
+              <option
+                value="0"
+                data-url="http://credidb.creditoscali.com/api"
+              >
+                Seleccione...
+              </option>
+              <option
+                value="1"
+                data-url="http://credidb.creditoscali.com/api"
+              >
+                Credifenix I
+              </option>
+              <option
+                value="2"
+                data-url="http://credidb.creditoscali.com/api"
+              >
+                Credifenix II
+              </option>
+              <option
+                value="3"
+                data-url="http://credidb.creditoscali.com/api"
+              >
+                Prestaloto
+              </option>
+              <option
+                value="4"
+                data-url="http://localhost:8000/api"
+              >
+                Pruebas
+              </option>
+            </select>
+          </div>
+          <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
               />
             </svg>
@@ -93,9 +174,9 @@ export default function Login() {
               fill="currentColor"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
             </svg>
             <input
@@ -115,7 +196,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
+            className="block w-full bg-sky-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
           >
             {loading ? "Iniciando..." : "Iniciar sesión"}
           </button>

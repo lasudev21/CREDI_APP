@@ -4,7 +4,7 @@ import FloatingLabel from "../../../components/Common/FloatingLabel";
 import { useDashboardStore } from "../../../store/DashboardStore";
 
 const Setting = () => {
-  const { setLoader, setShowToast } = useDashboardStore();
+  const { setLoader } = useDashboardStore();
 
   useEffect(() => {
     setLoader(false);
@@ -103,7 +103,7 @@ const Setting = () => {
     setErrors({});
     setTimeout(() => {
       setLoader(false);
-      setShowToast(true);
+      // setShowToast(true);
     }, 1000);
 
     console.log("Form submitted", formData);
@@ -115,7 +115,7 @@ const Setting = () => {
         className="space-y-6"
         onSubmit={handleSubmit}
       >
-        <p className="text-xl text-purple-500 font-extralight italic dark:text-white">
+        <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
           Información titular
         </p>
         <div className="grid grid-cols-12 gap-4">
@@ -211,7 +211,7 @@ const Setting = () => {
           </div>
         </div>
 
-        <p className="text-xl text-purple-500 font-extralight italic dark:text-white">
+        <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
           Información fiador
         </p>
         <div className="grid grid-cols-12 gap-4">

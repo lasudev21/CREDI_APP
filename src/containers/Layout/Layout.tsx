@@ -1,45 +1,16 @@
-import {
-  Home as HomeIcon,
-  Settings as SettingIcon,
-  LogOut,
-  User,
-  Users,
-  List,
-} from "lucide-react";
+import { Building2 } from "lucide-react";
 import routes from "../../routes";
-import { INavItem } from "../../types/INavItem";
 import { useDashboardStore } from "../../store/DashboardStore";
-import { NavItem } from "../../components/Layout/NavItem";
+// import { NavItem } from "../../components/Layout/NavItem";
 import Loader from "../../components/Common/Loader";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { TypeToastEnum } from "../../types/IToast";
-
-const navItems: INavItem[] = [
-  { icon: HomeIcon, label: "Inicio", href: "/" },
-  {
-    icon: SettingIcon,
-    label: "Administracion",
-    href: "/administracion",
-    subItems: [
-      { icon: Users, label: "Clientes", href: "/administracion/clientes" },
-      { icon: User, label: "Usuarios", href: "/administracion/usuarios" },
-      { icon: List, label: "Parámetros", href: "/administracion/parametros" },
-    ],
-  },
-  // {
-  //   icon: List,
-  //   label: "Caestras",
-  //   href: "/administracion",
-  //   subItems: [
-  //     { icon: Users, label: "Clientes", href: "/administracion/clientes" },
-  //     { icon: User, label: "Usuarios", href: "/administracion/usuarios" },
-  //   ],
-  // },
-];
+import { NavBar } from "../../components/Layout/NavBar";
 
 export function Layout() {
-  const { darkMode, logout, loading, errors, setErrorsToast } = useDashboardStore();
+  const { darkMode, loading, errors, setErrorsToast, sessionData } =
+    useDashboardStore();
 
   useEffect(() => {
     if (errors.length > 0) {
@@ -63,40 +34,23 @@ export function Layout() {
   return (
     <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
       {loading && <Loader />}
-      <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
-        <header className="bg-purple-700 dark:bg-gray-800 shadow">
-          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <span className="text-2xl font-bold text-white dark:text-white">
-                  CreadiApp
-                </span>
-              </div>
-              <div className="flex items-center space-x-4">
-                {navItems.map((item) => (
-                  <NavItem
-                    key={item.label}
-                    item={item}
-                  />
-                ))}
-                <button
-                  onClick={logout}
-                  className="p-2 rounded-full text-white dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
-                  aria-label="Logout"
-                >
-                  <LogOut
-                    className="w-5 h-5"
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-            </div>
-          </nav>
-        </header>
+      <div className="bg-[#f3f4f6] dark:bg-gray-900 min-h-screen">
+        <NavBar />
 
-        <main className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <main className="max-w mx-auto sm:px-6 lg:px-8">
           <div className="px-4 sm:px-0 mt-4">{routes}</div>
         </main>
+
+        <footer className="bg-sky-700 fixed bottom-0 left-0 right-0 text-white h-[25px] flex items-center justify-between px-4">
+          <div className="text-sm">
+            © {new Date().getFullYear()} Larry Suarez Dev, todos los derechos
+            reservados
+          </div>
+          <div className="flex items-center space-x-2">
+            <Building2 className="w-5 h-5" />
+            <span className="text-lg font-bold">{sessionData.pageName}</span>
+          </div>
+        </footer>
       </div>
     </div>
   );

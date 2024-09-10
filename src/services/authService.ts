@@ -13,10 +13,9 @@ export const Login = async (username: string, password: string) => {
 
 export const Logout = async () => {
   try {
-    console.log("Hace salida");
+    localStorage.removeItem('token');
     const { logout } = useDashboardStore.getState();
     logout();
-    // localStorage.removeItem('token');
     //window.location.href = "/login";
   } catch (error) {
     console.error("Error during logout:", error);
