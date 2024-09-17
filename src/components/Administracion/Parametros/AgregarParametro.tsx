@@ -86,30 +86,37 @@ const AgregarParametro: React.FC<AgregarParametroProps> = ({
 
   return (
     <form
-      className="flex gap-4 w-full"
+      className="w-full"
       onSubmit={handleSubmit}
     >
-      <FloatingLabel
-        property={"id_interno"}
-        type="text"
-        label="Identificador interno"
-        value={id}
-        action={handleInputChange}
-        errors={errors}
-        disabled={true}
-      />
-      <FloatingLabel
-        property={"valor"}
-        type="text"
-        label="Valor"
-        value={formData.valor}
-        action={handleInputChange}
-        errors={errors}
-        disabled={false}
-      />
-      <div className="flex items-center justify-between">
+      <div className="flex gap-4 mb-4">
+        <div className="w-1/2">
+          <FloatingLabel
+            property={"id_interno"}
+            type="text"
+            label="Identificador interno"
+            value={id}
+            action={handleInputChange}
+            errors={errors}
+            disabled={true}
+          />
+        </div>
+        <div className="w-1/2">
+          <FloatingLabel
+            property={"valor"}
+            type="text"
+            label="Valor"
+            value={formData.valor}
+            action={handleInputChange}
+            errors={errors}
+            disabled={false}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-row-reverse items-center justify-between">
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="w-3/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           type="submit"
         >
           Guardar

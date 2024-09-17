@@ -1,20 +1,39 @@
 import { useEffect, useMemo, useState } from "react";
-import CustomerDetails from "../../../components/Common/TableMaterialR";
 import { MRT_ColumnDef } from "material-react-table";
-import { IClientes, ICliente } from "../../../types/ICliente";
-import { getClientes } from "../../../services/clienteService";
+import { IClientes, ICliente, ClienteVacio } from "../../../types/ICliente";
+import {
+  changeCliente,
+  getClientes,
+  getHistorialCliente,
+} from "../../../services/clienteService";
 import Card from "../../../components/Common/Card";
 import Drawer from "../../../components/Common/Drawer";
 import { useDashboardStore } from "../../../store/DashboardStore";
-import { Plus } from "lucide-react";
+import { Plus, RotateCw } from "lucide-react";
 import ActionIcon from "../../../components/Common/ActionIcon";
 import Setting from "../Clientes/Setting";
+import TableMaterialR from "../../../components/Common/TableMaterialR";
+import { useClienteStore } from "../../../store/ClienteStore";
+import Swal from "sweetalert2";
+import { TypeToastEnum } from "../../../types/IToast";
+import { ICreditoHistorialCliente } from "../../../types/ICredito";
+import Modal from "../../../components/Common/Modal";
+import Historial from "../../../components/Administracion/Creditos/Historial";
 
 export default function Clientes() {
-  const [clientes, setClientes] = useState<IClientes>();
-  const [isLoading, setIsloading] = useState<boolean>(true);
-  const toggle = useDashboardStore((state) => state.toggleDrawer);
-  const showDrawer = useDashboardStore((state) => state.showDrawer);
+  const { toggleDrawer, setLoader, setErrorsToast, showDrawer } =
+    useDashboardStore();
+  const {
+    isLoading,
+    setIsloading,
+    data,
+    setData,
+    creditosActivos,
+    setFormData,
+    formData,
+  } = useClienteStore();
+  const { setOpenModal, openModal } = useDashboardStore();
+  const [historial, setHistorial] = useState<ICreditoHistorialCliente[]>([]);
 
   const columns = useMemo<MRT_ColumnDef<ICliente>[]>(
     () => [
@@ -30,10 +49,10 @@ export default function Clientes() {
         enableHiding: false,
         enableColumnActions: false,
         size: 50,
-        Cell: ({ renderedCellValue }) => (
+        Cell: ({ renderedCellValue, staticRowIndex }) => (
           <div className="flex items-center">
             <input
-              id="default-checkbox"
+              id={`Chechk-${renderedCellValue}-${staticRowIndex}`}
               type="checkbox"
               onChange={() => {}}
               checked={renderedCellValue ? true : false}
@@ -73,12 +92,109 @@ export default function Clientes() {
         enableColumnActions: false,
         enableColumnOrdering: false,
       },
+      {
+        accessorKey: "barrio_cobro",
+        header: "Barrio cobro",
+        enableHiding: false,
+        enableColumnActions: false,
+        enableColumnOrdering: false,
+      },
+      {
+        accessorKey: "dir_casa",
+        header: "Dirección casa",
+        enableHiding: false,
+        enableColumnActions: false,
+        enableColumnOrdering: false,
+      },
+      {
+        accessorKey: "barrio_casa",
+        header: "Barrio casa",
+        enableHiding: false,
+        enableColumnActions: false,
+        enableColumnOrdering: false,
+      },
+      {
+        accessorKey: "tel_casa",
+        header: "Teléfono casa",
+        enableHiding: false,
+        enableColumnActions: false,
+        enableColumnOrdering: false,
+      },
+      {
+        accessorKey: "dir_fiador",
+        header: "Dirección fiador",
+        enableHiding: false,
+        enableColumnActions: false,
+        enableColumnOrdering: false,
+      },
+      {
+        accessorKey: "barrio_fiador",
+        header: "Barrio fiador",
+        enableHiding: false,
+        enableColumnActions: false,
+        enableColumnOrdering: false,
+      },
+      {
+        accessorKey: "tel_fiador",
+        header: "Teléfono fiador",
+        enableHiding: false,
+        enableColumnActions: false,
+        enableColumnOrdering: false,
+      },
     ],
     []
   );
 
   const AddClient = () => {
-    toggle(true);
+    toggleDrawer(true);
+    setFormData(ClienteVacio);
+  };
+
+  const actionsCliente = (action: number, cliente: ICliente) => {
+    if (action === 1) SeeClient(cliente);
+    else if (action === 2) StateClient(cliente);
+    else SeeHistory(cliente);
+  };
+
+  const SeeClient = (cliente: ICliente) => {
+    toggleDrawer(true);
+    setFormData(cliente);
+  };
+
+  const SeeHistory = async (cliente: ICliente) => {
+    setLoader(true);
+    const response: ICreditoHistorialCliente[] = await getHistorialCliente(
+      cliente.id
+    );
+    setHistorial(response);
+    setOpenModal(true);
+    setLoader(false);
+  };
+
+  const StateClient = async (cliente: ICliente) => {
+    Swal.fire({
+      text: `ESTA SEGURO QUE QUIERE CAMBIAR EL ESTADO AL CLIENTE ${cliente.titular}?`,
+      // type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.value) {
+        setLoader(true);
+        const response = await changeCliente(cliente.id);
+        const data: IClientes = response;
+        setErrorsToast([
+          {
+            message: "Se ha cambiado el estado al cliente",
+            type: TypeToastEnum.Susccess,
+          },
+        ]);
+        setData(data);
+        setLoader(false);
+      }
+    });
   };
 
   const icons: React.ReactNode[] = [
@@ -87,36 +203,55 @@ export default function Clientes() {
       action={AddClient}
       key="btn[0][0]"
     />,
+    <ActionIcon
+      IconComponent={RotateCw}
+      action={() => Clientes()}
+      key="btn[0][1]"
+    />,
   ];
 
-  useEffect(() => {
-    const Clientes = async () => {
-      const response = await getClientes();
-      const data: IClientes = response;
-      setClientes(data);
-      setIsloading(false);
-    };
+  const Clientes = async () => {
+    setIsloading(true);
+    const response = await getClientes();
+    const data: IClientes = response;
+    setData(data);
+    setIsloading(false);
+  };
 
+  useEffect(() => {
+    toggleDrawer(false);
     Clientes();
-  }, [clientes]);
+  }, []);
 
   return (
     <>
+      {openModal && (
+        <Modal
+          title="Historial de créditos"
+          content={<Historial data={historial} />}
+        />
+      )}
       <Card
         key={"Card[0][1]"}
         title="Gestión de clientes"
         icons={icons}
         texts={[
-          <label key={'Label[0][0]'} className="mr-3">
+          <label
+            key={"Label[0][0]"}
+            className="mr-3"
+          >
             Total{" "}
             <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300">
-              {clientes?.data.length ?? 0}
+              {data.length ?? 0}
             </span>
           </label>,
-          <label key={'Label[0][1]'} className="mr-3">
-            Con crédito activo{" "}
+          <label
+            key={"Label[0][1]"}
+            className="mr-3"
+          >
+            Con crédito activo
             <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300">
-              {clientes?.creditosActivos ?? 0}
+              {creditosActivos}
             </span>
           </label>,
         ]}
@@ -124,18 +259,21 @@ export default function Clientes() {
           <>
             <div className="flex">
               <div className="w-full">
-                <CustomerDetails
+                <TableMaterialR
                   columns={columns}
-                  data={clientes ? clientes.data : []}
+                  data={data}
                   isLoading={isLoading}
-                  enableButtons={false}
+                  enableButtons={true}
                   enablePagination={true}
                   blockLeft={[
                     "mrt-row-expand",
                     "mrt-row-select",
                     "mrt-row-actions",
+                    "titular",
                   ]}
-                ></CustomerDetails>
+                  actions={actionsCliente}
+                  clickEvent={() => {}}
+                />
               </div>
             </div>
           </>
@@ -145,7 +283,7 @@ export default function Clientes() {
         <Drawer
           size="w-3/4"
           title="Agregar/Editar Usuario"
-          content={<Setting />}
+          content={<Setting cliente={formData} />}
         />
       )}
     </>

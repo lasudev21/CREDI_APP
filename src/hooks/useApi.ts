@@ -17,7 +17,6 @@ export function useApi<T>() {
 
   const request = useCallback(async (method: string, url: string, data?: any) => {
     setState({ data: null, error: null, loading: true });
-    console.log(url)
     try {
       const response = await api[method](url, data);
       setState({ data: response.data, error: null, loading: false });

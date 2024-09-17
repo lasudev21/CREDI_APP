@@ -6,6 +6,7 @@ import { IToast, TypeToastEnum } from "../types/IToast";
 export const ManageErrors = async (error: unknown) => {
   const _error = error as IErrorCallAPI;
   console.log(_error);
+  
   const { setErrorsToast } = useDashboardStore.getState();
   let errors: IToast[] = [];
 

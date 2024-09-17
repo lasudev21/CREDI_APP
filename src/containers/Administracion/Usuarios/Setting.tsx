@@ -1,10 +1,18 @@
-import { useState } from "react";
-import { IErrorsUsuario, IUsuario, UsuarioVacio } from "../../../types/IUsuario";
+import { useEffect, useState } from "react";
+import { IErrorsUsuario, IUsuario } from "../../../types/IUsuario";
+import FloatingLabel from "../../../components/Common/FloatingLabel";
 
-const Setting = () => {
-  const [formData, setFormData] = useState<IUsuario>(UsuarioVacio);
+interface DrawerProps {
+  usuario: IUsuario;
+}
 
+const Setting: React.FC<DrawerProps> = ({ usuario }) => {
+  const [formData, setFormData] = useState<IUsuario>(usuario);
   const [errors, setErrors] = useState<Partial<IErrorsUsuario>>({});
+
+  useEffect(() => {
+    setFormData(usuario);
+  }, [usuario, formData]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -26,7 +34,6 @@ const Setting = () => {
   const validate = () => {
     const errors: Partial<IErrorsUsuario> = {};
 
-    console.log(errors);
     if (!formData?.nombres.trim())
       errors.nombres = "Los nombres son obligatorios";
 
@@ -57,9 +64,7 @@ const Setting = () => {
       setErrors(validationErrors);
       return;
     }
-
-    // Handle form submission (e.g., send data to API)
-    console.log("Form submitted", formData);
+    
   };
 
   return (
@@ -71,56 +76,28 @@ const Setting = () => {
         <div className="grid md:grid-cols-2 md:gap-6">
           <div className="relative z-0 w-full mb-5 group">
             <div className="relative">
-              <input
-                id="nombres"
+              <FloatingLabel
+                property={"nombres"}
                 type="text"
-                name="nombres"
+                label="Nombres"
                 value={formData.nombres}
-                onChange={handleChange}
-                className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
-                  errors.nombres ? "border-red-500" : ""
-                }`}
-                placeholder=""
-                autoComplete="false"
+                action={() => handleChange}
+                errors={errors}
+                disabled={false}
               />
-              <label
-                htmlFor="nombres"
-                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-              >
-                Nombres
-              </label>
-              {errors.nombres && (
-                <p className="text-red-500 text-xs italic mt-2">
-                  {errors.nombres}
-                </p>
-              )}
             </div>
           </div>
           <div className="relative z-0 w-full mb-5 group">
             <div className="relative">
-              <input
-                id="apellidos"
+              <FloatingLabel
+                property={"apellidos"}
                 type="text"
-                name="apellidos"
+                label="Apellidos"
                 value={formData.apellidos}
-                onChange={handleChange}
-                className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
-                  errors.apellidos ? "border-red-500" : ""
-                }`}
-                placeholder=""
-                autoComplete="false"
+                action={() => handleChange}
+                errors={errors}
+                disabled={false}
               />
-              <label
-                htmlFor="apellidos"
-                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-              >
-                Apellidos
-              </label>
-              {errors.apellidos && (
-                <p className="text-red-500 text-xs italic mt-2">
-                  {errors.apellidos}
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -128,61 +105,33 @@ const Setting = () => {
         <div className="grid md:grid-cols-2 md:gap-6">
           <div className="relative z-0 w-full mb-5 group">
             <div className="relative">
-              <input
-                id="telefono1"
+              <FloatingLabel
+                property={"telefono1"}
                 type="number"
-                name="telefono1"
-                value={formData.telefono1 ? formData.telefono1 : ''}
-                onChange={handleChange}
-                className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
-                  errors.telefono1 ? "border-red-500" : ""
-                }`}
-                placeholder=""
-                autoComplete="false"
+                label="Teléfono 1"
+                value={formData.telefono1 ?? 0}
+                action={() => handleChange}
+                errors={errors}
+                disabled={false}
               />
-              <label
-                htmlFor="telefono1"
-                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-              >
-                Telefono 1
-              </label>
-              {errors.telefono1 && (
-                <p className="text-red-500 text-xs italic mt-2">
-                  {errors.telefono1}
-                </p>
-              )}
             </div>
           </div>
           <div className="relative z-0 w-full mb-5 group">
             <div className="relative">
-              <input
-                id="telefono2"
+              <FloatingLabel
+                property={"telefono2"}
                 type="number"
-                name="telefono2"
-                value={formData.telefono2 ? formData.telefono2 : ''}
-                onChange={handleChange}
-                className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
-                  errors.telefono2 ? "border-red-500" : ""
-                }`}
-                placeholder=""
-                autoComplete="false"
+                label="Teléfono 2"
+                value={formData.telefono2 ?? 0}
+                action={() => handleChange}
+                errors={errors}
+                disabled={false}
               />
-              <label
-                htmlFor="telefono2"
-                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-              >
-                Telefono 2
-              </label>
-              {errors.telefono2 && (
-                <p className="text-red-500 text-xs italic mt-2">
-                  {errors.telefono2}
-                </p>
-              )}
             </div>
           </div>
         </div>
 
-        <label className="relative inline-flex items-center cursor-pointer">
+        <label className="relative inline-flex items-center cursor-pointer mb-8">
           <input
             type="checkbox"
             name="login"
@@ -199,7 +148,8 @@ const Setting = () => {
               className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform transform 
                             ${formData.login ? "translate-x-5" : ""}`}
             />
-          </div> Es usuario de la aplicación?
+          </div>{" "}
+          Es usuario de la aplicación?
         </label>
 
         {formData.login ? (
@@ -207,113 +157,44 @@ const Setting = () => {
             <div className="grid md:grid-cols-2 md:gap-6">
               <div className="relative z-0 w-full mb-5 group">
                 <div className="relative">
-                  <input
-                    id="email"
+                  <FloatingLabel
+                    property={"email"}
                     type="text"
-                    name="email"
+                    label="Correo Electronico"
                     value={formData.email}
-                    onChange={handleChange}
-                    className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
-                      errors.email ? "border-red-500" : ""
-                    }`}
-                    placeholder=""
-                    autoComplete="false"
+                    action={() => handleChange}
+                    errors={errors}
+                    disabled={false}
                   />
-                  <label
-                    htmlFor="email"
-                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-                  >
-                    Correo eléctronico
-                  </label>
-                  {errors.email && (
-                    <p className="text-red-500 text-xs italic mt-2">
-                      {errors.email}
-                    </p>
-                  )}
                 </div>
               </div>
-              {/* <div className="relative z-0 w-full mb-5 group">
-                <div className="relative">
-                  <input
-                    id="telefono2"
-                    type="number"
-                    name="telefono2"
-                    value={formData.telefono2}
-                    onChange={handleChange}
-                    className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
-                      errors.telefono2 ? "border-red-500" : ""
-                    }`}
-                    placeholder=""
-                    autoComplete="false"
-                  />
-                  <label
-                    htmlFor="telefono2"
-                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-                  >
-                    Telefono 2
-                  </label>
-                  {errors.telefono2 && (
-                    <p className="text-red-500 text-xs italic mt-2">
-                      {errors.telefono2}
-                    </p>
-                  )}
-                </div>
-              </div> */}
             </div>
 
             <div className="grid md:grid-cols-2 md:gap-6">
               <div className="relative z-0 w-full mb-5 group">
                 <div className="relative">
-                  <input
-                    id="username"
+                  <FloatingLabel
+                    property={"username"}
                     type="text"
-                    name="username"
+                    label="Nombre de usuario"
                     value={formData.username}
-                    onChange={handleChange}
-                    className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
-                      errors.username ? "border-red-500" : ""
-                    }`}
-                    placeholder=""
-                    autoComplete="false"
+                    action={() => handleChange}
+                    errors={errors}
+                    disabled={false}
                   />
-                  <label
-                    htmlFor="username"
-                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-                  >
-                    Nombre de usuario
-                  </label>
-                  {errors.username && (
-                    <p className="text-red-500 text-xs italic mt-2">
-                      {errors.username}
-                    </p>
-                  )}
                 </div>
               </div>
               <div className="relative z-0 w-full mb-5 group">
                 <div className="relative">
-                  <input
-                    id="password"
+                  <FloatingLabel
+                    property={"password"}
                     type="text"
-                    name="password"
+                    label="Contraseña"
                     value={formData.password}
-                    onChange={handleChange}
-                    className={`block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer ${
-                      errors.password ? "border-red-500" : ""
-                    }`}
-                    placeholder=""
-                    autoComplete="false"
+                    action={() => handleChange}
+                    errors={errors}
+                    disabled={false}
                   />
-                  <label
-                    htmlFor="password"
-                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-                  >
-                    Contraseña
-                  </label>
-                  {errors.password && (
-                    <p className="text-red-500 text-xs italic mt-2">
-                      {errors.password}
-                    </p>
-                  )}
                 </div>
               </div>
             </div>

@@ -44,6 +44,7 @@ const Rutas = () => {
   const { toggleDrawer, showDrawer, setLoader } = useDashboardStore();
 
   const Rutas = async () => {
+    setLoader(true);
     const response = await getRutas();
     const data: IItemsCBox[] = response;
     setRutas(data);
@@ -51,12 +52,15 @@ const Rutas = () => {
   };
 
   const Periodos = async () => {
+    setLoader(true);
     const response = await getPeriodos();
     const data: IPeriodos = response;
     setPeriodos(data);
+    setLoader(false);
   };
 
   useEffect(() => {
+    setLoader(false);
     Periodos();
     Rutas();
 
@@ -109,12 +113,15 @@ const Rutas = () => {
       cellClass: "ag-cell-center",
       width: 70,
       cellStyle: (params) => {
-        if (params.value >= 5) {
-          return { backgroundColor: "rgb(251, 244, 98)", color: "white" };
-        } else if (params.value > 50) {
-          return { backgroundColor: "green", color: "white" };
-        } else {
-          return { backgroundColor: "", color: "black" };
+        switch (true) {
+          case params.value >= 5 && params.value <= 9:
+            return { backgroundColor: "#FBF462", color: "white" };
+          case params.value >= 10 && params.value <= 19:
+            return { backgroundColor: "#F1775C", color: "white" };
+          case params.value > 20 :
+            return { backgroundColor: "#A25EEA", color: "white" };
+          default:
+            return { backgroundColor: "", color: "black" };
         }
       },
     },

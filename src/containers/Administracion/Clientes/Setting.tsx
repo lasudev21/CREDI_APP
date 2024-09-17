@@ -1,43 +1,29 @@
 import { useEffect, useState } from "react";
-import { ICliente, IErrorsCliente } from "../../../types/ICliente";
+import { ICliente, IClientes, IErrorsCliente } from "../../../types/ICliente";
 import FloatingLabel from "../../../components/Common/FloatingLabel";
 import { useDashboardStore } from "../../../store/DashboardStore";
+import { postCliente, putCliente } from "../../../services/clienteService";
+import { useClienteStore } from "../../../store/ClienteStore";
+import { TypeToastEnum } from "../../../types/IToast";
 
-const Setting = () => {
+interface DrawerProps {
+  cliente: ICliente;
+}
+
+const Setting: React.FC<DrawerProps> = ({ cliente }) => {
   const { setLoader } = useDashboardStore();
+  const { setData } = useClienteStore();
+  const { toggleDrawer, setErrorsToast } = useDashboardStore();
 
   useEffect(() => {
     setLoader(false);
   }, []);
 
-  const [formData, setFormData] = useState<ICliente>({
-    id: 0,
-    titular: "",
-    cc_titular: null,
-    fiador: "",
-    cc_fiador: null,
-    neg_titular: "",
-    neg_fiador: "",
-    dir_cobro: "",
-    barrio_cobro: "",
-    tel_cobro: "",
-    dir_casa: "",
-    barrio_casa: "",
-    tel_casa: "",
-    dir_fiador: "",
-    barrio_fiador: "",
-    tel_fiador: "",
-    created_at: new Date(),
-    updated_at: new Date(),
-    estado: true,
-    clientes_referencias: [],
-    creditos: [],
-  });
+  const [formData, setFormData] = useState<ICliente>(cliente);
 
   const [errors, setErrors] = useState<Partial<IErrorsCliente>>({});
 
   const handleInputChange = (property: string, newValue: string | number) => {
-    console.log(newValue);
     setFormData((prevData) => ({
       ...prevData,
       [property]: newValue,
@@ -89,24 +75,34 @@ const Setting = () => {
     return errors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoader(true);
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      setLoader(false);
       return;
     }
-
     setErrors({});
-    setTimeout(() => {
-      setLoader(false);
-      // setShowToast(true);
-    }, 1000);
 
-    console.log("Form submitted", formData);
+    setLoader(true);
+
+    const data: IClientes | null =
+      formData.id === 0
+        ? await postCliente(formData)
+        : await putCliente(formData);
+
+    if (data) {
+      setErrorsToast([
+        {
+          message: "Cliente gestionado",
+          type: TypeToastEnum.Susccess,
+        },
+      ]);
+      toggleDrawer(false);
+      setData(data);
+    }
+    setLoader(false);
   };
 
   return (
@@ -177,7 +173,7 @@ const Setting = () => {
           <div className="col-span-4">
             <FloatingLabel
               property={"tel_cobro"}
-              type="text"
+              type="number"
               label="Teléfono"
               value={formData.tel_cobro ?? ""}
               action={handleInputChange}
@@ -210,7 +206,7 @@ const Setting = () => {
           <div className="col-span-4">
             <FloatingLabel
               property={"tel_casa"}
-              type="text"
+              type="number"
               label="Teléfono"
               value={formData.tel_casa ?? ""}
               action={handleInputChange}
@@ -227,7 +223,7 @@ const Setting = () => {
           <div className="col-span-4">
             <FloatingLabel
               property={"fiador"}
-              type="number"
+              type="text"
               label="Fiador"
               value={formData.fiador ?? ""}
               action={handleInputChange}
@@ -283,7 +279,7 @@ const Setting = () => {
           <div className="col-span-4">
             <FloatingLabel
               property={"tel_fiador"}
-              type="text"
+              type="number"
               label="Teléfono"
               value={formData.tel_fiador ?? ""}
               action={handleInputChange}
@@ -293,12 +289,12 @@ const Setting = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-row-reverse items-center justify-between">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
           >
-            Guardar
+            {formData.id === 0 ? "Guardar" : "Actualizar"}
           </button>
         </div>
       </form>

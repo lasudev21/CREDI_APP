@@ -1,3 +1,4 @@
+import { IClienteReferencia } from "./IClienteReferencia";
 import { ICredito } from "./ICredito";
 
 export interface IClientes {
@@ -5,14 +6,13 @@ export interface IClientes {
   creditosActivos: number;
 }
 
-
 export interface ICliente {
   id: number;
   titular: string;
-  cc_titular: number | null;
+  cc_titular: number;
   neg_titular: string;
   fiador: string;
-  cc_fiador: number | null;
+  cc_fiador: number;
   neg_fiador: string;
   dir_cobro: string;
   barrio_cobro: string;
@@ -26,8 +26,8 @@ export interface ICliente {
   created_at: Date;
   updated_at: Date;
   estado: boolean;
-  clientes_referencias: [],
-  creditos: ICredito[]
+  clientes_referencias: IClienteReferencia[];
+  creditos: ICredito[];
 }
 
 export interface IErrorsCliente {
@@ -50,3 +50,27 @@ export interface IErrorsCliente {
   updated_at: string;
   estado: string;
 }
+
+export const ClienteVacio = {
+  id: 0,
+  titular: "",
+  cc_titular: 0,
+  neg_titular: "",
+  fiador: "",
+  cc_fiador: 0,
+  neg_fiador: "",
+  dir_cobro: "",
+  barrio_cobro: "",
+  tel_cobro: "",
+  dir_casa: "",
+  barrio_casa: "",
+  tel_casa: "",
+  dir_fiador: "",
+  barrio_fiador: "",
+  tel_fiador: "",
+  created_at: new Date(),
+  updated_at: new Date(),
+  estado: true,
+  clientes_referencias: [],
+  creditos: [],
+};

@@ -123,9 +123,6 @@ const TableAGReact = forwardRef(
             // getContextMenuItems={getContextMenuItems}
             stopEditingWhenCellsLoseFocus={true}
             onGridReady={onGridReady}
-            // onCellValueChanged={(event) =>
-            //   console.log(`New Cell Value: ${event.value}`)
-            // }
           />
         </div>
         <div className="t">

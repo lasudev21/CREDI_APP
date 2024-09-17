@@ -14,7 +14,7 @@ const Modal: React.FC<IModalProps> = ({ title, content }) => {
   return (
     <div className="fixed inset-0 z-10 overflow-y-auto flex items-center justify-center">
       <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="bg-white w-1/1 p-4 rounded-lg shadow-lg">
+        <div className="bg-white w-full max-w-3xl min-w-[300px] p-4 rounded-lg shadow-lg">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-light">{title}</h2>
             <button

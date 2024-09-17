@@ -1,5 +1,5 @@
 import { useDashboardStore } from "../store/DashboardStore";
-import api from "./api";
+import api from "./apiNoAuth";
 import { Cookies } from "react-cookie";
 
 const cookie = new Cookies();
@@ -7,7 +7,7 @@ const cookie = new Cookies();
 export const Login = async (username: string, password: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const response = await api.post("account/signin", { username, password });
+    const response = await api.post("auth/login", { username, password });
     return response.data;
   } catch (error) {
     throw error;

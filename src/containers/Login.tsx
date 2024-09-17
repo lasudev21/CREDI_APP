@@ -21,7 +21,7 @@ export default function Login() {
 
     if (sessionData.apiURL != "") {
       try {
-        const data = await request("post", `${sessionData.apiURL}/account/signin`, {
+        const data = await request("post", `${sessionData.apiURL}/auth/login`, {
           username,
           password,
         });

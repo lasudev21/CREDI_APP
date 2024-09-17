@@ -1,39 +1,47 @@
 import { useEffect, useMemo, useState } from "react";
-// import { getClientes } from "../../services/clienteService";
-// import { ICliente, IClientes } from "../../types/ICliente";
-import CustomerDetails from "../../../components/Common/TableMaterialR";
 import { MRT_ColumnDef } from "material-react-table";
-import { IUsuario, IUsuarios } from "../../../types/IUsuario";
+import { IUsuario, IUsuarios, UsuarioVacio } from "../../../types/IUsuario";
 import { getUsuarios } from "../../../services/usuarioService";
 import Setting from "./Setting";
 import { useUserStore } from "../../../store/UserStore";
 import Card from "../../../components/Common/Card";
-// import { useDashboardStore } from "../../../store/store";
+import TableMaterialR from "../../../components/Common/TableMaterialR";
+import { Plus, Save } from "lucide-react";
+import ActionIcon from "../../../components/Common/ActionIcon";
 
 export default function Usuarios() {
   const [isLoading, setIsloading] = useState<boolean>(true);
-  const { usuarios, setClientes } = useUserStore((state) => ({
-    usuarios: state.usuarios,
-    setClientes: state.setClientes,
-  }));
+  const { usuarios, setClientes, formData, setFormData } = useUserStore();
 
-  // const [activeTab, setActiveTab] = useState(0);
+  const AddUsuario = () => {
+    setFormData(UsuarioVacio);
+  };
+
+  const icons: React.ReactNode[] = [
+    <ActionIcon
+      IconComponent={Plus}
+      action={AddUsuario}
+      key="btn[0][0]"
+    />,
+    <ActionIcon
+      IconComponent={Save}
+      action={() => {}}
+      key="btn[0][1]"
+    />,
+  ];
+
+  const handleRowClick = (row: IUsuario) => {
+    setFormData(row);
+  };
 
   const columns = useMemo<MRT_ColumnDef<IUsuario>[]>(
     () => [
-      {
-        accessorKey: "id",
-        header: "Id",
-        enableHiding: false, // Evita que la columna se pueda mostrar
-        size: 0, // Tamaño de la columna (opcional)
-        columnVisibility: "hidden",
-        enableColumnActions: false,
-      },
       {
         accessorKey: "nombres",
         header: "Nombres",
         enableHiding: false,
         enableColumnActions: false,
+        enablePinning: true,
       },
       {
         accessorKey: "apellidos",
@@ -69,28 +77,29 @@ export default function Usuarios() {
     []
   );
 
-  useEffect(() => {
-    const Clientes = async () => {
-      const response = await getUsuarios();
-      const data: IUsuarios = response;
-      setClientes(data);
-      setIsloading(false);
-    };
+  const Clientes = async () => {
+    const response = await getUsuarios();
+    const data: IUsuarios = response;
+    setClientes(data);
+    setIsloading(false);
+  };
 
+  useEffect(() => {
+    setFormData(UsuarioVacio);
     Clientes();
   }, []);
 
   return (
     <>
       <Card
-        icons={[]}
+        icons={icons}
         title="Gestión de usuarios"
         texts={[]}
         content={
           <>
             <div className="flex">
               <div className="w-3/5">
-                <CustomerDetails
+                <TableMaterialR
                   columns={columns}
                   data={usuarios ? usuarios.data : []}
                   isLoading={isLoading}
@@ -100,11 +109,14 @@ export default function Usuarios() {
                     "mrt-row-expand",
                     "mrt-row-select",
                     "mrt-row-actions",
+                    "nombres",
                   ]}
-                ></CustomerDetails>
+                  actions={() => {}}
+                  clickEvent={handleRowClick}
+                />
               </div>
               <div className="w-2/5">
-                <Setting />
+                <Setting usuario={formData} />
               </div>
             </div>
           </>

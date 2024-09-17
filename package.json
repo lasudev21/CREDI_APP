@@ -30,6 +30,7 @@
     "react-js-pagination": "^3.0.3",
     "react-router-dom": "^6.26.1",
     "react-toastify": "^10.0.5",
+    "sweetalert2": "^11.14.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {

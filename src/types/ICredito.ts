@@ -9,8 +9,6 @@ export interface ICreditoData {
   data: ICredito[];
 }
 
-
-
 export interface ICredito {
   id: number;
   orden: number;
@@ -43,4 +41,17 @@ export interface IEnrutarCredito {
   orden: number;
   newPos: number | null;
   cliente: ICliente;
+}
+
+export interface ICreditoHistorialCliente {
+  Activo:        boolean;
+  Id:            number;
+  InicioCredito: Date;
+  Modalidad:     number;
+  ModCuota:      number;
+  ModDias:       string;
+  ObsDia:        null;
+  RutaId:        number;
+  ValorPrestamo: number;
+  Finalizacion:  Date;
 }
