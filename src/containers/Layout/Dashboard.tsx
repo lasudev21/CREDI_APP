@@ -1,36 +1,177 @@
+import { Avatar, Card, CardHeader } from "@mui/material";
+import { blue } from "@mui/material/colors";
+import { HandCoinsIcon, ListPlusIcon, Repeat1Icon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getDashBoardData } from "../../services/dashboardService";
+import { ICoteosUsuario, IDashboard, IDataValue } from "../../types/IDashboard";
+import LineChart from "../../components/Dashboard/LineChart";
+import UltimosCoteos from "../../components/Dashboard/UltimosCoteos";
+import moment from "moment";
+
 export default function Dashboard() {
+  const [nuevos, setNuevos] = useState<number>(0);
+  const [renovados, setRenovados] = useState<number>(0);
+  const [coteos, setCoteos] = useState<number>(0);
+  const [clientesNew, setClientesNew] = useState<IDataValue[]>([]);
+  const [clientesRen, setClientesRen] = useState<IDataValue[]>([]);
+  const [coteosUsuarios, setCoteosUsuarios] = useState<ICoteosUsuario[]>([]);
+  const [height, setHeight] = useState<number>(0);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [firstDay, setFirstDay] = useState<string>("");
+  const [lastDay, setLastDay] = useState<string>("");
+
+  const getDashBoard = async () => {
+    const response = await getDashBoardData();
+    const data: IDashboard = response;
+    setNuevos(data.cantNew);
+    setRenovados(data.cantRen);
+    setCoteos(data.totalCoteo);
+    setClientesNew(data.clientesNew);
+    setClientesRen(data.clientesRen);
+    setCoteosUsuarios(data.coteosUsuarios);
+  };
+
+  useEffect(() => {
+    getDashBoard();
+    const first = moment().startOf("month").format("YYYY-MM-DD");
+    setFirstDay(first);
+
+    const last = moment().endOf("month").format("YYYY-MM-DD");
+    setLastDay(last);
+
+    const handleResize = () => {
+      const calculatedHeight = window.innerHeight - 290;
+      setHeight(calculatedHeight);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  console.log(user);
+
   return (
-    <>
-      <div className="card-body h-full flex flex-col justify-between">
-        <div>
-          <h1 className="text-lg font-bold tracking-wide">
-            Congratulations Moe!
-          </h1>
-          <p className="text-gray-600 mt-2">Best seller of the month</p>
+    <div className="w-full rounded-t-lg">
+      <div className="grid grid-cols-12 gap-4 mb-4">
+        <div className="flex flex-col col-span-9">
+          <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
+            ¡Bienvenido/a de nuevo!
+            <span className="font-semibold ml-2">
+              {user.Nombres} {user.Apellidos}
+            </span>
+          </p>
+          <p className="font-thin">
+            A continuación encontrará un resumen de los movimientos de su cartera en el último
+            mes
+          </p>
         </div>
-
-        <div className="flex flex-row mt-10 items-end">
-          <div className="flex-1">
-            <h1 className="font-extrabold text-4xl text-teal-400">$89k</h1>
-            <p className="mt-3 mb-4 text-xs text-gray-500">
-              You have done 57.6% more sales today.
-            </p>
-            <a
-              href="#"
-              className="btn-shadow py-3"
-            >
-              view sales
-            </a>
-          </div>
-
-          <div className="flex-1 ml-10 w-32 h-32 lg:w-auto lg:h-auto overflow-hidden">
-            <img
-              className="object-cover"
-              src="img/congrats.svg"
-            />
-          </div>
+        <div className="flex flex-row-reverse col-span-3 italic">
+          <span className="font-semibold ml-2">
+            {firstDay} <span className="font-light">a</span> {lastDay}
+          </span>
+          <span className="font-light">Fechas del reporte:</span>
         </div>
       </div>
-    </>
+      <div className="grid grid-cols-12 gap-4 mb-4">
+        <div className="col-span-4">
+          <Card
+            sx={{}}
+            className="w-full dark:bg-gray-800 dark:border-gray-700 border-l-2 border-sky-800"
+          >
+            <CardHeader
+              sx={{
+                ".MuiCardHeader-title": {
+                  fontSize: "1.5rem",
+                },
+              }}
+              avatar={
+                <Avatar
+                  sx={{ bgcolor: blue[600] }}
+                  aria-label="recipe"
+                >
+                  <ListPlusIcon />
+                </Avatar>
+              }
+              title={nuevos}
+              subheader="Clientes nuevos"
+            />
+          </Card>
+        </div>
+        <div className="col-span-4">
+          <Card
+            sx={{}}
+            className="w-full dark:bg-gray-800 dark:border-gray-700 border-l-2 border-sky-800"
+          >
+            <CardHeader
+              sx={{
+                ".MuiCardHeader-title": {
+                  fontSize: "1.5rem",
+                },
+              }}
+              avatar={
+                <Avatar
+                  sx={{ bgcolor: blue[400] }}
+                  aria-label="recipe"
+                >
+                  <Repeat1Icon />
+                </Avatar>
+              }
+              title={renovados}
+              subheader="Renovaciones"
+            />
+          </Card>
+        </div>
+        <div className="col-span-4">
+          <Card
+            sx={{}}
+            className="w-full dark:bg-gray-800 dark:border-gray-700 border-l-2 border-sky-800"
+          >
+            <CardHeader
+              sx={{
+                ".MuiCardHeader-title": {
+                  fontSize: "1.5rem",
+                },
+              }}
+              avatar={
+                <Avatar
+                  sx={{ bgcolor: blue[600] }}
+                  aria-label="recipe"
+                >
+                  <HandCoinsIcon />
+                </Avatar>
+              }
+              title={coteos}
+              subheader="Coteos del mes"
+            />
+          </Card>
+        </div>
+      </div>
+      <div
+        className="grid grid-cols-12 gap-4"
+        style={{ height }}
+      >
+        <div className="col-span-4 flex-col">
+          <div className="">
+            <p className="text-xl text-sky-500 font-extralight italic dark:text-white mb-2">
+              Coteos pos usuario
+            </p>
+
+            <UltimosCoteos coteosUsuarios={coteosUsuarios} />
+          </div>
+          {/* <div>1</div> */}
+        </div>
+        <div className="col-span-8 bg-white">
+          <LineChart
+            dataNuevos={clientesNew}
+            dataRenovados={clientesRen}
+          />
+        </div>
+      </div>
+    </div>
   );
 }

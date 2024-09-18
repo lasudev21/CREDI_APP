@@ -1,15 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ColDef, ValueFormatterParams } from "ag-grid-community";
 import { PlusCircleIcon, Printer, Repeat, Save, Search } from "lucide-react";
 import { useRutaStore } from "../../../store/RutaStore";
 import { getPeriodos, getRutas } from "../../../services/parametroService";
 import { IItemsCBox, IPeriodos } from "../../../types/IRuta";
-import ModalRutas from "../../../components/Rutas/ModalRutas";
+import VerRutas from "../../../components/Cobros/Rutas/VerRutas";
 import { NumberFormat } from "../../../utils/helper";
 import TableAGReact from "../../../components/Common/TableAGReact";
 import { useDashboardStore } from "../../../store/DashboardStore";
-import DnDRutas from "../../../components/Rutas/DnDRutas";
+import DnDRutas from "../../../components/Cobros/Rutas/DnDRutas";
 import Drawer from "../../../components/Common/Drawer";
+import Modal from "../../../components/Common/Modal";
+import AgregarClientes from "../../../components/Cobros/Rutas/AgregarClientes";
+import { IconButton } from "@mui/material";
+import { UsuarioVacio } from "../../../types/IUsuario";
+import Setting from "../../Administracion/Clientes/Setting";
+import { ClienteVacio } from "../../../types/ICliente";
 
 function currencyFormatter(params: ValueFormatterParams) {
   const value = Math.floor(params.value);
@@ -19,18 +25,8 @@ function currencyFormatter(params: ValueFormatterParams) {
   return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
 
-function clientFormatter(params: ValueFormatterParams, llave: string) {
-  let value = "";
-
-  if (params.data.cliente[llave] != null) value = params.data.cliente[llave];
-
-  return value;
-}
-
 const Rutas = () => {
   const {
-    isModalOpen,
-    setIsModal,
     setRutas,
     setPeriodos,
     rutas,
@@ -38,10 +34,25 @@ const Rutas = () => {
     data,
     cartera,
     rutaId,
+    setRutaId,
     totalRecord,
+    disabled,
+    setDisable,
+    setData,
   } = useRutaStore((state) => state);
+
   const [height, setHeight] = useState<number>(0);
-  const { toggleDrawer, showDrawer, setLoader } = useDashboardStore();
+
+  const [sizeDrawer, setSizeDrawer] = useState<string>("");
+  const [contentDrawer, setContentDrawer] = useState<React.ReactNode>(null);
+  const [titleDrawer, setTitleDrawer] = useState<string>("");
+
+  const [size, setSize] = useState<string>("");
+  const [contentModal, setContentModal] = useState<React.ReactNode>(null);
+  const [title, setTitle] = useState<string>("");
+
+  const { toggleDrawer, showDrawer, setLoader, openModal, setOpenModal } =
+    useDashboardStore();
 
   const Rutas = async () => {
     setLoader(true);
@@ -59,8 +70,51 @@ const Rutas = () => {
     setLoader(false);
   };
 
+  const modalAction = async (tipo: string) => {
+    switch (tipo) {
+      case "addCliente":
+        setContentModal(<AgregarClientes accion={drawerAction} />);
+        setTitle("Gestionar créditos");
+        setSize("max-w-7xl");
+        break;
+      case "seeRutas":
+        setContentModal(<VerRutas rutas={rutas} />);
+        setTitle("Seleccione la ruta que desea consultar...");
+        setSize("max-w-2xl");
+        break;
+    }
+    setOpenModal(true);
+  };
+
+  const drawerAction = async (tipo: string) => {
+    switch (tipo) {
+      case "enrutar":
+        setContentDrawer(<DnDRutas />);
+        setSizeDrawer("w-2/5");
+        setTitleDrawer("Enrutar clientes");
+        break;
+      case "nuevoCliente":
+        setContentDrawer(<Setting cliente={ClienteVacio} />);
+        setSizeDrawer("w-3/5");
+        setTitleDrawer("Agregar cliente");
+        break;
+
+      default:
+        break;
+    }
+    toggleDrawer(true);
+  };
+
   useEffect(() => {
+    setOpenModal(false);
     setLoader(false);
+    setRutaId(0);
+    setDisable(true);
+    setData({
+      cartera: 0,
+      cobrador: UsuarioVacio,
+      data: [],
+    });
     Periodos();
     Rutas();
 
@@ -82,12 +136,10 @@ const Rutas = () => {
     { field: "orden", headerName: "Ord", pinned: "left", width: 70 },
     { field: "obs_dia", headerName: "Día", pinned: "left", width: 70 },
     {
-      field: "client",
+      field: "cliente.titular",
       headerName: "Cliente",
       width: 250,
       pinned: "left",
-      valueFormatter: (params: ValueFormatterParams) =>
-        clientFormatter(params, "titular"),
     },
     {
       field: "cuota",
@@ -118,7 +170,7 @@ const Rutas = () => {
             return { backgroundColor: "#FBF462", color: "white" };
           case params.value >= 10 && params.value <= 19:
             return { backgroundColor: "#F1775C", color: "white" };
-          case params.value > 20 :
+          case params.value > 20:
             return { backgroundColor: "#A25EEA", color: "white" };
           default:
             return { backgroundColor: "", color: "black" };
@@ -162,39 +214,29 @@ const Rutas = () => {
     },
     { field: "inicio_credito", headerName: "Inicio", width: 150 },
     {
-      field: "cliente",
+      field: "cliente.neg_titular",
       headerName: "Negocio",
       width: 250,
-      valueFormatter: (params: ValueFormatterParams) =>
-        clientFormatter(params, "neg_titular"),
     },
     {
-      field: "cliente",
+      field: "cliente.dir_cobro",
       headerName: "Dirección",
       width: 250,
-      valueFormatter: (params: ValueFormatterParams) =>
-        clientFormatter(params, "dir_cobro"),
     },
     {
-      field: "cliente",
+      field: "cliente.tel_cobro",
       headerName: "Teléfono",
       width: 150,
-      valueFormatter: (params: ValueFormatterParams) =>
-        clientFormatter(params, "tel_cobro"),
     },
     {
-      field: "cliente",
+      field: "cliente.fiador",
       headerName: "Fiador",
       width: 250,
-      valueFormatter: (params: ValueFormatterParams) =>
-        clientFormatter(params, "fiador"),
     },
     {
-      field: "cliente",
+      field: "cliente.tel_fiador",
       headerName: "Teléfono",
       width: 150,
-      valueFormatter: (params: ValueFormatterParams) =>
-        clientFormatter(params, "tel_fiador"),
     },
   ]);
 
@@ -202,13 +244,13 @@ const Rutas = () => {
     <>
       {showDrawer && (
         <Drawer
-          size="w-2/5"
-          title="Enrutar clientes"
-          content={<DnDRutas />}
+          size={sizeDrawer}
+          title={titleDrawer}
+          content={contentDrawer}
         />
       )}
       <div className="h-full w-full grid mt-4 border-l-4 rounded-l border-sky-600">
-        <div className="flex justify-between items-center p-2 bg-gray-300 border-b-2 border-sky-600 rounded-br">
+        <div className="flex justify-between items-center p-2 bg-[#E5E5E7] border-b-2 border-sky-600 rounded-br">
           <div className="flex w-3/4 pr-2">
             <div className="flex flex-col mx-4">
               <p className="font-light">Ruta</p>
@@ -220,7 +262,7 @@ const Rutas = () => {
                 </span>
                 <Search
                   size={20}
-                  onClick={() => setIsModal(true)}
+                  onClick={() => modalAction("seeRutas")}
                   className="text-sky-600 hover:text-sky-800 ml-2 rounded transition-all"
                 />
               </p>
@@ -239,31 +281,40 @@ const Rutas = () => {
 
           <div className="w-1/4 pl-2 flex justify-end">
             <div className="flex space-x-2">
-              <PlusCircleIcon
-                size={20}
-                className="hover:text-sky-600 ml-2 rounded transition-all"
-              />
-              <Repeat
-                size={20}
-                onClick={() => toggleDrawer(true)}
-                className="hover:text-sky-600 ml-2 rounded transition-all"
-              />
-              <Save
-                size={20}
-                className="hover:text-sky-600 ml-2 rounded transition-all"
-              />
-              <Printer
-                size={20}
-                className="hover:text-sky-600 ml-2 rounded transition-all"
-              />
+              <IconButton
+                // disabled={disabled}
+                color="primary"
+                onClick={() => modalAction("addCliente")}
+              >
+                <PlusCircleIcon />
+              </IconButton>
+
+              <IconButton
+                // disabled={disabled}
+                color="primary"
+                onClick={() => drawerAction("enrutar")}
+              >
+                <Repeat />
+              </IconButton>
+
+              <IconButton
+                // disabled={disabled}
+                color="primary"
+              >
+                <Save />
+              </IconButton>
+
+              <IconButton
+                // disabled={disabled}
+                color="primary"
+              >
+                <Printer />
+              </IconButton>
             </div>
           </div>
         </div>
 
-        <div
-          className="border"
-          // style={{ height: "calc(100vh - 185px)" }}
-        >
+        <div className="border">
           <div
             className="ag-theme-quartz"
             style={{ height: "100%" }}
@@ -274,14 +325,21 @@ const Rutas = () => {
               key={"TAGR[0][0]"}
               pagination={false}
               height={height}
-              actionPagining={() => console.log("Hola")}
+              actionPagining={() => {}}
               totalRecords={totalRecord}
               autoSize={false}
             />
           </div>
         </div>
 
-        {isModalOpen && <ModalRutas rutas={rutas} />}
+        {/* {isModalOpen && <ModalRutas rutas={rutas} />} */}
+        {openModal && (
+          <Modal
+            content={contentModal}
+            title={title}
+            size={size}
+          />
+        )}
       </div>
     </>
   );

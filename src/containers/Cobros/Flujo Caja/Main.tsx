@@ -258,7 +258,7 @@ const FlujoCaja = () => {
             height={height}
             totalRecords={totalRecord}
             actionPagining={FlujoCaja}
-            autoSize={false}
+            autoSize={true}
           />
         </div>
       </div>

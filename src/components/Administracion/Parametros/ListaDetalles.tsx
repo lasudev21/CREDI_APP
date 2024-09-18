@@ -99,6 +99,7 @@ const ListaDetalles: React.FC<ListaDetallesProps> = ({
               Parametros={Parametros}
             />
           }
+          size="max-w-3xl"
         />
       )}
 

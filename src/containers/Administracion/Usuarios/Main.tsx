@@ -8,6 +8,7 @@ import Card from "../../../components/Common/Card";
 import TableMaterialR from "../../../components/Common/TableMaterialR";
 import { Plus, Save } from "lucide-react";
 import ActionIcon from "../../../components/Common/ActionIcon";
+import { IconButton } from "@mui/material";
 
 export default function Usuarios() {
   const [isLoading, setIsloading] = useState<boolean>(true);
@@ -18,16 +19,20 @@ export default function Usuarios() {
   };
 
   const icons: React.ReactNode[] = [
-    <ActionIcon
-      IconComponent={Plus}
-      action={AddUsuario}
+    <IconButton
+      color="primary"
+      onClick={AddUsuario}
       key="btn[0][0]"
-    />,
-    <ActionIcon
-      IconComponent={Save}
-      action={() => {}}
+    >
+      <Plus />
+    </IconButton>,
+    <IconButton
+      color="primary"
+      onClick={() => Clientes()}
       key="btn[0][1]"
-    />,
+    >
+      <Save />
+    </IconButton>,
   ];
 
   const handleRowClick = (row: IUsuario) => {

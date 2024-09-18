@@ -10,7 +10,6 @@ import Card from "../../../components/Common/Card";
 import Drawer from "../../../components/Common/Drawer";
 import { useDashboardStore } from "../../../store/DashboardStore";
 import { Plus, RotateCw } from "lucide-react";
-import ActionIcon from "../../../components/Common/ActionIcon";
 import Setting from "../Clientes/Setting";
 import TableMaterialR from "../../../components/Common/TableMaterialR";
 import { useClienteStore } from "../../../store/ClienteStore";
@@ -19,6 +18,7 @@ import { TypeToastEnum } from "../../../types/IToast";
 import { ICreditoHistorialCliente } from "../../../types/ICredito";
 import Modal from "../../../components/Common/Modal";
 import Historial from "../../../components/Administracion/Creditos/Historial";
+import { IconButton } from "@mui/material";
 
 export default function Clientes() {
   const { toggleDrawer, setLoader, setErrorsToast, showDrawer } =
@@ -198,16 +198,20 @@ export default function Clientes() {
   };
 
   const icons: React.ReactNode[] = [
-    <ActionIcon
-      IconComponent={Plus}
-      action={AddClient}
+    <IconButton
+      color="primary"
+      onClick={AddClient}
       key="btn[0][0]"
-    />,
-    <ActionIcon
-      IconComponent={RotateCw}
-      action={() => Clientes()}
+    >
+      <Plus />
+    </IconButton>,
+    <IconButton
+      color="primary"
+      onClick={() => Clientes()}
       key="btn[0][1]"
-    />,
+    >
+      <RotateCw />
+    </IconButton>,
   ];
 
   const Clientes = async () => {
@@ -229,6 +233,7 @@ export default function Clientes() {
         <Modal
           title="Historial de créditos"
           content={<Historial data={historial} />}
+          size="max-w-3xl"
         />
       )}
       <Card
@@ -240,8 +245,8 @@ export default function Clientes() {
             key={"Label[0][0]"}
             className="mr-3"
           >
-            Total{" "}
-            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300">
+            Total
+            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300 ml-2">
               {data.length ?? 0}
             </span>
           </label>,
@@ -250,7 +255,7 @@ export default function Clientes() {
             className="mr-3"
           >
             Con crédito activo
-            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300">
+            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300  ml-2">
               {creditosActivos}
             </span>
           </label>,
@@ -282,7 +287,7 @@ export default function Clientes() {
       {showDrawer && (
         <Drawer
           size="w-3/4"
-          title="Agregar/Editar Usuario"
+          title="Agregar/Editar Cliente"
           content={<Setting cliente={formData} />}
         />
       )}

@@ -41,7 +41,7 @@ const Card: React.FC<CardProps> = ({ title, content, icons, texts = [] }) => {
             texts
           }
         </div>
-        <div className="flex space-x-4">
+        <div className="flex">
           {
             icons
           }

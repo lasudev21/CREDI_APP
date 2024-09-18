@@ -261,7 +261,7 @@ const FlujoUtilidades = () => {
             height={height}
             totalRecords={totalRecord}
             actionPagining={FlujoUtilidades}
-            autoSize={false}
+            autoSize={true}
           />
         </div>
       </div>

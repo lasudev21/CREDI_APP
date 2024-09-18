@@ -37,7 +37,7 @@ const TableMaterialR = <T extends object>({
   useEffect(() => {
     const handleResize = () => {
       const calculatedHeight =
-        window.innerHeight - (enablePagination ? 230 : 214);
+        window.innerHeight - (enablePagination ? 249 : 231);
       setDivHeight(calculatedHeight);
     };
 

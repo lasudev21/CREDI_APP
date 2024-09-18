@@ -4,11 +4,11 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
 import { ColDef, RowDragEndEvent } from "ag-grid-community";
-import { ICredito, IEnrutarCredito } from "../../types/ICredito";
-import { useRutaStore } from "../../store/RutaStore";
+import { ICredito, IEnrutarCredito } from "../../../types/ICredito";
+import { useRutaStore } from "../../../store/RutaStore";
 import { Save } from "lucide-react";
-import { recalculate } from "../../utils/helper";
-import { useDashboardStore } from "../../store/DashboardStore";
+import { recalculate } from "../../../utils/helper";
+import { useDashboardStore } from "../../../store/DashboardStore";
 
 const DnDRutas = () => {
   const { data, setData, cobrador } = useRutaStore();
@@ -110,7 +110,7 @@ const DnDRutas = () => {
 
   return (
     <>
-      <div className="flex flex-row-reverse bg-gray-400 p-2">
+      <div className="flex flex-row-reverse bg-[#E5E5E7] p-2">
         <Save
           size={20}
           onClick={handleSaveOrder}
@@ -119,10 +119,10 @@ const DnDRutas = () => {
       </div>
       <div
         style={{ height }}
-        className="mt-4"
+        className="mt-0"
       >
         <div
-          className="ag-theme-quartz mt-4"
+          className="ag-theme-quartz mt-2"
           style={{ height: "100%" }}
         >
           <AgGridReact<IEnrutarCredito>

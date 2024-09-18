@@ -6,16 +6,17 @@ import { useDashboardStore } from "../../store/DashboardStore";
 interface IModalProps {
   title: string;
   content: React.ReactNode;
+  size: string;
 }
 
-const Modal: React.FC<IModalProps> = ({ title, content }) => {
+const Modal: React.FC<IModalProps> = ({ title, content, size }) => {
   const { setOpenModal } = useDashboardStore();
 
   return (
     <div className="fixed inset-0 z-10 overflow-y-auto flex items-center justify-center">
       <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="bg-white w-full max-w-3xl min-w-[300px] p-4 rounded-lg shadow-lg">
-          <div className="flex justify-between items-center mb-4">
+        <div className={`bg-white w-full ${size} min-w-[300px] max-h-[500px] p-0 rounded-lg shadow-lg`}>
+          <div className="flex justify-between items-center p-3">
             <h2 className="text-xl font-light">{title}</h2>
             <button
               onClick={() => setOpenModal(false)}
@@ -27,7 +28,7 @@ const Modal: React.FC<IModalProps> = ({ title, content }) => {
               />
             </button>
           </div>
-          <div className="p-4">{content}</div>
+          <div>{content}</div>
         </div>
       </div>
     </div>

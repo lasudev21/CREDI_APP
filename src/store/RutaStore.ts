@@ -8,7 +8,6 @@ interface State {
   setData: (data: ICreditoData) => void;
   cobrador: IUsuario;
   cartera: number;
-  isModalOpen: boolean;
   rutaId: number;
   dias: IItemsCBoxV1[];
   rutas: IItemsCBox[];
@@ -16,8 +15,9 @@ interface State {
   setRutas: (rutas: IItemsCBox[]) => void;
   periodos: IItemsCBox[];
   setPeriodos: (periodos: IPeriodos) => void;
-  setIsModal: (state: boolean) => void;
-  totalRecord: 0,
+  totalRecord: 0;
+  disabled: boolean;
+  setDisable: (status: boolean) => void;
 }
 
 export const useRutaStore = create<State>()((set) => ({
@@ -26,7 +26,6 @@ export const useRutaStore = create<State>()((set) => ({
     set({ data: data.data, cobrador: data.cobrador, cartera: data.cartera }),
   cobrador: UsuarioVacio,
   cartera: 0,
-  isModalOpen: false,
   rutaId: 0,
   dias: [],
   rutas: [],
@@ -34,7 +33,8 @@ export const useRutaStore = create<State>()((set) => ({
   periodos: [],
   setPeriodos: (periodos: IPeriodos) =>
     set({ periodos: periodos.data, dias: periodos.dias }),
-  setIsModal: (state: boolean) => set({ isModalOpen: state }),
   setRutaId: (id: number) => set({ rutaId: id }),
   totalRecord: 0,
+  disabled: false,
+  setDisable: (status: boolean) => set({ disabled: status }),
 }));

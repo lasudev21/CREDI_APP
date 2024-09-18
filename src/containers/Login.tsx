@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDashboardStore } from "../store/DashboardStore";
 import { Cookies } from "react-cookie";
 import { useApiNoAuth } from "../hooks/useApiNoAuth";
+import { ManageErrors } from "../utils/ErrorUtils";
 
 const cookie = new Cookies();
 
@@ -27,14 +28,13 @@ export default function Login() {
         });
 
         localStorage.setItem("token", data.token);
-        localStorage.setItem("rol", data.rol);
-        localStorage.setItem("user", data.user);
+        localStorage.setItem("rol", JSON.stringify(data.rol));
+        localStorage.setItem("user", JSON.stringify(data.userData));
         setIsAuthenticated();
         navigate("/");
-        // window.location.href = "/";
         location.reload();
-      } catch (err) {
-        console.error("Login failed:", err);
+      } catch (error) {
+        await ManageErrors(error);
       }
     }
   };

@@ -70,17 +70,19 @@ const Historial: React.FC<HistorialProps> = ({ data }) => {
   }, []);
 
   return (
-    <TableAGReact
-      ref={gridRef}
-      colDefs={colDefs}
-      data={data}
-      key={"TAGR[1][0]"}
-      pagination={false}
-      height={height}
-      totalRecords={data.length}
-      actionPagining={() => {}}
-      autoSize={true}
-    />
+    <div className="p-4">
+      <TableAGReact
+        ref={gridRef}
+        colDefs={colDefs}
+        data={data}
+        key={"TAGR[1][0]"}
+        pagination={false}
+        height={height}
+        totalRecords={data.length}
+        actionPagining={() => {}}
+        autoSize={true}
+      />
+    </div>
   );
 };
 export default Historial;

@@ -86,7 +86,7 @@ const AgregarParametro: React.FC<AgregarParametroProps> = ({
 
   return (
     <form
-      className="w-full"
+      className="w-full p-6"
       onSubmit={handleSubmit}
     >
       <div className="flex gap-4 mb-4">

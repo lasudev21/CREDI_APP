@@ -11,9 +11,8 @@ interface DrawerProps {
 }
 
 const Setting: React.FC<DrawerProps> = ({ cliente }) => {
-  const { setLoader } = useDashboardStore();
   const { setData } = useClienteStore();
-  const { toggleDrawer, setErrorsToast } = useDashboardStore();
+  const { toggleDrawer, setErrorsToast, setLoader } = useDashboardStore();
 
   useEffect(() => {
     setLoader(false);
