@@ -8,6 +8,8 @@ export function recalculate(data: ICredito[], cargue: boolean = false) {
   let cartera: number = 0;
 
   data.map((x: ICredito) => {
+    x.renovacion = null;
+    x.delete = false;
     x.valor_total = 12;
     x.valor_total = x.mod_cuota * x.mod_dias;
     let abonos = 0;

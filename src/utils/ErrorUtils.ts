@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Swal from "sweetalert2";
 import { Logout } from "../services/authService";
 import { useDashboardStore } from "../store/DashboardStore";
@@ -21,6 +22,34 @@ export const ManageErrors = async (error: unknown) => {
       break;
     case 401:
       await Logout();
+      break;
+    case 422:
+      if (_error.response.data.errors) {
+        for (const property in _error.response.data.errors) {
+          // eslint-disable-next-line no-prototype-builtins
+          if (_error.response.data.errors.hasOwnProperty(property)) {
+            for (
+              let n = 0;
+              n < _error.response.data.errors[property].length;
+              n++
+            ) {
+              errors.push({
+                message: _error.response.data.errors[property][n],
+                type: TypeToastEnum.Warning,
+              });
+            }
+          }
+        }
+      }
+      setErrorsToast(errors);
+      break;
+    case 423:
+    case 424:
+      errors = [
+        ...errors,
+        { message: _error.response.data.Error, type: TypeToastEnum.Warning },
+      ];
+      setErrorsToast(errors);
       break;
     case 500:
       Swal.fire({

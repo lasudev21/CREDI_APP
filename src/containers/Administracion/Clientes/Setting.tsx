@@ -1,10 +1,20 @@
-import { useEffect, useState } from "react";
-import { ICliente, IClientes, IErrorsCliente } from "../../../types/ICliente";
+import { useEffect, useRef, useState } from "react";
+import {
+  ClienteVacio,
+  ICliente,
+  IClientes,
+  IErrorsCliente,
+} from "../../../types/ICliente";
 import FloatingLabel from "../../../components/Common/FloatingLabel";
 import { useDashboardStore } from "../../../store/DashboardStore";
 import { postCliente, putCliente } from "../../../services/clienteService";
 import { useClienteStore } from "../../../store/ClienteStore";
 import { TypeToastEnum } from "../../../types/IToast";
+import Referencias from "../../../components/Administracion/Creditos/Referencias";
+import {
+  IClienteReferencia,
+  ReferenciasHandle,
+} from "../../../types/IClienteReferencia";
 
 interface DrawerProps {
   cliente: ICliente;
@@ -12,13 +22,22 @@ interface DrawerProps {
 
 const Setting: React.FC<DrawerProps> = ({ cliente }) => {
   const { setData } = useClienteStore();
-  const { toggleDrawer, setErrorsToast, setLoader } = useDashboardStore();
+  const titularRef = useRef<ReferenciasHandle>(null);
+  const fiadorRef = useRef<ReferenciasHandle>(null);
+
+  const { setErrorsToast, setLoader } = useDashboardStore();
 
   useEffect(() => {
     setLoader(false);
   }, []);
 
   const [formData, setFormData] = useState<ICliente>(cliente);
+  const [refTitular, setRefTitular] = useState<IClienteReferencia[]>(
+    cliente.clientes_referencias.filter((x) => x.tipo_referencia == "TITULAR")
+  );
+  const [refFiador, setRefFiador] = useState<IClienteReferencia[]>(
+    cliente.clientes_referencias.filter((x) => x.tipo_referencia == "FIADOR")
+  );
 
   const [errors, setErrors] = useState<Partial<IErrorsCliente>>({});
 
@@ -84,12 +103,37 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
     }
     setErrors({});
 
-    setLoader(true);
+    const listRefTitular = titularRef.current?.getData() ?? [];
+    const listRefFiador = fiadorRef.current?.getData() ?? [];
 
+    const referencias: IClienteReferencia[] = [];
+
+    listRefTitular.concat(listRefFiador).forEach((item: IClienteReferencia) => {
+      referencias.push({
+        id: item.id,
+        cliente_id: item.cliente_id,
+        nombre: item.nombre,
+        direccion: item.direccion,
+        barrio: item.barrio,
+        telefono: item.telefono,
+        parentesco: item.parentesco,
+        tipo_referencia: item.tipo_referencia,
+      });
+    });
+
+    setFormData((prevData) => ({
+      ...prevData,
+      ["clientes_referencias"]: referencias,
+    }));
+
+    const dataFull: ICliente = formData;
+    dataFull.clientes_referencias = referencias;
+
+    setLoader(true);
     const data: IClientes | null =
       formData.id === 0
-        ? await postCliente(formData)
-        : await putCliente(formData);
+        ? await postCliente(dataFull)
+        : await putCliente(dataFull);
 
     if (data) {
       setErrorsToast([
@@ -98,8 +142,13 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
           type: TypeToastEnum.Susccess,
         },
       ]);
-      toggleDrawer(false);
       setData(data);
+      setFormData(ClienteVacio);
+
+      setRefTitular([]);
+      titularRef.current?.setData();
+      setRefFiador([]);
+      fiadorRef.current?.setData();
     }
     setLoader(false);
   };
@@ -107,13 +156,13 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
   return (
     <div className="sm:p-4 md:p-4">
       <form
-        className="space-y-6"
+        className="space-y-6 "
         onSubmit={handleSubmit}
       >
         <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
           Información titular
         </p>
-        <div className="grid grid-cols-12 gap-4">
+        <div className="grid grid-cols-12 gap-6 border-2 p-6 rounded-md shadow-md shadow-gray-200">
           <div className="col-span-4">
             <FloatingLabel
               property={"titular"}
@@ -218,7 +267,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
         <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
           Información fiador
         </p>
-        <div className="grid grid-cols-12 gap-4">
+        <div className="grid grid-cols-12 gap-6 border-2 p-6 rounded-md shadow-md shadow-gray-200">
           <div className="col-span-4">
             <FloatingLabel
               property={"fiador"}
@@ -284,6 +333,28 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               action={handleInputChange}
               errors={errors}
               disabled={false}
+            />
+          </div>
+        </div>
+
+        <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
+          Referencias
+        </p>
+        <div className="grid grid-cols-120">
+          <div className="col-span-12 mb-4">
+            <Referencias
+              ref={titularRef}
+              data={refTitular}
+              tipo="TITULAR"
+              idCliente={cliente.id}
+            />
+          </div>
+          <div className="col-span-12">
+            <Referencias
+              ref={fiadorRef}
+              data={refFiador}
+              tipo="FIADOR"
+              idCliente={cliente.id}
             />
           </div>
         </div>

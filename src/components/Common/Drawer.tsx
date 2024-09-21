@@ -5,11 +5,17 @@ interface DrawerProps {
   title: string;
   size: string;
   content: React.ReactNode;
+  accion: () => void;
 }
 
-const Drawer: React.FC<DrawerProps> = ({ title, content, size }) => {
+const Drawer: React.FC<DrawerProps> = ({ title, content, size, accion }) => {
   const showDrawer = useDashboardStore((state) => state.showDrawer);
   const toggle = useDashboardStore((state) => state.toggleDrawer);
+
+  const CerrarDrawer = () => {
+    accion();
+    toggle(false);
+  };
 
   return (
     <div className="relative">
@@ -30,7 +36,7 @@ const Drawer: React.FC<DrawerProps> = ({ title, content, size }) => {
             <h2 className="text-lg font-semibold text-sky-800">{title}</h2>
             <button
               type="button"
-              onClick={() => toggle(false)}
+              onClick={CerrarDrawer}
               data-drawer-hide="drawer-right-example"
               aria-controls="drawer-right-example"
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white"

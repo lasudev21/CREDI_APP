@@ -25,21 +25,29 @@ import {
   CrearCreditoVacio,
   IClienteCredito,
   ICrearCredito,
+  ICreditoData,
   IErrorsCrearCredito,
 } from "../../../types/ICredito";
 import { ICliente } from "../../../types/ICliente";
-import { getClientes } from "../../../services/creditoService";
+import { getClientes, saveCreditos } from "../../../services/creditoService";
 import { DeleteForever, PeopleAlt } from "@mui/icons-material";
+import { recalculate } from "../../../utils/helper";
+import { useDashboardStore } from "../../../store/DashboardStore";
 
 interface IAgregarClientesProps {
   accion: (tipo: string) => void;
+  rutaId: number;
 }
 
-const AgregarClientes: React.FC<IAgregarClientesProps> = ({ accion }) => {
+const AgregarClientes: React.FC<IAgregarClientesProps> = ({
+  accion,
+  rutaId,
+}) => {
   const [formData, setFormData] = useState<ICrearCredito>(CrearCreditoVacio);
   const [nuevosCreditos, setNuevosCreditos] = useState<ICrearCredito[]>([]);
   const [errors, setErrors] = useState<Partial<IErrorsCrearCredito>>({});
-
+  const { setNuevos, setData } = useRutaStore((state) => state);
+  const { setLoader, setOpenModal } = useDashboardStore((state) => state);
   const [clientes, setClientes] = useState<ICliente[]>([]);
 
   const Clientes = async () => {
@@ -93,16 +101,14 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({ accion }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // setLoader(true);
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
     setErrors({});
-
+    setFormData(CrearCreditoVacio);
     setNuevosCreditos((prevCreditos) => [...prevCreditos, formData]);
   };
 
@@ -113,20 +119,41 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({ accion }) => {
     );
   };
 
+  const handleAddCredito = async () => {
+    setLoader(true);
+
+    const response = await saveCreditos(nuevosCreditos, rutaId);
+    if (response) {
+      const data: ICreditoData = response;
+      const recalculo = recalculate(data.data, true);
+      setData({
+        cartera: recalculo.cartera,
+        data: recalculo.data,
+        cobrador: data.cobrador,
+      });
+      setOpenModal(false);
+      setNuevos(
+        nuevosCreditos
+          .map((item: ICrearCredito) =>
+            item.ValorPrestamo ? item.ValorPrestamo * 1000 : 0
+          )
+          .reduce((prev, curr) => prev + curr, 0)
+      );
+    }
+    setLoader(false);
+  };
+
   return (
     <>
       <div className="flex flex-row-reverse bg-[#E5E5E7] p-2 border-b-2 border-sky-600 ">
         <Save
           size={20}
-          onClick={() => console.log("Guarda")}
+          onClick={handleAddCredito}
           className="hover:text-sky-600 ml-2 rounded transition-all"
         />
       </div>
       <div className="sm:px-4 md:px-4 pt-4">
-        <form
-          className="space-y-6"
-          onSubmit={() => console.log("Submit")}
-        >
+        <form className="space-y-6">
           <div className="grid grid-cols-12 gap-4 mb-6">
             <div className="col-span-8">
               <div className="grid grid-cols-12 gap-4">
@@ -159,7 +186,7 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({ accion }) => {
                         variant="standard"
                       />
                     )}
-                    onChange={(event, option) =>
+                    onChange={(_event, option) =>
                       option
                         ? handleAutoCompleteChange(
                             "ClienteId",
@@ -334,7 +361,7 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({ accion }) => {
               <div className="flex flex-row-reverse items-center justify-between">
                 <button
                   type="button"
-                  onClick={handleSubmit}
+                  onClick={(e) => handleSubmit(e)}
                   className="text-sky-600 bg-gray-100 hover:bg-sky-700 hover:text-white border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2"
                 >
                   <UserPlus2 className="mr-2" />

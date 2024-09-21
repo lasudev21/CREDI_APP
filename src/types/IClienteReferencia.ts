@@ -8,3 +8,8 @@ export interface IClienteReferencia {
   parentesco: string;
   tipo_referencia: string;
 }
+
+export interface ReferenciasHandle {
+  getData: () => IClienteReferencia[];
+  setData: () => void;
+}

@@ -7,6 +7,7 @@ import { ICoteosUsuario, IDashboard, IDataValue } from "../../types/IDashboard";
 import LineChart from "../../components/Dashboard/LineChart";
 import UltimosCoteos from "../../components/Dashboard/UltimosCoteos";
 import moment from "moment";
+import { useDashboardStore } from "../../store/DashboardStore";
 
 export default function Dashboard() {
   const [nuevos, setNuevos] = useState<number>(0);
@@ -19,6 +20,7 @@ export default function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [firstDay, setFirstDay] = useState<string>("");
   const [lastDay, setLastDay] = useState<string>("");
+  const {setOpenModal, toggleDrawer, setLoader} = useDashboardStore();
 
   const getDashBoard = async () => {
     const response = await getDashBoardData();
@@ -33,6 +35,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     getDashBoard();
+    setOpenModal(false);
+    toggleDrawer(false);
+    setLoader(false);
     const first = moment().startOf("month").format("YYYY-MM-DD");
     setFirstDay(first);
 
@@ -53,8 +58,6 @@ export default function Dashboard() {
     };
   }, []);
 
-  console.log(user);
-
   return (
     <div className="w-full rounded-t-lg">
       <div className="grid grid-cols-12 gap-4 mb-4">
@@ -66,8 +69,8 @@ export default function Dashboard() {
             </span>
           </p>
           <p className="font-thin">
-            A continuación encontrará un resumen de los movimientos de su cartera en el último
-            mes
+            A continuación encontrará un resumen de los movimientos de su
+            cartera en el último mes
           </p>
         </div>
         <div className="flex flex-row-reverse col-span-3 italic">

@@ -224,6 +224,7 @@ export default function Clientes() {
 
   useEffect(() => {
     toggleDrawer(false);
+    setOpenModal(false);
     Clientes();
   }, []);
 
@@ -289,6 +290,7 @@ export default function Clientes() {
           size="w-3/4"
           title="Agregar/Editar Cliente"
           content={<Setting cliente={formData} />}
+          accion={() => {}}
         />
       )}
     </>

@@ -13,7 +13,9 @@ interface IModalRutasProps {
 }
 
 const VerRutas: React.FC<IModalRutasProps> = ({ rutas }) => {
-  const { setData, setRutaId, setDisable } = useRutaStore((state) => state);
+  const { setData, setRutaId, setDisable, clearNuevos } = useRutaStore(
+    (state) => state
+  );
   const { setLoader, setOpenModal } = useDashboardStore((state) => state);
   const [selected, setSelected] = useState<number>(0);
 
@@ -31,6 +33,7 @@ const VerRutas: React.FC<IModalRutasProps> = ({ rutas }) => {
     setDisable(false);
     setOpenModal(false);
     setLoader(false);
+    clearNuevos();
   };
 
   return (

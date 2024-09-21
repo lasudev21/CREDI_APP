@@ -35,6 +35,51 @@ export interface ICredito {
   creditos_renovaciones: ICreditoRenovacion[];
   saldo: number;
   cuota: number | string;
+  renovacion: IRenovacion | null;
+  delete: boolean;
+}
+
+export interface IRenovacion {
+  monto: number;
+  editable: boolean;
+  utilidad: number;
+  observaciones: string;
+  modalidad: number;
+  dias: number;
+  cuota: number;
+  valor: number;
+  saldo: number;
+}
+
+export const IRenovacionVacio = {
+  monto: 0,
+  editable: false,
+  utilidad: 0,
+  observaciones: "",
+  modalidad: 1,
+  dias: 0,
+  cuota: 0,
+  valor: 0,
+  saldo: 0,
+};
+
+export interface IErrosRenovacion {
+  monto: string;
+  editable: string;
+  utilidad: string;
+  observaciones: string;
+  modalidad: string;
+  dias: string;
+  cuota: string;
+  valor: string;
+  saldo: string;
+}
+
+export interface IFlujoCajaRuta {
+  entrada: number;
+  salida: number;
+  utilidad: number;
+  coteos: number;
 }
 
 export interface IEnrutarCredito {
@@ -98,4 +143,8 @@ export const CrearCreditoVacio = {
 
 export interface IClienteCredito {
   data: ICliente[];
+}
+
+export interface IRenovacionInmediata {
+  data: boolean;
 }

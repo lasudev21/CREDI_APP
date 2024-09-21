@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AccountCircle } from "@mui/icons-material";
-import { Box, ListItemIcon, MenuItem } from "@mui/material";
+import { Box, Button, ListItemIcon, MenuItem } from "@mui/material";
 import {
   MaterialReactTable,
   MRT_GlobalFilterTextField,
@@ -72,7 +72,7 @@ const TableMaterialR = <T extends object>({
       sx: {
         height: "25px",
         "&:hover": {
-          backgroundColor: "#e0e0e0", // Color de fondo al pasar el mouse por encima
+          backgroundColor: "#e0e0e0",
         },
       },
       onClick: () => clickEvent(row.original),

@@ -53,8 +53,8 @@ const TableAGReact = forwardRef(
     }, []);
 
     const onGridReady = (params: { api: GridApi }) => {
-      // setGridApi(params.api);
       if (autoSize) params.api.sizeColumnsToFit();
+      params.api.setGridOption("rowData", data);
     };
 
     const onCellKeyDown = useCallback((event: CellKeyDownEvent) => {
@@ -103,6 +103,13 @@ const TableAGReact = forwardRef(
         gridRef.current.api.forEachNode((node: any) => rowData.push(node.data));
         return rowData;
       },
+      setCellValue: (rowIndex: number, field: string, newValue: any) => {
+        const rowNode = gridRef.current!.api.getDisplayedRowAtIndex(rowIndex);
+        // console.log(rowNode);
+        if (rowNode) {
+          rowNode.setDataValue(field, newValue);
+        }
+      },
     }));
 
     return (
@@ -121,10 +128,20 @@ const TableAGReact = forwardRef(
             rowDragManaged={true}
             onCellKeyDown={onCellKeyDown}
             // getContextMenuItems={getContextMenuItems}
+            // onCellContextMenu={handleCellContextMenu}
+            // suppressContextMenu={false}
             stopEditingWhenCellsLoseFocus={true}
             onGridReady={onGridReady}
           />
         </div>
+        {/* <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleEdit}>Editar</MenuItem>
+          <MenuItem onClick={handleDelete}>Eliminar</MenuItem>
+        </Menu> */}
         <div className="t">
           {pagination ? (
             <div className="pagination-info">

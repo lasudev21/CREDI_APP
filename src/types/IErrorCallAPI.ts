@@ -5,9 +5,10 @@ export interface IErrorCallAPI {
 }
 
 export interface IResponse {
-  data: IError
+  data: IError;
 }
 
 export interface IError {
   Error: string;
+  errors: [];
 }
