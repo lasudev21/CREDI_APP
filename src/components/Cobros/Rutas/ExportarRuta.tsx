@@ -4,6 +4,7 @@ import moment from "moment";
 import { Download } from "lucide-react";
 import { Button } from "@mui/material";
 import { exportarRuta } from "../../../utils/pdfMakeExport";
+import { useDashboardStore } from "../../../store/DashboardStore";
 
 interface IExportarRutaProps {
   data: ICredito[];
@@ -11,9 +12,11 @@ interface IExportarRutaProps {
 
 const ExportarRuta: React.FC<IExportarRutaProps> = ({ data }) => {
   const [day, setDay] = useState(moment(new Date()).format("YYYY-MM-DD"));
+  const { setOpenModal } = useDashboardStore();
 
   const handleDescargarRuta = () => {
     exportarRuta(data, day);
+    setOpenModal(false);
   };
 
   return (

@@ -388,7 +388,7 @@ const Rutas = () => {
       cellStyle: (params) => {
         switch (true) {
           case params.value >= 5 && params.value <= 9:
-            return { backgroundColor: "#FBF462", color: "white" };
+            return { backgroundColor: "#FBF462", color: "black" };
           case params.value >= 10 && params.value <= 19:
             return { backgroundColor: "#F1775C", color: "white" };
           case params.value > 20:
