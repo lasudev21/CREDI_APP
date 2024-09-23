@@ -9,7 +9,7 @@ export const ManageErrors = async (error: unknown) => {
   const _error = error as IErrorCallAPI;
   console.log(_error);
 
-  const { setErrorsToast } = useDashboardStore.getState();
+  const { setErrorsToast, setLoader } = useDashboardStore.getState();
   let errors: IToast[] = [];
 
   switch (_error.status) {
@@ -64,4 +64,5 @@ export const ManageErrors = async (error: unknown) => {
     default:
       break;
   }
+  setLoader(false);
 };

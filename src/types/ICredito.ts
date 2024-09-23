@@ -1,8 +1,8 @@
 import moment from "moment";
 import { ICliente } from "./ICliente";
 import { ICreditoDetalle } from "./ICreditoDetalle";
-import { ICreditoRenovacion } from "./ICreditoRenovacion";
 import { IUsuario } from "./IUsuario";
+import { ICreditoRenovacion } from "./ICreditoRenovacion";
 
 export interface ICreditoData {
   cobrador: IUsuario;

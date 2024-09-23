@@ -576,8 +576,7 @@ const Rutas = () => {
             />
           </div>
         </div>
-
-        {/* {isModalOpen && <ModalRutas rutas={rutas} />} */}
+        
         {openModal && (
           <Modal
             content={contentModal}

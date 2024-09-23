@@ -53,6 +53,15 @@ export const gatdatosRutas = async () => {
   }
 };
 
+export const getFechasReporte = async () => {
+  try {
+    const response = await api.get("parametros/Fechas Reporte");
+    return response.data;
+  } catch (error) {
+    await ManageErrors(error);
+  }
+};
+
 export const getCredito = async (id: number) => {
   try {
     const response = await api.get(`creditos/${id}`);

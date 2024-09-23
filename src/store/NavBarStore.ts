@@ -1,4 +1,12 @@
-import { List, Receipt, Route, SettingsIcon, User, Users } from "lucide-react";
+import {
+  ChartNetwork,
+  List,
+  Receipt,
+  Route,
+  SettingsIcon,
+  User,
+  Users,
+} from "lucide-react";
 import { create } from "zustand";
 
 type MenuItem = {
@@ -42,6 +50,12 @@ export const useNavbarStore = create<NavbarStore>((set) => ({
           path: "/cobros/flujoutilidades",
         },
       ],
+    },
+    {
+      icon: ChartNetwork,
+      name: "Reportes",
+      path: "/reportes",
+      subItems: [{ icon: Receipt, name: "Coteos", path: "/reportes/coteos" }],
     },
   ],
   openSubmenu: null,
