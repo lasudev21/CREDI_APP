@@ -3,6 +3,7 @@ import Clientes from "./containers/Administracion/Clientes/Main";
 import Dashboard from "./containers/Layout/Dashboard";
 import Usuarios from "./containers/Administracion/Usuarios/Main";
 import Maestras from "./containers/Administracion/Parametros/Main";
+import Roles from "./containers/Administracion/Roles/Main";
 import Rutas from "./containers/Cobros/Rutas/Main";
 import FlujoCaja from "./containers/Cobros/Flujo Caja/Main";
 import FlujoUtilidades from "./containers/Cobros/Flujo Utilidades/Main";
@@ -25,6 +26,10 @@ export default (
     <Route
       path="/administracion/parametros"
       element={<Maestras />}
+    />
+    <Route
+      path="/administracion/roles"
+      element={<Roles />}
     />
     <Route
       path="/cobros/rutas"

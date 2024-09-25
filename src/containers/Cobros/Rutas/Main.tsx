@@ -527,6 +527,7 @@ const Rutas = () => {
                 disabled={disabled}
                 color="primary"
                 onClick={() => modalAction("addCliente")}
+                title="Agregar cliente a la ruta"
               >
                 <PlusCircleIcon />
               </IconButton>
@@ -535,6 +536,7 @@ const Rutas = () => {
                 disabled={disabled}
                 color="primary"
                 onClick={() => drawerAccion("enrutar")}
+                title="Enrutar"
               >
                 <Repeat />
               </IconButton>
@@ -543,6 +545,7 @@ const Rutas = () => {
                 disabled={disabled}
                 color="primary"
                 onClick={() => modalAction("saveCoteos")}
+                title="Guardar ruta"
               >
                 <Save />
               </IconButton>
@@ -551,6 +554,7 @@ const Rutas = () => {
                 disabled={disabled}
                 color="primary"
                 onClick={() => modalAction("exportRuta")}
+                title="Exportar"
               >
                 <Printer />
               </IconButton>
@@ -576,7 +580,7 @@ const Rutas = () => {
             />
           </div>
         </div>
-        
+
         {openModal && (
           <Modal
             content={contentModal}

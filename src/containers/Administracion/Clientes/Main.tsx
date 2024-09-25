@@ -205,6 +205,7 @@ export default function Clientes() {
       color="primary"
       onClick={AddClient}
       key="btn[0][0]"
+      title="Agregar cliente"
     >
       <Plus />
     </IconButton>,
@@ -212,6 +213,7 @@ export default function Clientes() {
       color="primary"
       onClick={() => Clientes()}
       key="btn[0][1]"
+      title="Refrescar"
     >
       <RotateCw />
     </IconButton>,

@@ -16,6 +16,7 @@ import {
   getListaRutas,
 } from "../../../services/parametroService";
 import { IItemsCBox } from "../../../types/IRuta";
+import { Refresh } from "@mui/icons-material";
 
 export default function Usuarios() {
   const [isLoading, setIsloading] = useState<boolean>(true);
@@ -33,8 +34,17 @@ export default function Usuarios() {
       color="primary"
       onClick={AddUsuario}
       key="btn[0][0]"
+      title="Agregar usuario"
     >
       <Plus />
+    </IconButton>,
+    <IconButton
+      color="primary"
+      onClick={() => Usuarios()}
+      key="btn[0][0]"
+      title="Refrescar"
+    >
+      <Refresh />
     </IconButton>,
   ];
 
@@ -51,8 +61,6 @@ export default function Usuarios() {
     usuario = usuario as IUsuario;
 
     if (action === 1) SeeUser(usuario);
-    // else if (action === 2) StateClient(cliente);
-    // else SeeHistory(cliente);
   };
 
   const columns = useMemo<MRT_ColumnDef<IUsuario>[]>(
@@ -114,6 +122,7 @@ export default function Usuarios() {
   );
 
   const Usuarios = async () => {
+    setIsloading(true);
     const response = await getUsuarios();
     const data: IUsuarios = response;
     setClientes(data);
@@ -126,7 +135,7 @@ export default function Usuarios() {
     setRutas(data);
   };
 
-  const Periodos = async () => {
+  const Roles = async () => {
     const response = await getListaRoles();
     const data: IItemsCBox[] = response;
     setRoles(data);
@@ -135,7 +144,7 @@ export default function Usuarios() {
   useEffect(() => {
     setFormData(UsuarioVacio);
     Rutas();
-    Periodos();
+    Roles();
     Usuarios();
   }, []);
 

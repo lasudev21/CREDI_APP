@@ -5,6 +5,7 @@ import {
   Route,
   SettingsIcon,
   User,
+  UserCog,
   Users,
 } from "lucide-react";
 import { create } from "zustand";
@@ -34,7 +35,8 @@ export const useNavbarStore = create<NavbarStore>((set) => ({
       subItems: [
         { icon: Users, name: "Clientes", path: "/administracion/clientes" },
         { icon: User, name: "Usuarios", path: "/administracion/usuarios" },
-        { icon: List, name: "Parámetros", path: "/administracion/parametros" },
+        { icon: List, name: "Maestras", path: "/administracion/parametros" },
+        { icon: UserCog, name: "Roles", path: "/administracion/roles" },
       ],
     },
     {

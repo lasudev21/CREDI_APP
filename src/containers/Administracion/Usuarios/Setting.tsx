@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import {
   IErrorsUsuario,
@@ -54,7 +55,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
   useEffect(() => {
     setFormData(usuario);
     if (usuario.id !== 0 && usuario.login) {
-      ListaVistas(usuario.rol, usuario.id);
+      ListaVistas(Number(usuario.rol), usuario.id);
     } else {
       setVaciarPermisos();
     }
@@ -125,7 +126,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
       setFormData(UsuarioVacio);
     }
 
-    if (formData.login) {
+    if (formData.login && formData.id !== 0) {
       const data1 = await postGuardarPermisos(permisos, formData.id);
       if (data1) {
         setErrorsToast([
@@ -350,9 +351,15 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
         )}
 
         {formData.login && (
-          <p className="text-xl text-sky-500 font-extralight italic dark:text-white mb-4">
-            Asignacion de permisos
-          </p>
+          <div className="mb-4">
+            <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
+              Asignacion de permisos
+            </p>
+            <span className="text-xs text-gray-400">
+              Recuerde que solo puede adicionar los permisos una vez este
+              guardado el usuario
+            </span>
+          </div>
         )}
 
         {formData.login && (
