@@ -8,6 +8,7 @@ import Rutas from "./containers/Cobros/Rutas/Main";
 import FlujoCaja from "./containers/Cobros/Flujo Caja/Main";
 import FlujoUtilidades from "./containers/Cobros/Flujo Utilidades/Main";
 import Coteos from "./containers/Reportes/Coteos/Main";
+import Permisos from "./components/Common/Permisos";
 
 export default (
   <Routes>
@@ -46,6 +47,10 @@ export default (
     <Route
       path="/reportes/coteos"
       element={<Coteos />}
+    />
+    <Route
+      path="/permisos"
+      element={<Permisos />}
     />
   </Routes>
 );

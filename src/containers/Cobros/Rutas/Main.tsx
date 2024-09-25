@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import { ColDef, ValueFormatterParams } from "ag-grid-community";
@@ -29,6 +30,7 @@ import Swal from "sweetalert2";
 import RenovarCredito from "../../../components/Cobros/Rutas/RenovarCredito";
 import DetallesCredito from "../../../components/Cobros/Rutas/DetallesCredito";
 import ExportarRuta from "../../../components/Cobros/Rutas/ExportarRuta";
+import { useNavigate } from "react-router-dom";
 
 function currencyFormatter(params: ValueFormatterParams) {
   const value = Math.floor(params.value);
@@ -39,6 +41,7 @@ function currencyFormatter(params: ValueFormatterParams) {
 }
 
 const Rutas = () => {
+  const navigate = useNavigate();
   const gridRef = useRef<any>(null);
   const {
     setPeriodos,
@@ -66,8 +69,14 @@ const Rutas = () => {
   const [size, setSize] = useState<string>("");
   const [contentModal, setContentModal] = useState<React.ReactNode>(null);
   const [title, setTitle] = useState<string>("");
-  const { toggleDrawer, showDrawer, setLoader, openModal, setOpenModal } =
-    useDashboardStore();
+  const {
+    toggleDrawer,
+    showDrawer,
+    setLoader,
+    openModal,
+    setOpenModal,
+    validarPermiso,
+  } = useDashboardStore();
 
   const Periodos = async () => {
     setLoader(true);
@@ -292,6 +301,9 @@ const Rutas = () => {
   };
 
   useEffect(() => {
+    if (!validarPermiso("Rutas")) {
+      navigate("/permisos");
+    }
     setOpenModal(false);
     toggleDrawer(false);
     setLoader(false);

@@ -17,12 +17,14 @@ import {
 } from "../../../services/parametroService";
 import { IItemsCBox } from "../../../types/IRuta";
 import { Refresh } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export default function Usuarios() {
+  const navigate = useNavigate();
   const [isLoading, setIsloading] = useState<boolean>(true);
   const { usuarios, setClientes, formData, setFormData, setRutas, setRoles } =
     useUserStore();
-  const { showDrawer, toggleDrawer } = useDashboardStore();
+  const { showDrawer, toggleDrawer, validarPermiso } = useDashboardStore();
 
   const AddUsuario = () => {
     setFormData(UsuarioVacio);
@@ -41,7 +43,7 @@ export default function Usuarios() {
     <IconButton
       color="primary"
       onClick={() => Usuarios()}
-      key="btn[0][0]"
+      key="btn[0][1]"
       title="Refrescar"
     >
       <Refresh />
@@ -142,6 +144,9 @@ export default function Usuarios() {
   };
 
   useEffect(() => {
+    if (!validarPermiso("Usuarios")) {
+      navigate("/permisos");
+    }
     setFormData(UsuarioVacio);
     Rutas();
     Roles();

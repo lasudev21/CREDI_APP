@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import {
   getFlujoUtilidades,
@@ -26,13 +27,15 @@ import {
 import { IResponse } from "../../../types/IResponse";
 import { TypeToastEnum } from "../../../types/IToast";
 import TypeAction from "../../../components/Common/TypeAction";
+import { useNavigate } from "react-router-dom";
 
 const FlujoUtilidades = () => {
-  const { setData, page, totalRecord, data, sum } = FlujoUtilidadesStore();
-  const { setLoader, setErrorsToast } = useDashboardStore();
+  const navigate = useNavigate();
   const [height, setHeight] = useState<number>(0);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [formData, setFormData] = useState<IDataFU>(FUVacio);
+  const { setData, page, totalRecord, data, sum } = FlujoUtilidadesStore();
+  const { setLoader, setErrorsToast, validarPermiso } = useDashboardStore();
 
   const [colDefs] = useState<ColDef[]>([
     {
@@ -141,6 +144,9 @@ const FlujoUtilidades = () => {
   };
 
   useEffect(() => {
+    if (!validarPermiso("Flujo de utilidades")) {
+      navigate("/permisos");
+    }
     FlujoUtilidades(page);
 
     const handleResize = () => {

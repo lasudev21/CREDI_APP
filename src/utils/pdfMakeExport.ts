@@ -2,11 +2,18 @@
 import moment from "moment";
 import { ICredito } from "../types/ICredito";
 import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
 import { useRutaStore } from "../store/RutaStore";
 import { NumberFormat } from "./helper";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = {};
+pdfMake.fonts = {
+  Roboto: {
+    normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
+    bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf',
+    italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf',
+    bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
+  }
+};
 
 export const exportarRuta = (data: ICredito[], fecha: string) => {
   const { rutas, cobrador, cartera } = useRutaStore.getState();
@@ -186,7 +193,7 @@ export const exportarRuta = (data: ICredito[], fecha: string) => {
     },
   };
 
-  data.map((x: ICredito, index: number) => {
+  data.map((x: ICredito) => {
     let color = "";
 
     switch (true) {
@@ -279,8 +286,6 @@ export const exportarRuta = (data: ICredito[], fecha: string) => {
       },
     ]);
   });
-
-  console.log(docDefinition.content);
 
   pdfMake
     .createPdf(docDefinition)
@@ -498,6 +503,9 @@ export const exportarCoteos = (
         fontSize: 15,
         bold: true,
         margin: [20, 20, 20, 0],
+      },
+      defaultStyle: {
+        font: "Roboto", // Usa Roboto aquí
       },
     },
   };

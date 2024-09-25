@@ -12,8 +12,10 @@ import { IRolePermiso, IRolePermisoData } from "../../../types/IRolPermiso";
 import { IconButton } from "@mui/material";
 import { Save } from "lucide-react";
 import { TypeToastEnum } from "../../../types/IToast";
+import { useNavigate } from "react-router-dom";
 
 const Roles = () => {
+  const navigate = useNavigate();
   const permisosRef = useRef<any>(null);
   const {
     roles,
@@ -23,7 +25,7 @@ const Roles = () => {
     vaciarRoles,
     vaciarPermisos,
   } = useRolStore();
-  const { setLoader, setErrorsToast } = useDashboardStore();
+  const { setLoader, setErrorsToast, validarPermiso } = useDashboardStore();
   const [selected, setSelected] = useState(0);
 
   const Roles = async () => {
@@ -84,6 +86,9 @@ const Roles = () => {
   ];
 
   useEffect(() => {
+    if (!validarPermiso("Roles")) {
+      navigate("/permisos");
+    }
     vaciarRoles();
     vaciarPermisos();
     Roles();

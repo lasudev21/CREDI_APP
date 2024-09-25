@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
 import { getFechasReporte } from "../../../services/parametroService";
@@ -26,8 +27,11 @@ import { ICredito } from "../../../types/ICredito";
 import { ICreditoRenovacion } from "../../../types/ICreditoRenovacion";
 import Corte from "../../../components/Reportes/Coteos/Corte";
 import { exportarCoteos } from "../../../utils/pdfMakeExport";
+import { useNavigate } from "react-router-dom";
 
 const Main = () => {
+  const navigate = useNavigate();
+  const { validarPermiso } = useDashboardStore();
   const [_dates, _setDates] = useState<IItemsCBox[]>([]);
   const [allDates, setAllDates] = useState<string[]>([]);
   const [month, setMonth] = useState<number>(new Date().getMonth());
@@ -554,10 +558,21 @@ const Main = () => {
     const corte1: any[] = rowData1;
     const corte2: any[] = rowData2;
     const corte3: any[] = rowData3;
-    exportarCoteos(corte1, corte2, corte3, rowDataRen, rowDataRec, rowDataNuevosRen, allDates);
+    exportarCoteos(
+      corte1,
+      corte2,
+      corte3,
+      rowDataRen,
+      rowDataRec,
+      rowDataNuevosRen,
+      allDates
+    );
   };
 
   useEffect(() => {
+    if (!validarPermiso("Coteos")) {
+      navigate("/permisos");
+    }
     GetFechasReporte();
   }, []);
 

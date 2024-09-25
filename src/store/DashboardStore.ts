@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { IToast } from "../types/IToast";
+const user = JSON.parse(localStorage.getItem("user") || "{}");
 
 interface ILogin {
   apiURL: string;
@@ -23,6 +25,7 @@ interface DashboardStore {
   login: () => void;
   setSessionData: (data: ILogin) => void;
   logout: () => void;
+  validarPermiso: (pantalla: string) => boolean;
 }
 
 export const useDashboardStore = create<DashboardStore>()(
@@ -47,6 +50,12 @@ export const useDashboardStore = create<DashboardStore>()(
           isAuthenticated: false,
           sessionData: { apiURL: "", pageName: "" },
         }),
+      validarPermiso: (pantalla: string) => {
+        const acceso = user.roles_permiso.find(
+          (x: any) => x.Pantalla === pantalla
+        );
+        return acceso;
+      },
     }),
     {
       name: "dashboard-storage",

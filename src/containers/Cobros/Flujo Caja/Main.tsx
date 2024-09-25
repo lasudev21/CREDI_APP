@@ -26,14 +26,16 @@ import {
 import TypeAction from "../../../components/Common/TypeAction";
 import { IResponse } from "../../../types/IResponse";
 import { TypeToastEnum } from "../../../types/IToast";
+import { useNavigate } from "react-router-dom";
 
 const FlujoCaja = () => {
-  const { setData, page, totalRecord, data, sum } = useFlujoCajaStore();
+  const navigate = useNavigate();
   const [height, setHeight] = useState<number>(0);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [formData, setFormData] = useState<IDataFC>(FCVacio);
-  const { setLoader, setErrorsToast } = useDashboardStore();
   const [errors, setErrors] = useState<Partial<IErrorsFC>>({});
+  const { setData, page, totalRecord, data, sum } = useFlujoCajaStore();
+  const { setLoader, setErrorsToast, validarPermiso } = useDashboardStore();
 
   const [colDefs] = useState<ColDef[]>([
     {
@@ -138,6 +140,9 @@ const FlujoCaja = () => {
   };
 
   useEffect(() => {
+    if (!validarPermiso("Flujo de caja")) {
+      navigate("/permisos");
+    }
     FlujoCaja(page);
 
     const handleResize = () => {

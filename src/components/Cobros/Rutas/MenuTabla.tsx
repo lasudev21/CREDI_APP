@@ -10,9 +10,10 @@ import {
   RefreshCcw,
 } from "lucide-react";
 import { useState } from "react";
+const user = JSON.parse(localStorage.getItem("user") || "{}");
 
 interface MenuTablaProps {
-  data: any; // Propiedad para los datos de la fila
+  data: any;
   actionRenInmediata: (id: number) => void;
   actionRenEditable: (id: number) => void;
   actionEliminarCredito: (id: number) => void;
@@ -88,9 +89,11 @@ const MenuTabla: React.FC<MenuTablaProps> = ({
         <MenuItem onClick={handleDetallesCredito}>
           <NotebookTabs className="mr-2" /> Detalles del crédito
         </MenuItem>
-        <MenuItem onClick={handleEliminarCredito}>
-          <ListX className="mr-2" /> Eliminar crédito
-        </MenuItem>
+        {user.Rol === 1 && (
+          <MenuItem onClick={handleEliminarCredito}>
+            <ListX className="mr-2" /> Eliminar crédito
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

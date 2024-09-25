@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useMemo, useState } from "react";
 import { MRT_ColumnDef } from "material-react-table";
 import { IClientes, ICliente, ClienteVacio } from "../../../types/ICliente";
@@ -20,9 +21,11 @@ import Modal from "../../../components/Common/Modal";
 import Historial from "../../../components/Administracion/Creditos/Historial";
 import { IconButton } from "@mui/material";
 import { IUsuario } from "../../../types/IUsuario";
+import { useNavigate } from "react-router-dom";
 
 export default function Clientes() {
-  const { toggleDrawer, setLoader, setErrorsToast, showDrawer } =
+  const navigate = useNavigate();
+  const { toggleDrawer, setLoader, setErrorsToast, showDrawer, validarPermiso } =
     useDashboardStore();
   const {
     isLoading,
@@ -228,6 +231,9 @@ export default function Clientes() {
   };
 
   useEffect(() => {
+    if (!validarPermiso("Clientes")) {
+      navigate("/permisos");
+    }
     toggleDrawer(false);
     setOpenModal(false);
     Clientes();

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { styled } from "@mui/material/styles";
 import List from "@mui/material/List";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
@@ -18,18 +19,22 @@ import IconRenderer from "../../../components/Common/IconRenderer";
 import { Divider, ListItemButton } from "@mui/material";
 import ListaDetalles from "../../../components/Administracion/Parametros/ListaDetalles";
 import { useDashboardStore } from "../../../store/DashboardStore";
+import { useNavigate } from "react-router-dom";
 
 const Demo = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
 const Maestras = () => {
+  const navigate = useNavigate();
+
   const [parametroDetalle, setParametroDetalle] = useState<IParametroDetalle[]>(
     []
   );
   const [editable, setEditable] = useState(false);
-  const { setData, data, selectedIndex, setSelectedIndex } = useParametroStore();
-  const { setLoader } = useDashboardStore();
+  const { setData, data, selectedIndex, setSelectedIndex } =
+    useParametroStore();
+  const { setLoader, validarPermiso } = useDashboardStore();
 
   const Parametros = async () => {
     setLoader(true);
@@ -40,11 +45,14 @@ const Maestras = () => {
   };
 
   useEffect(() => {
+    if (!validarPermiso("Maestras")) {
+      navigate("/permisos");
+    }
     Parametros();
   }, []);
 
   const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
   ) => {
     setSelectedIndex(index);

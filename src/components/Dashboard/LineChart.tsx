@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useEffect, useState } from "react";
 
 // Register the necessary components
 ChartJS.register(
@@ -33,8 +34,24 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
+  const [labels, setLabels] = useState<string[]>([]);
+
+  useEffect(() => {
+    setLabels(compararTamanos(dataNuevos, dataRenovados));
+  }, [dataNuevos, dataRenovados]);
+
+  function compararTamanos(array1: any[], array2: any[]): string[] {
+    if (array1.length > array2.length) {
+      return array1.map((point) => point.label);
+    } else if (array1.length < array2.length) {
+      return array2.map((point) => point.label);
+    } else {
+      return array1.map((point) => point.label);
+    }
+  }
+
   const chartData = {
-    labels: dataNuevos.map((point) => point.label),
+    labels: labels,
     datasets: [
       {
         label: "Nuevos",
@@ -43,7 +60,7 @@ const LineChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderWidth: 2,
         pointRadius: 5,
-        pointBackgroundColor: "rgba(75, 192, 192, 1)", // Color of the points
+        pointBackgroundColor: "rgba(75, 192, 192, 1)",
       },
       {
         label: "Renovados",

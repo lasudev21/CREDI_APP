@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown, LogOut } from "lucide-react";
@@ -5,6 +6,7 @@ import { useNavbarStore } from "../../store/NavBarStore";
 import { useDashboardStore } from "../../store/DashboardStore";
 
 export const NavBar: React.FC = () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const {
     menuItems,
     openSubmenu,
@@ -78,19 +80,26 @@ export const NavBar: React.FC = () => {
                 </button>
                 {item.subItems && openSubmenu === item.name && (
                   <div className="absolute z-10 left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
-                    {item.subItems.map((subItem) => (
-                      <Link
-                        key={subItem.name}
-                        to={subItem.path}
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      >
-                        <subItem.icon
-                          className="inline-block w-4 h-4 mr-2"
-                          aria-hidden="true"
-                        />
-                        {subItem.name}
-                      </Link>
-                    ))}
+                    {item.subItems.map((subItem) => {
+                      const acceso = user.roles_permiso.find(
+                        (x: any) => x.Pantalla === subItem.name
+                      );
+                      if (acceso) {
+                        return (
+                          <Link
+                            key={subItem.name}
+                            to={subItem.path}
+                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            <subItem.icon
+                              className="inline-block w-4 h-4 mr-2"
+                              aria-hidden="true"
+                            />
+                            {subItem.name}
+                          </Link>
+                        );
+                      }
+                    })}
                   </div>
                 )}
               </div>
@@ -145,15 +154,22 @@ export const NavBar: React.FC = () => {
                   </button>
                   {item.subItems && openSubmenu === item.name && (
                     <div className="bg-gray-50 pl-6">
-                      {item.subItems.map((subItem) => (
-                        <Link
-                          key={subItem.name}
-                          to={subItem.path}
-                          className="block py-2 text-sm text-gray-600 hover:text-gray-800"
-                        >
-                          {subItem.name}
-                        </Link>
-                      ))}
+                      {item.subItems.map((subItem) => {
+                        const acceso = user.roles_permiso.find(
+                          (x: any) => x.Pantalla === subItem.name
+                        );
+                        if (acceso) {
+                          return (
+                            <Link
+                              key={subItem.name}
+                              to={subItem.path}
+                              className="block py-2 text-sm text-gray-600 hover:text-gray-800"
+                            >
+                              {subItem.name}
+                            </Link>
+                          );
+                        }
+                      })}
                     </div>
                   )}
                 </div>

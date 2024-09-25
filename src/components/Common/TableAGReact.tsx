@@ -127,21 +127,10 @@ const TableAGReact = forwardRef(
             rowSelection="multiple"
             rowDragManaged={true}
             onCellKeyDown={onCellKeyDown}
-            // getContextMenuItems={getContextMenuItems}
-            // onCellContextMenu={handleCellContextMenu}
-            // suppressContextMenu={false}
             stopEditingWhenCellsLoseFocus={true}
             onGridReady={onGridReady}
           />
         </div>
-        {/* <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={handleEdit}>Editar</MenuItem>
-          <MenuItem onClick={handleDelete}>Eliminar</MenuItem>
-        </Menu> */}
         <div className="t">
           {pagination ? (
             <div className="pagination-info">

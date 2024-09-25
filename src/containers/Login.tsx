@@ -28,7 +28,6 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(sessionData);
     if (sessionData.apiURL != "") {
       try {
         const data = await request("post", `${sessionData.apiURL}/auth/login`, {
@@ -123,31 +122,31 @@ export default function Login() {
             >
               <option
                 value="0"
-                data-url="http://credidb.creditoscali.com/api"
+                data-url=""
               >
                 Seleccione...
               </option>
               <option
                 value="1"
-                data-url="http://credidb.creditoscali.com/api"
+                data-url="http://crediappdbfenix1.creditoscali.com/api"
               >
                 Credifenix I
               </option>
               <option
                 value="2"
-                data-url="http://credidb.creditoscali.com/api"
+                data-url="http://crediappdbfenix2.creditoscali.com/api"
               >
                 Credifenix II
               </option>
               <option
                 value="3"
-                data-url="http://credidb.creditoscali.com/api"
+                data-url="https://crediappdbprestaloto.creditoscali.com/api"
               >
                 Prestaloto
               </option>
               <option
                 value="4"
-                data-url="http://localhost:8000/api"
+                data-url="http://crediappdbtest.creditoscali.com/api"
               >
                 Pruebas
               </option>
