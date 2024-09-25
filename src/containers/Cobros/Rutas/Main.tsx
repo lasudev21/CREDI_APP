@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ColDef, ValueFormatterParams } from "ag-grid-community";
 import { PlusCircleIcon, Printer, Repeat, Save, Search } from "lucide-react";
 import { useRutaStore } from "../../../store/RutaStore";
-import { gatdatosRutas } from "../../../services/parametroService";
+import { getdatosRutas } from "../../../services/parametroService";
 import { IPeriodos } from "../../../types/IRuta";
 import VerRutas from "../../../components/Cobros/Rutas/VerRutas";
 import { NumberFormat } from "../../../utils/helper";
@@ -71,7 +71,7 @@ const Rutas = () => {
 
   const Periodos = async () => {
     setLoader(true);
-    const response = await gatdatosRutas();
+    const response = await getdatosRutas();
     const data: IPeriodos = response;
     setPeriodos(data);
     setLoader(false);

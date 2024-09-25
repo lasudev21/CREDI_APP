@@ -6,16 +6,26 @@ import Setting from "./Setting";
 import { useUserStore } from "../../../store/UserStore";
 import Card from "../../../components/Common/Card";
 import TableMaterialR from "../../../components/Common/TableMaterialR";
-import { Plus, Save } from "lucide-react";
-import ActionIcon from "../../../components/Common/ActionIcon";
+import { Plus } from "lucide-react";
 import { IconButton } from "@mui/material";
+import { useDashboardStore } from "../../../store/DashboardStore";
+import Drawer from "../../../components/Common/Drawer";
+import { ICliente } from "../../../types/ICliente";
+import {
+  getListaRoles,
+  getListaRutas,
+} from "../../../services/parametroService";
+import { IItemsCBox } from "../../../types/IRuta";
 
 export default function Usuarios() {
   const [isLoading, setIsloading] = useState<boolean>(true);
-  const { usuarios, setClientes, formData, setFormData } = useUserStore();
+  const { usuarios, setClientes, formData, setFormData, setRutas, setRoles } =
+    useUserStore();
+  const { showDrawer, toggleDrawer } = useDashboardStore();
 
   const AddUsuario = () => {
     setFormData(UsuarioVacio);
+    toggleDrawer(true);
   };
 
   const icons: React.ReactNode[] = [
@@ -26,17 +36,23 @@ export default function Usuarios() {
     >
       <Plus />
     </IconButton>,
-    <IconButton
-      color="primary"
-      onClick={() => Clientes()}
-      key="btn[0][1]"
-    >
-      <Save />
-    </IconButton>,
   ];
 
   const handleRowClick = (row: IUsuario) => {
     setFormData(row);
+  };
+
+  const SeeUser = (cliente: IUsuario) => {
+    toggleDrawer(true);
+    setFormData(cliente);
+  };
+
+  const actionsUsuario = (action: number, usuario: IUsuario | ICliente) => {
+    usuario = usuario as IUsuario;
+
+    if (action === 1) SeeUser(usuario);
+    // else if (action === 2) StateClient(cliente);
+    // else SeeHistory(cliente);
   };
 
   const columns = useMemo<MRT_ColumnDef<IUsuario>[]>(
@@ -67,31 +83,60 @@ export default function Usuarios() {
         header: "Login?",
         enableHiding: false,
         enableColumnActions: false,
-        Cell: ({ renderedCellValue }) => (
+        Cell: ({ renderedCellValue, staticRowIndex }) => (
           <div className="flex items-center">
             <input
-              id="default-checkbox"
+              id={`Chechk-${renderedCellValue}-${staticRowIndex}`}
               type="checkbox"
+              onChange={() => {}}
               checked={renderedCellValue ? true : false}
               className="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
         ),
       },
+      {
+        accessorKey: "username",
+        size: 100,
+        header: "Nombre de usuario",
+        enableHiding: false,
+        enableColumnActions: false,
+      },
+      {
+        accessorKey: "ruta",
+        size: 100,
+        header: "Ruta",
+        enableHiding: false,
+        enableColumnActions: false,
+      },
     ],
     []
   );
 
-  const Clientes = async () => {
+  const Usuarios = async () => {
     const response = await getUsuarios();
     const data: IUsuarios = response;
     setClientes(data);
     setIsloading(false);
   };
 
+  const Rutas = async () => {
+    const response = await getListaRutas();
+    const data: IItemsCBox[] = response;
+    setRutas(data);
+  };
+
+  const Periodos = async () => {
+    const response = await getListaRoles();
+    const data: IItemsCBox[] = response;
+    setRoles(data);
+  };
+
   useEffect(() => {
     setFormData(UsuarioVacio);
-    Clientes();
+    Rutas();
+    Periodos();
+    Usuarios();
   }, []);
 
   return (
@@ -101,32 +146,32 @@ export default function Usuarios() {
         title="Gestión de usuarios"
         texts={[]}
         content={
-          <>
-            <div className="flex">
-              <div className="w-3/5">
-                <TableMaterialR
-                  columns={columns}
-                  data={usuarios ? usuarios.data : []}
-                  isLoading={isLoading}
-                  enableButtons={false}
-                  enablePagination={false}
-                  blockLeft={[
-                    "mrt-row-expand",
-                    "mrt-row-select",
-                    "mrt-row-actions",
-                    "nombres",
-                  ]}
-                  actions={() => {}}
-                  clickEvent={handleRowClick}
-                />
-              </div>
-              <div className="w-2/5">
-                <Setting usuario={formData} />
-              </div>
-            </div>
-          </>
+          <TableMaterialR
+            columns={columns}
+            data={usuarios ? usuarios.data : []}
+            isLoading={isLoading}
+            enableButtons={true}
+            enablePagination={false}
+            blockLeft={[
+              "mrt-row-expand",
+              "mrt-row-select",
+              "mrt-row-actions",
+              "nombres",
+            ]}
+            actions={actionsUsuario}
+            typeAction="usuario"
+            clickEvent={handleRowClick}
+          />
         }
       />
+      {showDrawer && (
+        <Drawer
+          size="w-2/4"
+          title="Agregar/Editar usuario"
+          content={<Setting usuario={formData} />}
+          accion={() => {}}
+        />
+      )}
     </>
   );
 }

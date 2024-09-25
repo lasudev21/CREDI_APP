@@ -44,7 +44,7 @@ export const putParametros = async (data: IPutParametros) => {
   }
 };
 
-export const gatdatosRutas = async () => {
+export const getdatosRutas = async () => {
   try {
     const response = await api.get("parametros/datosRutas");
     return response.data;
@@ -56,6 +56,24 @@ export const gatdatosRutas = async () => {
 export const getFechasReporte = async () => {
   try {
     const response = await api.get("parametros/Fechas Reporte");
+    return response.data;
+  } catch (error) {
+    await ManageErrors(error);
+  }
+};
+
+export const getListaRutas = async () => {
+  try {
+    const response = await api.get("parametros/Rutas");
+    return response.data;
+  } catch (error) {
+    await ManageErrors(error);
+  }
+};
+
+export const getListaRoles = async () => {
+  try {
+    const response = await api.get("parametros/Roles");
     return response.data;
   } catch (error) {
     await ManageErrors(error);

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getFechasReporte } from "../../../services/parametroService";
 import { IItemsCBox } from "../../../types/IRuta";
 import { Cog, Printer } from "lucide-react";
@@ -7,7 +7,6 @@ import { IconButton } from "@mui/material";
 import { useDashboardStore } from "../../../store/DashboardStore";
 import VerReporte from "../../../components/Reportes/Coteos/VerReporte";
 import Modal from "../../../components/Common/Modal";
-import Corte from "../../../components/Reportes/Coteos/Corte";
 import Tabs from "../../../components/Common/Tab";
 import { gatCoteos } from "../../../services/reporteService";
 import {
@@ -25,21 +24,27 @@ import { IDataFC } from "../../../types/IFlujoCaja";
 import NuevosRenovaciones from "../../../components/Reportes/Coteos/NuevosRenovaciones";
 import { ICredito } from "../../../types/ICredito";
 import { ICreditoRenovacion } from "../../../types/ICreditoRenovacion";
+import Corte from "../../../components/Reportes/Coteos/Corte";
+import { exportarCoteos } from "../../../utils/pdfMakeExport";
 
 const Main = () => {
   const [_dates, _setDates] = useState<IItemsCBox[]>([]);
+  const [allDates, setAllDates] = useState<string[]>([]);
   const [month, setMonth] = useState<number>(new Date().getMonth());
 
   const { openModal, setOpenModal, setLoader } = useDashboardStore();
   const [activeTab, setActiveTab] = useState(0);
   const [height, setHeight] = useState<number>(0);
 
+  const gridRef1 = useRef<any>(null);
   const [rowData1, setRowData1] = useState<any[]>([]);
   const [columnDefs1, setColumnDefs1] = useState<any[]>([]);
 
+  const gridRef2 = useRef<any>(null);
   const [rowData2, setRowData2] = useState<any[]>([]);
   const [columnDefs2, setColumnDefs2] = useState<any[]>([]);
 
+  const gridRef3 = useRef<any>(null);
   const [rowData3, setRowData3] = useState<any[]>([]);
   const [columnDefs3, setColumnDefs3] = useState<any[]>([]);
 
@@ -409,6 +414,7 @@ const Main = () => {
 
   const handleVerReporte = async (dates: string[]) => {
     setLoader(true);
+    setAllDates(dates);
     const response = await gatCoteos(dates[0], dates[dates.length - 1]);
     const reporte: IReporteCoteo = response;
     const dates1 = dates.slice(0, 10);
@@ -466,6 +472,7 @@ const Main = () => {
       label: "Corte 1",
       content: (
         <Corte
+          ref={gridRef1}
           rowData={rowData1}
           columnDefs={columnDefs1}
           height={height}
@@ -477,6 +484,7 @@ const Main = () => {
       label: "Corte 2",
       content: (
         <Corte
+          ref={gridRef2}
           rowData={rowData2}
           columnDefs={columnDefs2}
           height={height}
@@ -488,6 +496,7 @@ const Main = () => {
       label: "Corte 3",
       content: (
         <Corte
+          ref={gridRef3}
           rowData={rowData3}
           columnDefs={columnDefs3}
           height={height}
@@ -541,6 +550,13 @@ const Main = () => {
     return nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
   }
 
+  const exportarRuta = () => {
+    const corte1: any[] = rowData1;
+    const corte2: any[] = rowData2;
+    const corte3: any[] = rowData3;
+    exportarCoteos(corte1, corte2, corte3, rowDataRen, rowDataRec, rowDataNuevosRen, allDates);
+  };
+
   useEffect(() => {
     GetFechasReporte();
   }, []);
@@ -582,7 +598,7 @@ const Main = () => {
               <IconButton
                 //   disabled={disabled}
                 color="primary"
-                //   onClick={() => modalAction("exportRuta")}
+                onClick={() => exportarRuta()}
               >
                 <Printer />
               </IconButton>

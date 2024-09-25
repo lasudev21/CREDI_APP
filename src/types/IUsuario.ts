@@ -13,11 +13,11 @@ export interface IUsuario {
   login: boolean;
   username: string;
   password: string;
-  ruta: string;
+  ruta: string | null;
   created_at: Date;
   Updated_at: Date;
   email: string;
-  rol: number;
+  rol: number | null;
   coteos: ICoteo[];
 }
 
@@ -30,7 +30,7 @@ export interface IErrorsUsuario {
   password: string;
   ruta: string;
   email: string;
-  rol: number;
+  rol: string;
 }
 
 export const UsuarioVacio = {
@@ -42,9 +42,10 @@ export const UsuarioVacio = {
   login: false,
   username: "",
   password: "",
-  ruta: "",
+  ruta: null,
   created_at: new Date(),
   Updated_at: new Date(),
   email: "",
-  rol: 0,
+  rol: null,
+  coteos: [],
 };

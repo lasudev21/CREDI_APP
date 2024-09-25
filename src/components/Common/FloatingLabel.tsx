@@ -37,7 +37,7 @@ const FloatingLabel = <T,>({
         result = value.toString();
         break;
       default:
-        result = value.toString();
+        result = value ? value.toString() : "";
         break;
     }
 

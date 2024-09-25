@@ -121,7 +121,6 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
 
   const handleAddCredito = async () => {
     setLoader(true);
-
     const response = await saveCreditos(nuevosCreditos, rutaId);
     if (response) {
       const data: ICreditoData = response;
@@ -213,7 +212,7 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-4 mb-4">
+              <div className="grid grid-cols-12 gap-4 mb-6 mt-4">
                 <div className="col-span-6">
                   <FormControl
                     fullWidth

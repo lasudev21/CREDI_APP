@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AccountCircle } from "@mui/icons-material";
-import { Box, Button, ListItemIcon, MenuItem } from "@mui/material";
+import { Box } from "@mui/material";
 import {
   MaterialReactTable,
   MRT_GlobalFilterTextField,
@@ -9,7 +8,8 @@ import {
 } from "material-react-table";
 import { useEffect, useState } from "react";
 import { ICliente } from "../../types/ICliente";
-import { ListOrdered, UserPen } from "lucide-react";
+import { IUsuario } from "../../types/IUsuario";
+import ChildMenu from "./ChildMenuMRT";
 
 interface ITableMaterialProps<T> {
   columns: any;
@@ -18,7 +18,8 @@ interface ITableMaterialProps<T> {
   enableButtons: boolean;
   enablePagination: boolean;
   blockLeft: string[];
-  actions: (action: number, data: ICliente) => void;
+  actions: (action: number, data: ICliente | IUsuario) => void;
+  typeAction: string;
   clickEvent: (row: T) => void;
 }
 
@@ -30,6 +31,7 @@ const TableMaterialR = <T extends object>({
   enablePagination,
   blockLeft,
   actions,
+  typeAction,
   clickEvent,
 }: ITableMaterialProps<T>) => {
   const [divHeight, setDivHeight] = useState<number>(0);
@@ -101,48 +103,12 @@ const TableMaterialR = <T extends object>({
     },
     enableRowActions: enableButtons, //habilitar botones
     renderRowActionMenuItems: ({ closeMenu, row }) => [
-      <MenuItem
-        key={0}
-        onClick={() => {
-          const cliente = Object.assign({}, row.original) as ICliente;
-          closeMenu();
-          actions(1, cliente);
-        }}
-        sx={{ m: 0 }}
-      >
-        <ListItemIcon>
-          <AccountCircle />
-        </ListItemIcon>
-        Ver cliente
-      </MenuItem>,
-      <MenuItem
-        key={1}
-        onClick={() => {
-          const cliente = Object.assign({}, row.original) as ICliente;
-          closeMenu();
-          actions(2, cliente);
-        }}
-        sx={{ m: 0 }}
-      >
-        <ListItemIcon>
-          <UserPen />
-        </ListItemIcon>
-        Cambiar estado
-      </MenuItem>,
-      <MenuItem
-        key={2}
-        onClick={() => {
-          const cliente = Object.assign({}, row.original) as ICliente;
-          closeMenu();
-          actions(3, cliente);
-        }}
-        sx={{ m: 0 }}
-      >
-        <ListItemIcon>
-          <ListOrdered />
-        </ListItemIcon>
-        Historial de creditos
-      </MenuItem>,
+      <ChildMenu
+        menuType={typeAction}
+        row={row}
+        closeMenu={closeMenu}
+        actions={actions}
+      />,
     ],
     renderTopToolbar: ({ table }) => {
       return (

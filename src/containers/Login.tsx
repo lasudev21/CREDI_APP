@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDashboardStore } from "../store/DashboardStore";
 import { Cookies } from "react-cookie";
 import { useApiNoAuth } from "../hooks/useApiNoAuth";
-import { ManageErrors } from "../utils/ErrorUtils";
+import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
+import { EyeIcon } from "lucide-react";
 
 const cookie = new Cookies();
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [selectedValue, setSelectedValue] = useState<number>(0);
   const navigate = useNavigate();
   const setIsAuthenticated = useDashboardStore((state) => state.login);
@@ -17,9 +20,15 @@ export default function Login() {
   const sessionData = useDashboardStore((state) => state.sessionData);
   const { loading, error, request } = useApiNoAuth();
 
+  useEffect(() => {
+    if (error?.response.data) {
+      toast.warning(error?.response.data.Error);
+    }
+  }, [error]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    console.log(sessionData);
     if (sessionData.apiURL != "") {
       try {
         const data = await request("post", `${sessionData.apiURL}/auth/login`, {
@@ -33,8 +42,8 @@ export default function Login() {
         setIsAuthenticated();
         navigate("/");
         location.reload();
-      } catch (error) {
-        await ManageErrors(error);
+      } catch {
+        // await ManageErrors(error);
       }
     }
   };
@@ -67,7 +76,7 @@ export default function Login() {
         <div className="absolute -top-40 -right-0 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
         <div className="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
       </div>
-      <div className="flex md:w-1/2 justify-center py-10 items-center bg-white">
+      <div className="flex h-screen md:w-1/2 justify-center py-10 items-center bg-white">
         <form
           className="bg-white"
           onSubmit={handleSubmit}
@@ -109,6 +118,7 @@ export default function Login() {
               onChange={handleChange}
               id="company"
               name="company"
+              disabled={loading}
               required
             >
               <option
@@ -161,8 +171,9 @@ export default function Login() {
             <input
               className="pl-2 outline-none border-none"
               type="text"
-              placeholder="Username"
+              placeholder="Usuario"
               value={username}
+              disabled={loading}
               onChange={(e) => setUsername(e.target.value)}
               id="username"
               name="username"
@@ -184,23 +195,36 @@ export default function Login() {
             </svg>
             <input
               className="pl-2 outline-none border-none"
-              placeholder="Password"
+              placeholder="Contraseña"
               value={password}
+              disabled={loading}
               onChange={(e) => setPassword(e.target.value)}
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
             />
+            <EyeIcon
+              fontSize="small"
+              className="cursor-pointer hover:text-sky-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={() => setShowPassword(!showPassword)}
+            />
           </div>
-          {error && (
+          {/* {error && (
             <p className="text-red-500 text-sm">{error.response.data.Error}</p>
-          )}
+          )} */}
           <button
             type="submit"
             disabled={loading}
             className="block w-full bg-sky-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
           >
+            {loading ? (
+              <CircularProgress
+                className="mr-2"
+                color="inherit"
+                size={15}
+              />
+            ) : null}
             {loading ? "Iniciando..." : "Iniciar sesión"}
           </button>
         </form>

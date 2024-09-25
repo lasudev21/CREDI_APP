@@ -19,6 +19,7 @@ import { ICreditoHistorialCliente } from "../../../types/ICredito";
 import Modal from "../../../components/Common/Modal";
 import Historial from "../../../components/Administracion/Creditos/Historial";
 import { IconButton } from "@mui/material";
+import { IUsuario } from "../../../types/IUsuario";
 
 export default function Clientes() {
   const { toggleDrawer, setLoader, setErrorsToast, showDrawer } =
@@ -150,7 +151,9 @@ export default function Clientes() {
     setFormData(ClienteVacio);
   };
 
-  const actionsCliente = (action: number, cliente: ICliente) => {
+  const actionsCliente = (action: number, cliente: ICliente | IUsuario) => {
+    cliente = cliente as ICliente;
+
     if (action === 1) SeeClient(cliente);
     else if (action === 2) StateClient(cliente);
     else SeeHistory(cliente);
@@ -278,6 +281,7 @@ export default function Clientes() {
                     "titular",
                   ]}
                   actions={actionsCliente}
+                  typeAction="cliente"
                   clickEvent={() => {}}
                 />
               </div>
