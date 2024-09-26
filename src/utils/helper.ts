@@ -2,6 +2,7 @@ import moment from "moment";
 import { ICredito } from "../types/ICredito";
 import { ICreditoDetalle } from "../types/ICreditoDetalle";
 import { ValueFormatterParams } from "ag-grid-community";
+import { IUsuario } from "../types/IUsuario";
 
 export function recalculate(data: ICredito[], cargue: boolean = false) {
   const res: ICredito[] = [];
@@ -82,4 +83,10 @@ export function DateFormat(params: ValueFormatterParams) {
   } else {
     return "";
   }
+}
+
+export function eliminarPassword(usuario: IUsuario): Omit<IUsuario, 'password'> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, ...usuarioSinPassword } = usuario;
+  return usuarioSinPassword;
 }

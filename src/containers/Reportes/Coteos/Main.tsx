@@ -101,7 +101,7 @@ const Main = () => {
     const currentDate = new Date(startDate);
     while (currentDate <= endDate) {
       const dateString = currentDate.toISOString().split("T")[0];
-      cols.push({ headerName: dateString, field: dateString, width: 200 });
+      cols.push({ headerName: dateString, field: dateString });
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
@@ -572,8 +572,9 @@ const Main = () => {
   useEffect(() => {
     if (!validarPermiso("Coteos")) {
       navigate("/permisos");
+    } else {
+      GetFechasReporte();
     }
-    GetFechasReporte();
   }, []);
 
   return (

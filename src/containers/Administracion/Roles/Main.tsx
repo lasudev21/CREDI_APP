@@ -88,10 +88,11 @@ const Roles = () => {
   useEffect(() => {
     if (!validarPermiso("Roles")) {
       navigate("/permisos");
+    } else {
+      vaciarRoles();
+      vaciarPermisos();
+      Roles();
     }
-    vaciarRoles();
-    vaciarPermisos();
-    Roles();
   }, []);
 
   return (

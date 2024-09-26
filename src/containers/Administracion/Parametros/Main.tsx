@@ -47,8 +47,9 @@ const Maestras = () => {
   useEffect(() => {
     if (!validarPermiso("Maestras")) {
       navigate("/permisos");
+    } else {
+      Parametros();
     }
-    Parametros();
   }, []);
 
   const handleListItemClick = (

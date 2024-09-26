@@ -8,8 +8,11 @@ import LineChart from "../../components/Dashboard/LineChart";
 import UltimosCoteos from "../../components/Dashboard/UltimosCoteos";
 import moment from "moment";
 import { useDashboardStore } from "../../store/DashboardStore";
+import Tabs from "../../components/Common/Tab";
+import BarChart from "../../components/Dashboard/BarChart";
 
 export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState(0);
   const [nuevos, setNuevos] = useState<number>(0);
   const [renovados, setRenovados] = useState<number>(0);
   const [coteos, setCoteos] = useState<number>(0);
@@ -20,7 +23,7 @@ export default function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [firstDay, setFirstDay] = useState<string>("");
   const [lastDay, setLastDay] = useState<string>("");
-  const {setOpenModal, toggleDrawer, setLoader} = useDashboardStore();
+  const { setOpenModal, toggleDrawer, setLoader } = useDashboardStore();
 
   const getDashBoard = async () => {
     const response = await getDashBoardData();
@@ -56,8 +59,9 @@ export default function Dashboard() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [setLoader, setOpenModal, toggleDrawer, height]);
 
+  console.log(height);
   return (
     <div className="w-full rounded-t-lg">
       <div className="grid grid-cols-12 gap-4 mb-4">
@@ -168,10 +172,34 @@ export default function Dashboard() {
           </div>
           {/* <div>1</div> */}
         </div>
-        <div className="col-span-8 bg-white">
-          <LineChart
-            dataNuevos={clientesNew}
-            dataRenovados={clientesRen}
+        <div
+          className="col-span-8 bg-white"
+          style={{ height: "100%" }}
+        >
+          <Tabs
+            key={"Gr[0][1]"}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            tabs={[
+              {
+                label: "Gráfico Lineal",
+                content: (
+                  <LineChart
+                    dataNuevos={clientesNew}
+                    dataRenovados={clientesRen}
+                  />
+                ),
+              },
+              {
+                label: "Gráfico de Barras",
+                content: (
+                  <BarChart
+                    dataNuevos={clientesNew}
+                    dataRenovados={clientesRen}
+                  />
+                ),
+              },
+            ]}
           />
         </div>
       </div>

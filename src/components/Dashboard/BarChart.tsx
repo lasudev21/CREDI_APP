@@ -1,23 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  LineElement,
-  PointElement,
   CategoryScale,
   LinearScale,
   Title,
   Tooltip,
   Legend,
+  BarElement,
 } from "chart.js";
 import { useEffect, useState } from "react";
 
 // Register the necessary components
 ChartJS.register(
-  LineElement,
-  PointElement,
   CategoryScale,
   LinearScale,
+  BarElement,
   Title,
   Tooltip,
   Legend
@@ -33,14 +31,14 @@ interface LineChartProps {
   dataRenovados: DataPoint[];
 }
 
-const LineChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
+const BarChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
   const [labels, setLabels] = useState<string[]>([]);
   const [height, setHeight] = useState<number>(0);
 
   useEffect(() => {
     setLabels(compararTamanos(dataNuevos, dataRenovados));
     const handleResize = () => {
-      const calculatedHeight = window.innerHeight - 370;
+      const calculatedHeight = window.innerHeight - 350;
       setHeight(calculatedHeight);
     };
 
@@ -72,7 +70,8 @@ const LineChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderWidth: 2,
-        pointRadius: 5,
+        borderRadius: Number.MAX_VALUE,
+        borderSkipped: false,
         pointBackgroundColor: "rgba(75, 192, 192, 1)",
       },
       {
@@ -81,12 +80,12 @@ const LineChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
         borderColor: "rgba(255, 99, 132, 1)",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderWidth: 2,
-        pointRadius: 5,
+        borderRadius: Number.MAX_VALUE,
+        borderSkipped: false,
         pointBackgroundColor: "rgba(255, 99, 132, 1)",
       },
     ],
   };
-
   // Chart options
   const options = {
     responsive: true,
@@ -95,34 +94,12 @@ const LineChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
       legend: {
         position: "top" as const,
       },
-      tooltip: {
-        callbacks: {
-          label: function (tooltipItem: any) {
-            return `${tooltipItem.label}: ${tooltipItem.raw}`;
-          },
-        },
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: false,
-          text: "Fecha",
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Cantidad",
-        },
-      },
     },
   };
 
   return (
     <div style={{ height }}>
-      <Line
-        // height={"100%"}
+      <Bar
         data={chartData}
         options={options}
       />
@@ -130,4 +107,4 @@ const LineChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
   );
 };
 
-export default LineChart;
+export default BarChart;

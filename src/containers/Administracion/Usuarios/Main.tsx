@@ -146,11 +146,12 @@ export default function Usuarios() {
   useEffect(() => {
     if (!validarPermiso("Usuarios")) {
       navigate("/permisos");
+    } else {
+      setFormData(UsuarioVacio);
+      Rutas();
+      Roles();
+      Usuarios();
     }
-    setFormData(UsuarioVacio);
-    Rutas();
-    Roles();
-    Usuarios();
   }, []);
 
   return (

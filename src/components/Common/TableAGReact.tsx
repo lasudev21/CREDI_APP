@@ -105,7 +105,6 @@ const TableAGReact = forwardRef(
       },
       setCellValue: (rowIndex: number, field: string, newValue: any) => {
         const rowNode = gridRef.current!.api.getDisplayedRowAtIndex(rowIndex);
-        // console.log(rowNode);
         if (rowNode) {
           rowNode.setDataValue(field, newValue);
         }

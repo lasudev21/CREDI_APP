@@ -142,9 +142,9 @@ const FlujoCaja = () => {
   useEffect(() => {
     if (!validarPermiso("Flujo de caja")) {
       navigate("/permisos");
+    } else {
+      FlujoCaja(page);
     }
-    FlujoCaja(page);
-
     const handleResize = () => {
       const calculatedHeight = window.innerHeight - 210;
       setHeight(calculatedHeight);

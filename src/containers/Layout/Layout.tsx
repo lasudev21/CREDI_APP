@@ -9,9 +9,10 @@ import { TypeToastEnum } from "../../types/IToast";
 import { NavBar } from "../../components/Layout/NavBar";
 
 export function Layout() {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const { darkMode, loading, errors, setErrorsToast, sessionData } =
     useDashboardStore();
-
+console.log(user)
   useEffect(() => {
     if (errors.length > 0) {
       errors.map((item) => {
@@ -49,6 +50,7 @@ export function Layout() {
           <div className="flex items-center space-x-2">
             <Building2 className="w-5 h-5" />
             <span className="text-lg font-bold">{sessionData.pageName}</span>
+            <span className="text-sm font-extralight italic">(<span className="font-semibold">Usuario</span>: {`${user.Nombres} ${user.Apellidos}`})</span>
           </div>
         </footer>
       </div>

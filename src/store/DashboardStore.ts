@@ -51,10 +51,17 @@ export const useDashboardStore = create<DashboardStore>()(
           sessionData: { apiURL: "", pageName: "" },
         }),
       validarPermiso: (pantalla: string) => {
+        let ver = false;
         const acceso = user.roles_permiso.find(
           (x: any) => x.Pantalla === pantalla
         );
-        return acceso;
+        if (acceso) {
+          const RolDetalle = acceso.roles_detalles.find(
+            (x: any) => x.RolPermisoId === acceso.Id
+          );
+          if (RolDetalle) ver = RolDetalle.Ver;
+        }
+        return ver;
       },
     }),
     {

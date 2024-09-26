@@ -25,8 +25,13 @@ import { useNavigate } from "react-router-dom";
 
 export default function Clientes() {
   const navigate = useNavigate();
-  const { toggleDrawer, setLoader, setErrorsToast, showDrawer, validarPermiso } =
-    useDashboardStore();
+  const {
+    toggleDrawer,
+    setLoader,
+    setErrorsToast,
+    showDrawer,
+    validarPermiso,
+  } = useDashboardStore();
   const {
     isLoading,
     setIsloading,
@@ -231,12 +236,14 @@ export default function Clientes() {
   };
 
   useEffect(() => {
-    if (!validarPermiso("Clientes")) {
-      navigate("/permisos");
-    }
     toggleDrawer(false);
     setOpenModal(false);
-    Clientes();
+
+    if (!validarPermiso("Clientes")) {
+      navigate("/permisos");
+    } else {
+      Clientes();
+    }
   }, []);
 
   return (

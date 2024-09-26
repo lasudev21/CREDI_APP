@@ -146,9 +146,10 @@ const FlujoUtilidades = () => {
   useEffect(() => {
     if (!validarPermiso("Flujo de utilidades")) {
       navigate("/permisos");
+    } else {
+      FlujoUtilidades(page);
     }
-    FlujoUtilidades(page);
-
+    
     const handleResize = () => {
       const calculatedHeight = window.innerHeight - 210;
       setHeight(calculatedHeight);

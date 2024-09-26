@@ -1,6 +1,7 @@
 import { IPermiso } from "../types/IRolPermiso";
 import { IUsuario } from "../types/IUsuario";
 import { ManageErrors } from "../utils/ErrorUtils";
+import { eliminarPassword } from "../utils/helper";
 import api from "./api";
 
 export const getUsuarios = async () => {
@@ -32,6 +33,10 @@ export const postGuardarPermisos = async (data: IPermiso[], idUser: number) => {
 
 export const putUsuarios = async (user: IUsuario) => {
   try {
+    if (user.password === "") {
+      //Se quita el pastword en caso que venga vacio
+      user = eliminarPassword(user);
+    }
     const response = await api.put("usuarios", user);
     return response.data;
   } catch (error) {

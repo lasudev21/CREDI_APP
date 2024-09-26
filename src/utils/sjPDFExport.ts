@@ -50,7 +50,6 @@ export const ExportarDetallesCredito = (
   cliente: ICliente
 ) => {
   const combinedData = combineData(creditos_detalles, creditos_renovaciones);
-  console.log(combinedData);
 
   const data = combinedData.map((x: AbonoRenovacion) => {
     return [

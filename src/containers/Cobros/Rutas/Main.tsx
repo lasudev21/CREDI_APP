@@ -277,7 +277,6 @@ const Rutas = () => {
     const index = data.findIndex((x) => x.id === id);
     gridRef.current.setCellValue(index, "renovacion", renovacion);
     gridRef.current.setCellValue(index, "cuota", "RN");
-    console.log(gridRef.current.getGridData());
   };
 
   const handleEliminarCredito = (id: number) => {
@@ -301,21 +300,23 @@ const Rutas = () => {
   };
 
   useEffect(() => {
-    if (!validarPermiso("Rutas")) {
-      navigate("/permisos");
-    }
     setOpenModal(false);
     toggleDrawer(false);
     setLoader(false);
     setRutaId(0);
     setDisable(true);
+    clearNuevos();
     setData({
       cartera: 0,
       cobrador: UsuarioVacio,
       data: [],
     });
-    Periodos();
-    clearNuevos();
+
+    if (!validarPermiso("Rutas")) {
+      navigate("/permisos");
+    } else {
+      Periodos();
+    }
 
     const handleResize = () => {
       const calculatedHeight = window.innerHeight - 185;
