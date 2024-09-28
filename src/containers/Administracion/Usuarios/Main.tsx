@@ -24,7 +24,8 @@ export default function Usuarios() {
   const [isLoading, setIsloading] = useState<boolean>(true);
   const { usuarios, setClientes, formData, setFormData, setRutas, setRoles } =
     useUserStore();
-  const { showDrawer, toggleDrawer, validarPermiso } = useDashboardStore();
+  const { showDrawer, toggleDrawer, validarPermiso, isMobile } =
+    useDashboardStore();
 
   const AddUsuario = () => {
     setFormData(UsuarioVacio);
@@ -100,7 +101,7 @@ export default function Usuarios() {
               type="checkbox"
               onChange={() => {}}
               checked={renderedCellValue ? true : false}
-              className="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded focus:ring-sky-500"
             />
           </div>
         ),
@@ -154,6 +155,8 @@ export default function Usuarios() {
     }
   }, []);
 
+  console.log(isMobile)
+
   return (
     <>
       <Card
@@ -171,7 +174,6 @@ export default function Usuarios() {
               "mrt-row-expand",
               "mrt-row-select",
               "mrt-row-actions",
-              "nombres",
             ]}
             actions={actionsUsuario}
             typeAction="usuario"
@@ -181,7 +183,7 @@ export default function Usuarios() {
       />
       {showDrawer && (
         <Drawer
-          size="w-2/4"
+          size={isMobile ? "w-full" : "w-2/4"}
           title="Agregar/Editar usuario"
           content={<Setting usuario={formData} />}
           accion={() => {}}

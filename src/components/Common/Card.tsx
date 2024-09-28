@@ -32,7 +32,7 @@ const Card: React.FC<CardProps> = ({ title, content, icons, texts = [] }) => {
   return (
     <div
       style={{ height: `${divHeight}px` }}
-      className="w-full bg-white rounded-t-lg shadow dark:bg-gray-800 dark:border-gray-700 border-l-2 border-sky-800"
+      className="w-full bg-white rounded-t-lg shadow border-l-2 border-sky-800"
     >
       <div className="flex justify-between items-center border-b p-2 text-sky-700">
         <div className="text-pretty font-bold">{title}</div>

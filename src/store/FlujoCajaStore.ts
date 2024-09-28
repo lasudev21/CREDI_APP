@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { IDataFU, IFlujoUtilidades } from "../types/IFlujoUtilidades";
+import { IDataFC, IFlujoCaja } from "../types/IFlujoCaja";
 
 interface State {
-  data: IDataFU[];
-  setData: (data: IFlujoUtilidades) => void;
+  data: IDataFC[];
+  setData: (data: IFlujoCaja) => void;
   page: number;
   totalRecord: number;
   sum: number;
@@ -11,7 +11,7 @@ interface State {
 
 export const useFlujoCajaStore = create<State>()((set) => ({
   data: [],
-  setData: (data: IFlujoUtilidades) =>
+  setData: (data: IFlujoCaja) =>
     set({ data: data.data.data, sum: data.sum, page: data.data.current_page, totalRecord: data.data.total }),
   page: 1,
   totalRecord: 0,

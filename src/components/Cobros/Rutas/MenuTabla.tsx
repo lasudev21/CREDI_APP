@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Menu, MenuItem } from "@mui/material";
 import {
+  BookX,
   Ellipsis,
   FilePenLine,
   ListRestart,
   ListX,
   NotebookTabs,
-  RefreshCcw,
+  RefreshCwOff,
+  Undo2,
 } from "lucide-react";
 import { useState } from "react";
 const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -19,6 +20,8 @@ interface MenuTablaProps {
   actionEliminarCredito: (id: number) => void;
   actionCancelarRen: (id: number) => void;
   actionDetallesCredito: (tipo: string, id: number) => void;
+  actionCancelarEliminacion: (id: number) => void;
+  actionReversarCuota: (id: number) => void;
 }
 
 const MenuTabla: React.FC<MenuTablaProps> = ({
@@ -28,6 +31,8 @@ const MenuTabla: React.FC<MenuTablaProps> = ({
   actionCancelarRen,
   actionEliminarCredito,
   actionDetallesCredito,
+  actionCancelarEliminacion,
+  actionReversarCuota,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -64,6 +69,16 @@ const MenuTabla: React.FC<MenuTablaProps> = ({
     actionCancelarRen(data.id);
   };
 
+  const handleCancelarEliminacion = () => {
+    handleMenuClose();
+    actionCancelarEliminacion(data.id);
+  };
+
+  const handleReversarCuota = () => {
+    handleMenuClose();
+    actionReversarCuota(data.id);
+  };
+
   return (
     <>
       <span
@@ -72,29 +87,41 @@ const MenuTabla: React.FC<MenuTablaProps> = ({
       >
         <Ellipsis />
       </span>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleRenovacionInmediata}>
-          <ListRestart className="mr-2" /> Renovación inmediata
-        </MenuItem>
-        <MenuItem onClick={handleRenovacionEditable}>
-          <FilePenLine className="mr-2" /> Renovación editable
-        </MenuItem>
-        <MenuItem onClick={handleCancelarRenovacion}>
-          <RefreshCcw className="mr-2" /> Cancelar renovación
-        </MenuItem>
-        <MenuItem onClick={handleDetallesCredito}>
-          <NotebookTabs className="mr-2" /> Detalles del crédito
-        </MenuItem>
-        {user.Rol === 1 && (
-          <MenuItem onClick={handleEliminarCredito}>
-            <ListX className="mr-2" /> Eliminar crédito
+      {data.id > 0 ? (
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleRenovacionInmediata}>
+            <ListRestart className="mr-2" /> Renovación inmediata
           </MenuItem>
-        )}
-      </Menu>
+          <MenuItem onClick={handleRenovacionEditable}>
+            <FilePenLine className="mr-2" /> Renovación editable
+          </MenuItem>
+          <MenuItem onClick={handleCancelarRenovacion}>
+            <RefreshCwOff className="mr-2" /> Cancelar renovación
+          </MenuItem>
+          <MenuItem onClick={handleDetallesCredito}>
+            <NotebookTabs className="mr-2" /> Detalles del crédito
+          </MenuItem>
+          {user.Rol === 1 && (
+            <MenuItem onClick={handleEliminarCredito}>
+              <ListX className="mr-2" /> Eliminar crédito
+            </MenuItem>
+          )}
+          {user.Rol === 1 && data.delete && (
+            <MenuItem onClick={handleCancelarEliminacion}>
+              <BookX className="mr-2" /> Cancelar eliminación de crédito
+            </MenuItem>
+          )}
+          {data.valor_ultimo_pago > 0 && (
+            <MenuItem onClick={handleReversarCuota}>
+              <Undo2 className="mr-2" /> Reversar última cuota
+            </MenuItem>
+          )}
+        </Menu>
+      ) : null}
     </>
   );
 };

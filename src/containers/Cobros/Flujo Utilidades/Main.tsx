@@ -192,7 +192,7 @@ const FlujoUtilidades = () => {
             className="space-y-6 p-2"
             // onSubmit={handleSubmit}
           >
-            <p className="text-xl font-extralight  dark:text-white">
+            <p className="text-xl font-extralight  ">
               Utilidad neta:
               <span className="text-sky-500 italic ml-2">
                 {NumberFormat(sum)}
@@ -203,7 +203,7 @@ const FlujoUtilidades = () => {
                 <FloatingLabel
                   type="date"
                   label="Fecha"
-                  disabled={disabled}
+                  disabled={true}
                   action={handleInputChange}
                   errors={errors}
                   value={formData.fecha.toLocaleString() ?? ""}

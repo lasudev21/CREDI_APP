@@ -25,13 +25,11 @@ import {
   CrearCreditoVacio,
   IClienteCredito,
   ICrearCredito,
-  ICreditoData,
   IErrorsCrearCredito,
 } from "../../../types/ICredito";
-import { ICliente } from "../../../types/ICliente";
+import { ClienteVacio, ICliente } from "../../../types/ICliente";
 import { getClientes, saveCreditos } from "../../../services/creditoService";
 import { DeleteForever, PeopleAlt } from "@mui/icons-material";
-import { recalculate } from "../../../utils/helper";
 import { useDashboardStore } from "../../../store/DashboardStore";
 
 interface IAgregarClientesProps {
@@ -46,7 +44,6 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
   const [formData, setFormData] = useState<ICrearCredito>(CrearCreditoVacio);
   const [nuevosCreditos, setNuevosCreditos] = useState<ICrearCredito[]>([]);
   const [errors, setErrors] = useState<Partial<IErrorsCrearCredito>>({});
-  const { setNuevos, setData } = useRutaStore((state) => state);
   const { setLoader, setOpenModal } = useDashboardStore((state) => state);
   const [clientes, setClientes] = useState<ICliente[]>([]);
 
@@ -60,9 +57,13 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
     Clientes();
   }, []);
 
-  const { dias, periodos } = useRutaStore();
+  const { periodos, setNuevosData } = useRutaStore();
+  const { dias } = useDashboardStore();
 
-  const handleInputChange = (property: string, newValue: string | number) => {
+  const handleInputChange = (
+    property: string,
+    newValue: string | number | ICliente
+  ) => {
     setFormData((prevData) => ({
       ...prevData,
       [property]: newValue,
@@ -72,10 +73,13 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
   const handleAutoCompleteChange = (
     property: string,
     newValue: string | number,
-    text: string
+    text: string,
+    cliente: ICliente
   ) => {
     handleInputChange(property, newValue);
-    handleInputChange("Cliente", text);
+    handleInputChange("ClienteText", text);
+    handleInputChange("ClienteId", cliente.id);
+    handleInputChange("Cliente", cliente);
   };
 
   const validate = () => {
@@ -123,21 +127,8 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
     setLoader(true);
     const response = await saveCreditos(nuevosCreditos, rutaId);
     if (response) {
-      const data: ICreditoData = response;
-      const recalculo = recalculate(data.data, true);
-      setData({
-        cartera: recalculo.cartera,
-        data: recalculo.data,
-        cobrador: data.cobrador,
-      });
+      setNuevosData(nuevosCreditos);
       setOpenModal(false);
-      setNuevos(
-        nuevosCreditos
-          .map((item: ICrearCredito) =>
-            item.ValorPrestamo ? item.ValorPrestamo * 1000 : 0
-          )
-          .reduce((prev, curr) => prev + curr, 0)
-      );
     }
     setLoader(false);
   };
@@ -151,10 +142,10 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
           className="hover:text-sky-600 ml-2 rounded transition-all"
         />
       </div>
-      <div className="sm:px-4 md:px-4 pt-4">
+      <div className="sm:px-4 md:px-4 p-4">
         <form className="space-y-6">
           <div className="grid grid-cols-12 gap-4 mb-6">
-            <div className="col-span-8">
+            <div className="col-span-12 lg:col-span-8">
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-9 flex flex-col justify-end h-full">
                   <Autocomplete
@@ -190,9 +181,15 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
                         ? handleAutoCompleteChange(
                             "ClienteId",
                             option.id,
-                            option.titular
+                            option.titular,
+                            option
                           )
-                        : handleAutoCompleteChange("ClienteId", 0, "")
+                        : handleAutoCompleteChange(
+                            "ClienteId",
+                            0,
+                            "",
+                            ClienteVacio
+                          )
                     }
                   />
                   {errors && errors["ClienteId"] && (
@@ -361,7 +358,7 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
                 <button
                   type="button"
                   onClick={(e) => handleSubmit(e)}
-                  className="text-sky-600 bg-gray-100 hover:bg-sky-700 hover:text-white border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2"
+                  className="text-sky-600 bg-gray-100 hover:bg-sky-700 hover:text-white border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2"
                 >
                   <UserPlus2 className="mr-2" />
                   Agregar Cliente
@@ -369,7 +366,7 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
               </div>
             </div>
 
-            <div className="col-span-4">
+            <div className="col-span-12 lg:col-span-4">
               <TableContainer
                 component={Paper}
                 sx={{
@@ -402,7 +399,7 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
                             />
                           </IconButton>
                         </TableCell>
-                        <TableCell>{row.Cliente}</TableCell>
+                        <TableCell>{row.ClienteText}</TableCell>
                         <TableCell align="right">
                           {(row.ValorPrestamo ?? 0) * 1000}
                         </TableCell>

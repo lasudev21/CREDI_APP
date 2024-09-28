@@ -142,12 +142,12 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
   };
 
   return (
-    <div className="sm:p-4 md:p-4">
+    <div className="sm:p-4 md:p-4 mt-4">
       <form
         onSubmit={handleSubmit}
         className="mx-auto"
       >
-        <div className="grid md:grid-cols-2 md:gap-6">
+        <div className="grid md:grid-cols-2 md:gap-6 sm:gap-4">
           <div className="relative z-0 w-full mb-5 group">
             <div className="relative">
               <FloatingLabel
@@ -176,7 +176,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 md:gap-6">
+        <div className="grid md:grid-cols-2 md:gap-6 sm:gap-4">
           <div className="relative z-0 w-full mb-5 group">
             <div className="relative">
               <FloatingLabel
@@ -215,8 +215,9 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
             className="sr-only peer"
           />
           <div
-            className={`w-11 mr-4 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-700 
-                        ${formData.login ? "peer-checked:bg-blue-500" : ""}`}
+            className={`w-11 mr-4 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer ${
+              formData.login ? "peer-checked:bg-blue-500" : ""
+            }`}
           >
             <span
               className={`absolute mr-4 left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform transform 
@@ -228,7 +229,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
 
         {formData.login ? (
           <>
-            <div className="grid md:grid-cols-2 md:gap-6">
+            <div className="grid md:grid-cols-2 md:gap-6 sm:gap-4">
               <div className="relative z-0 w-full mb-5 group">
                 <div className="relative">
                   <FloatingLabel
@@ -248,7 +249,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
                     id="rol"
                     value={formData.rol ? formData.rol : 0}
                     onChange={(e) => handleInputChange("rol", e.target.value)}
-                    className="block  mb-4 py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    className="block  mb-4 py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   >
                     <option
                       key={`Rol[0]`}
@@ -269,7 +270,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
                   </select>
                   <label
                     htmlFor="rol"
-                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+                    className="absolute text-sm text-gray-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
                   >
                     Rol
                   </label>
@@ -282,7 +283,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 md:gap-6">
+            <div className="grid md:grid-cols-2 md:gap-6 sm:gap-4">
               <div className="relative z-0 w-full mb-5 group">
                 <div className="relative">
                   <FloatingLabel
@@ -317,7 +318,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
               id="ruta"
               value={formData.ruta ? formData.ruta : 0}
               onChange={(e) => handleInputChange("ruta", e.target.value)}
-              className="block  mb-4 py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              className="block  mb-4 py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             >
               <option
                 key={`Ruta[0]`}
@@ -338,7 +339,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
             </select>
             <label
               htmlFor="ruta"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+              className="absolute text-sm text-gray-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
             >
               Ruta
             </label>
@@ -352,7 +353,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
 
         {formData.login && (
           <div className="mb-4">
-            <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
+            <p className="text-xl text-sky-500 font-extralight italic ">
               Asignacion de permisos
             </p>
             <span className="text-xs text-gray-400">

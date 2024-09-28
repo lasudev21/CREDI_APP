@@ -1,5 +1,5 @@
 import moment from "moment";
-import { ICliente } from "./ICliente";
+import { ClienteVacio, ICliente } from "./ICliente";
 import { ICreditoDetalle } from "./ICreditoDetalle";
 import { IUsuario } from "./IUsuario";
 import { ICreditoRenovacion } from "./ICreditoRenovacion";
@@ -37,6 +37,9 @@ export interface ICredito {
   cuota: number | string;
   renovacion: IRenovacion | null;
   delete: boolean;
+  update_mora: boolean;
+  nuevo: boolean;
+  reversar_cuota: boolean;
 }
 
 export interface IRenovacion {
@@ -100,10 +103,13 @@ export interface ICreditoHistorialCliente {
   RutaId: number;
   ValorPrestamo: number;
   Finalizacion: Date;
+  Observaciones: string;
+  DetallesCredito: ICreditoDetalle[];
 }
 
 export interface ICrearCredito {
-  Cliente: string;
+  Cliente: ICliente;
+  ClienteText: string;
   ClienteId: number;
   ModCuota: number | null;
   ModDias: number | null;
@@ -113,10 +119,12 @@ export interface ICrearCredito {
   Observaciones: string;
   ObsDia: string;
   modalidad: number;
+  Orden: number;
 }
 
 export interface IErrorsCrearCredito {
   Cliente: string;
+  ClienteText: string;
   ClienteId: string;
   ModCuota: string;
   ModDias: string;
@@ -129,7 +137,8 @@ export interface IErrorsCrearCredito {
 }
 
 export const CrearCreditoVacio = {
-  Cliente: "",
+  Cliente: ClienteVacio,
+  ClienteText: "",
   ClienteId: 0,
   ModCuota: null,
   ModDias: null,
@@ -139,6 +148,7 @@ export const CrearCreditoVacio = {
   Observaciones: "",
   ObsDia: "",
   modalidad: 1,
+  Orden: 0,
 };
 
 export interface IClienteCredito {

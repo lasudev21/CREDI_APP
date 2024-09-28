@@ -92,25 +92,25 @@ const GuardarCoteos: React.FC<IGuardarCoteoProps> = ({
           <Typography sx={{ mt: 2, mb: 1 }}>
             {activeStep == 0 ? (
               <div className="w-full text-center">
-                <p className="text-xl text-gray-900 dark:text-white">
+                <p className="text-xl text-gray-900 ">
                   Entran:{" "}
                   <span className="text-sky-500 italic">
                     {NumberFormat(flujoCaja.entrada)}
                   </span>
                 </p>
-                <p className="text-xl text-gray-900 dark:text-white">
+                <p className="text-xl text-gray-900 ">
                   Salen:{" "}
                   <span className="text-sky-500 italic">
                     {NumberFormat(flujoCaja.salida)}
                   </span>
                 </p>
-                <p className="text-xl text-gray-900 dark:text-white">
+                <p className="text-xl text-gray-900 ">
                   Utilidad:{" "}
                   <span className="text-sky-500 italic">
                     {NumberFormat(flujoCaja.utilidad)}
                   </span>
                 </p>
-                <p className="text-xl text-gray-900 dark:text-white">
+                <p className="text-xl text-gray-900 ">
                   Coteos:{" "}
                   <span className="text-sky-500">
                     {NumberFormat(flujoCaja.coteos)}

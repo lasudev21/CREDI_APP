@@ -136,16 +136,16 @@ const ListaDetalles: React.FC<ListaDetallesProps> = ({
             />
           </>
         ) : (
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500">
             <tbody>
               {data.map((item: IParametroDetalle) => {
                 return (
                   <tr
                     key={item.id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-white border-b"
                   >
                     <td className="px-6 py-4">
-                      <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-sky-900 dark:text-sky-300">
+                      <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">
                         {item.id_interno}
                       </span>
                     </td>

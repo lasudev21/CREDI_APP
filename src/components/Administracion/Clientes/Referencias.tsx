@@ -258,7 +258,7 @@ const Referencias = forwardRef<ReferenciasHandle, ITableMaterialProps>(
           }}
         >
           <PlusCircle className="mr-2" />
-          Referencia {props.tipo}
+          {props.tipo}
         </Button>
       ),
     });

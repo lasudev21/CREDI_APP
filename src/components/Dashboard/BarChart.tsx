@@ -98,7 +98,7 @@ const BarChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
   };
 
   return (
-    <div style={{ height }}>
+    <div style={{ height, maxHeight: height }}>
       <Bar
         data={chartData}
         options={options}

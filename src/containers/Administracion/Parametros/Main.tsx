@@ -65,8 +65,8 @@ const Maestras = () => {
   };
 
   return (
-    <div className="flex">
-      <div className="w-1/2 gap-4 p-4">
+    <div className="flex flex-col md:flex-row">
+      <div className="w-full md:w-1/2 gap-4 p-4">
         <Grid
           item
           xs={12}
@@ -80,7 +80,10 @@ const Maestras = () => {
             Configuración de parámetros
           </Typography>
           <Demo key={`DEMO[0][0]`}>
-            <List key={"LT[0][0]"}>
+            <List
+              key={"LT[0][0]"}
+              className="max-h-80 overflow-y-auto"
+            >
               {data &&
                 data.map((item: IParametro, index: number) => {
                   return (
@@ -110,7 +113,7 @@ const Maestras = () => {
                             edge="end"
                             aria-label="delete"
                           >
-                            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-sky-900 dark:text-sky-300">
+                            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">
                               {item.parametros_detalles.length}
                             </span>
                           </IconButton>
@@ -124,7 +127,7 @@ const Maestras = () => {
           </Demo>
         </Grid>
       </div>
-      <div className="w-1/2 gap-4 p-4">
+      <div className="w-full md:w-1/2 gap-4 p-4">
         <div className="shadow border-l-2 bg-white border-sky-800">
           <ListaDetalles
             data={parametroDetalle}

@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export interface IFlujoUtilidades {
   data: IData;
   sum: number;
@@ -20,7 +22,7 @@ export interface IDataFU {
   descripcion: string;
   tipo: number;
   valor: number;
-  fecha: Date;
+  fecha: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -40,7 +42,7 @@ export const FUVacio = {
   descripcion: "",
   tipo: 1,
   valor: 0,
-  fecha: new Date(),
+  fecha: moment(new Date()).format("YYYY-MM-DD"),
   created_at: new Date(),
   updated_at: new Date(),
 };
@@ -49,5 +51,5 @@ export interface ICreateFU {
   Descripcion: string;
   Tipo: number;
   Valor: number;
-  Fecha: Date;
+  Fecha: string;
 }

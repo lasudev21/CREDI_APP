@@ -31,7 +31,7 @@ import { useNavigate } from "react-router-dom";
 
 const Main = () => {
   const navigate = useNavigate();
-  const { validarPermiso } = useDashboardStore();
+  const { validarPermiso, isMobile } = useDashboardStore();
   const [_dates, _setDates] = useState<IItemsCBox[]>([]);
   const [allDates, setAllDates] = useState<string[]>([]);
   const [month, setMonth] = useState<number>(new Date().getMonth());

@@ -28,7 +28,7 @@ const Modal: React.FC<IModalProps> = ({ title, content, size }) => {
               />
             </button>
           </div>
-          <div>{content}</div>
+          <div className="max-h-[600px] overflow-auto">{content}</div>
         </div>
       </div>
     </div>

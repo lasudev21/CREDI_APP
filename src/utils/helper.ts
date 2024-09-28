@@ -11,7 +11,7 @@ export function recalculate(data: ICredito[], cargue: boolean = false) {
   data.map((x: ICredito) => {
     x.renovacion = null;
     x.delete = false;
-    x.valor_total = 12;
+    // x.valor_total = 12;
     x.valor_total = x.mod_cuota * x.mod_dias;
     let abonos = 0;
     if (x.creditos_detalles !== undefined) {
@@ -57,6 +57,9 @@ export function recalculate(data: ICredito[], cargue: boolean = false) {
     if (cargue) {
       x.cuota = "";
     }
+    x.update_mora = false;
+    x.eliminado = false;
+    x.reversar_cuota = false;
 
     cartera = cartera + x.saldo;
     res.push(x);

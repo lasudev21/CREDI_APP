@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Avatar, Card, CardHeader } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import { HandCoinsIcon, ListPlusIcon, Repeat1Icon } from "lucide-react";
@@ -10,6 +11,8 @@ import moment from "moment";
 import { useDashboardStore } from "../../store/DashboardStore";
 import Tabs from "../../components/Common/Tab";
 import BarChart from "../../components/Dashboard/BarChart";
+import { getDatosDias } from "../../services/parametroService";
+import { IItemsCBoxV1 } from "../../types/IRuta";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState(0);
@@ -23,7 +26,8 @@ export default function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [firstDay, setFirstDay] = useState<string>("");
   const [lastDay, setLastDay] = useState<string>("");
-  const { setOpenModal, toggleDrawer, setLoader } = useDashboardStore();
+  const { setOpenModal, toggleDrawer, setLoader, setDias } =
+    useDashboardStore();
 
   const getDashBoard = async () => {
     const response = await getDashBoardData();
@@ -36,8 +40,15 @@ export default function Dashboard() {
     setCoteosUsuarios(data.coteosUsuarios);
   };
 
+  const getDias = async () => {
+    const response = await getDatosDias();
+    const data: IItemsCBoxV1[] = response;
+    setDias(data);
+  };
+
   useEffect(() => {
     getDashBoard();
+    getDias();
     setOpenModal(false);
     toggleDrawer(false);
     setLoader(false);
@@ -48,7 +59,9 @@ export default function Dashboard() {
     setLastDay(last);
 
     const handleResize = () => {
-      const calculatedHeight = window.innerHeight - 290;
+      const isMobile = window.innerWidth <= 768;
+      console.log(isMobile);
+      const calculatedHeight = isMobile ? 300 : window.innerHeight - 290;
       setHeight(calculatedHeight);
     };
 
@@ -61,39 +74,35 @@ export default function Dashboard() {
     };
   }, [setLoader, setOpenModal, toggleDrawer, height]);
 
-  console.log(height);
   return (
-    <div className="w-full rounded-t-lg">
+    <div className="w-full rounded-t-lg px-4 pb-10">
       <div className="grid grid-cols-12 gap-4 mb-4">
-        <div className="flex flex-col col-span-9">
-          <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
+        <div className="flex flex-col col-span-12 lg:col-span-9">
+          <p className="text-lg sm:text-xl text-sky-500 font-extralight italic">
             ¡Bienvenido/a de nuevo!
             <span className="font-semibold ml-2">
               {user.Nombres} {user.Apellidos}
             </span>
           </p>
-          <p className="font-thin">
+          <p className="font-thin text-sm sm:text-base">
             A continuación encontrará un resumen de los movimientos de su
-            cartera en el último mes
+            cartera en el último mes.
           </p>
         </div>
-        <div className="flex flex-row-reverse col-span-3 italic">
-          <span className="font-semibold ml-2">
+        <div className="flex flex-row-reverse col-span-12 lg:col-span-3 italic">
+          <span className="font-semibold ml-2 text-sm sm:text-base">
             {firstDay} <span className="font-light">a</span> {lastDay}
           </span>
           <span className="font-light">Fechas del reporte:</span>
         </div>
       </div>
       <div className="grid grid-cols-12 gap-4 mb-4">
-        <div className="col-span-4">
-          <Card
-            sx={{}}
-            className="w-full dark:bg-gray-800 dark:border-gray-700 border-l-2 border-sky-800"
-          >
+        <div className="col-span-12 sm:col-span-4 lg:col-span-4">
+          <Card className="w-full border-l-2 border-sky-800">
             <CardHeader
               sx={{
                 ".MuiCardHeader-title": {
-                  fontSize: "1.5rem",
+                  fontSize: "1.25rem",
                 },
               }}
               avatar={
@@ -109,15 +118,12 @@ export default function Dashboard() {
             />
           </Card>
         </div>
-        <div className="col-span-4">
-          <Card
-            sx={{}}
-            className="w-full dark:bg-gray-800 dark:border-gray-700 border-l-2 border-sky-800"
-          >
+        <div className="col-span-12 sm:col-span-4 lg:col-span-4">
+          <Card className="w-full border-l-2 border-sky-800">
             <CardHeader
               sx={{
                 ".MuiCardHeader-title": {
-                  fontSize: "1.5rem",
+                  fontSize: "1.25rem",
                 },
               }}
               avatar={
@@ -133,15 +139,12 @@ export default function Dashboard() {
             />
           </Card>
         </div>
-        <div className="col-span-4">
-          <Card
-            sx={{}}
-            className="w-full dark:bg-gray-800 dark:border-gray-700 border-l-2 border-sky-800"
-          >
+        <div className="col-span-12 sm:col-span-4 lg:col-span-4">
+          <Card className="w-full border-l-2 border-sky-800">
             <CardHeader
               sx={{
                 ".MuiCardHeader-title": {
-                  fontSize: "1.5rem",
+                  fontSize: "1.25rem",
                 },
               }}
               avatar={
@@ -162,18 +165,8 @@ export default function Dashboard() {
         className="grid grid-cols-12 gap-4"
         style={{ height }}
       >
-        <div className="col-span-4 flex-col">
-          <div className="">
-            <p className="text-xl text-sky-500 font-extralight italic dark:text-white mb-2">
-              Coteos pos usuario
-            </p>
-
-            <UltimosCoteos coteosUsuarios={coteosUsuarios} />
-          </div>
-          {/* <div>1</div> */}
-        </div>
         <div
-          className="col-span-8 bg-white"
+          className="col-span-12 lg:col-span-8 bg-white"
           style={{ height: "100%" }}
         >
           <Tabs
@@ -201,6 +194,12 @@ export default function Dashboard() {
               },
             ]}
           />
+        </div>
+        <div className="col-span-12 lg:col-span-4 flex-col">
+          <p className="text-lg sm:text-xl text-sky-500 font-extralight italic mb-2">
+            Coteos por usuario
+          </p>
+          <UltimosCoteos coteosUsuarios={coteosUsuarios} />
         </div>
       </div>
     </div>

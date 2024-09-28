@@ -72,8 +72,8 @@ const VerReporte: React.FC<IVerReporteProps> = ({
           className="hover:text-sky-600 ml-2 rounded transition-all"
         />
       </div>
-      <div className="grid grid-cols-12 gap-4 p-4">
-        <div className="col-span-6">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 p-4">
+        <div className="col-span-12 sm:col-span-6">
           <FormControl
             fullWidth
             variant="standard"
@@ -103,7 +103,7 @@ const VerReporte: React.FC<IVerReporteProps> = ({
             </Select>
           </FormControl>
         </div>
-        <div className="col-span-6">
+        <div className="col-span-12 sm:col-span-6">
           <FormControl
             fullWidth
             variant="standard"

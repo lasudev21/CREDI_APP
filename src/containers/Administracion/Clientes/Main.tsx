@@ -18,10 +18,10 @@ import Swal from "sweetalert2";
 import { TypeToastEnum } from "../../../types/IToast";
 import { ICreditoHistorialCliente } from "../../../types/ICredito";
 import Modal from "../../../components/Common/Modal";
-import Historial from "../../../components/Administracion/Creditos/Historial";
 import { IconButton } from "@mui/material";
 import { IUsuario } from "../../../types/IUsuario";
 import { useNavigate } from "react-router-dom";
+import Historial from "../../../components/Administracion/Clientes/Historial";
 
 export default function Clientes() {
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ export default function Clientes() {
     setErrorsToast,
     showDrawer,
     validarPermiso,
+    isMobile,
   } = useDashboardStore();
   const {
     isLoading,
@@ -65,7 +66,7 @@ export default function Clientes() {
               type="checkbox"
               onChange={() => {}}
               checked={renderedCellValue ? true : false}
-              className="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded focus:ring-sky-500"
             />
           </div>
         ),
@@ -196,13 +197,15 @@ export default function Clientes() {
         setLoader(true);
         const response = await changeCliente(cliente.id);
         const data: IClientes = response;
-        setErrorsToast([
-          {
-            message: "Se ha cambiado el estado al cliente",
-            type: TypeToastEnum.Susccess,
-          },
-        ]);
-        setData(data);
+        if (data) {
+          setErrorsToast([
+            {
+              message: "Se ha cambiado el estado al cliente",
+              type: TypeToastEnum.Susccess,
+            },
+          ]);
+          setData(data);
+        }
         setLoader(false);
       }
     });
@@ -265,7 +268,7 @@ export default function Clientes() {
             className="mr-3"
           >
             Total
-            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300 ml-2">
+            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded ml-2">
               {data.length ?? 0}
             </span>
           </label>,
@@ -274,7 +277,7 @@ export default function Clientes() {
             className="mr-3"
           >
             Con crédito activo
-            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-sky-900 dark:text-sky-300  ml-2">
+            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded ml-2">
               {creditosActivos}
             </span>
           </label>,
@@ -293,7 +296,7 @@ export default function Clientes() {
                     "mrt-row-expand",
                     "mrt-row-select",
                     "mrt-row-actions",
-                    "titular",
+                    !isMobile ? "titular" : "",
                   ]}
                   actions={actionsCliente}
                   typeAction="cliente"
@@ -306,7 +309,7 @@ export default function Clientes() {
       />
       {showDrawer && (
         <Drawer
-          size="w-3/4"
+          size={isMobile ? "w-full" : "w-3/4"}
           title="Agregar/Editar Cliente"
           content={<Setting cliente={formData} />}
           accion={() => {}}

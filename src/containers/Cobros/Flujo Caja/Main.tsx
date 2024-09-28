@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { DateFormat, NumberFormat } from "../../../utils/helper";
 import { ColDef, ValueFormatterParams } from "ag-grid-community";
@@ -187,7 +188,7 @@ const FlujoCaja = () => {
             className="space-y-6 p-2"
             // onSubmit={handleSubmit}
           >
-            <p className="text-xl font-extralight  dark:text-white">
+            <p className="text-xl font-extralight">
               Total en caja:
               <span className="text-sky-500 italic ml-2">
                 {NumberFormat(sum)}
@@ -198,7 +199,7 @@ const FlujoCaja = () => {
                 <FloatingLabel
                   type="date"
                   label="Fecha"
-                  disabled={disabled}
+                  disabled={true}
                   action={handleInputChange}
                   errors={errors}
                   value={formData.fecha.toLocaleString() ?? ""}

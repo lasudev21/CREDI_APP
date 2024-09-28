@@ -31,6 +31,7 @@ import RenovarCredito from "../../../components/Cobros/Rutas/RenovarCredito";
 import DetallesCredito from "../../../components/Cobros/Rutas/DetallesCredito";
 import ExportarRuta from "../../../components/Cobros/Rutas/ExportarRuta";
 import { useNavigate } from "react-router-dom";
+import SpeedDial from "../../../components/Common/SpeedDial";
 
 function currencyFormatter(params: ValueFormatterParams) {
   const value = Math.floor(params.value);
@@ -56,8 +57,8 @@ const Rutas = () => {
     setDisable,
     setData,
     clearNuevos,
+    clearPeriodos,
     nuevos,
-    dias,
   } = useRutaStore((state) => state);
   const [height, setHeight] = useState<number>(0);
   const [sizeDrawer, setSizeDrawer] = useState<string>("");
@@ -70,12 +71,14 @@ const Rutas = () => {
   const [contentModal, setContentModal] = useState<React.ReactNode>(null);
   const [title, setTitle] = useState<string>("");
   const {
+    dias,
     toggleDrawer,
     showDrawer,
     setLoader,
     openModal,
     setOpenModal,
     validarPermiso,
+    isMobile,
   } = useDashboardStore();
 
   const Periodos = async () => {
@@ -120,7 +123,15 @@ const Rutas = () => {
             if (x.renovacion.editable)
               utilidad = utilidad + x.renovacion.utilidad * 1000;
             else utilidad = utilidad + (x.valor_total - x.valor_prestamo);
-          } else coteos = coteos + getCoteoCuota(x);
+          } else {
+            if (x.nuevo) {
+              salida = salida + x.valor_prestamo / 1000;
+            } else coteos = coteos + getCoteoCuota(x);
+
+            if (x.reversar_cuota) {
+              salida = salida + x.valor_ultimo_pago / 1000;
+            }
+          }
         });
 
         entrada = entrada * 1000;
@@ -172,6 +183,8 @@ const Rutas = () => {
             creditos_detalles={_dataRow?.creditos_detalles ?? []}
             creditos_renovaciones={_dataRow?.creditos_renovaciones ?? []}
             cliente={_dataRow?.cliente ?? ClienteVacio}
+            data={_dataRow}
+            actionActualizarObservaciones={handleActualizarObservaciones}
           />
         );
         setTitle("Detalles del crédito");
@@ -191,12 +204,12 @@ const Rutas = () => {
     switch (tipo) {
       case "enrutar":
         setContentDrawer(<DnDRutas />);
-        setSizeDrawer("w-2/5");
+        setSizeDrawer(isMobile ? "w-full" : "w-2/5");
         setTitleDrawer("Enrutar clientes");
         break;
       case "nuevoCliente":
         setContentDrawer(<Setting cliente={ClienteVacio} />);
-        setSizeDrawer("w-3/5");
+        setSizeDrawer(isMobile ? "w-full" : "w-3/5");
         setTitleDrawer("Agregar cliente");
         setOpenModal(false);
         setAccionDrawer(() => () => setOpenModal(true));
@@ -221,9 +234,9 @@ const Rutas = () => {
 
   const handleRenovacionInmediata = (id: number) => {
     Swal.fire({
-      title: "Renovar credito",
+      title: "Renovar crédito",
       html: `<div> 
-            <p> Realmente desea renovar este credito? </p>
+            <p> Realmente desea renovar este crédito? </p>
            </div>`,
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -231,7 +244,6 @@ const Rutas = () => {
       confirmButtonText: "Confirmar",
     }).then(async (result) => {
       if (result.value) {
-        // this.setState({ idRenovar: rowId });
         const response = await saveRenovacionInmediata(id);
         const result: IRenovacionInmediata = response;
         if (result) {
@@ -251,7 +263,11 @@ const Rutas = () => {
             saldo: 0,
           };
           gridRef.current.setCellValue(index, "renovacion", renovacion);
-          // console.log(gridRef.current.getGridData());
+          const diasSemana = ["D", "L", "MA", "MI", "J", "V", "S"];
+          if (data[index].modalidad === 2) {
+            const t = diasSemana[new Date().getDay()];
+            gridRef.current.setCellValue(index, "obs_dia", `S(${t})`);
+          }
         }
       }
     });
@@ -272,23 +288,48 @@ const Rutas = () => {
     gridRef.current.setCellValue(index, "renovacion", null);
   };
 
-  const actionRenovacionEditable = (renovacion: IRenovacion, id: number) => {
-    const data: ICredito[] = gridRef.current.getGridData();
-    const index = data.findIndex((x) => x.id === id);
-    gridRef.current.setCellValue(index, "renovacion", renovacion);
-    gridRef.current.setCellValue(index, "cuota", "RN");
-  };
-
-  const handleEliminarCredito = (id: number) => {
+  const handleCancelarEliminacion = (id: number) => {
     Swal.fire({
-      title: "Retirar credito",
+      title: "Retirar crédito",
       html: `<div> 
-          <p> Realmente desea retirar este credito de la ruta? </p>
+          <p> Realmente desea cancelar la eliminación del crédito de la ruta? </p>
          </div>`,
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Confirmar cambios",
+      confirmButtonText: "Si, quiero reversar la eliminación",
+    }).then(async (result) => {
+      if (result.value) {
+        const data: ICredito[] = gridRef.current.getGridData();
+        const index = data.findIndex((x) => x.id === id);
+        gridRef.current.setCellValue(index, "delete", false);
+        gridRef.current.setCellValue(index, "cuota", "");
+      }
+    });
+  };
+
+  const actionRenovacionEditable = (renovacion: IRenovacion, id: number) => {
+    const diasSemana = ["D", "L", "MA", "MI", "J", "V", "S"];
+    const data: ICredito[] = gridRef.current.getGridData();
+    const index = data.findIndex((x) => x.id === id);
+    gridRef.current.setCellValue(index, "renovacion", renovacion);
+    gridRef.current.setCellValue(index, "cuota", "RN");
+    if (data[index].modalidad === 2) {
+      const t = diasSemana[new Date().getDay()];
+      gridRef.current.setCellValue(index, "obs_dia", `S(${t})`);
+    }
+  };
+
+  const handleEliminarCredito = (id: number) => {
+    Swal.fire({
+      title: "Retirar crédito",
+      html: `<div> 
+          <p> Realmente desea retirar este crédito de la ruta? </p>
+         </div>`,
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, lo quiero retirar",
     }).then(async (result) => {
       if (result.value) {
         const data: ICredito[] = gridRef.current.getGridData();
@@ -299,6 +340,72 @@ const Rutas = () => {
     });
   };
 
+  const handleActualizarObservaciones = (id: number, valor: string) => {
+    const data: ICredito[] = gridRef.current.getGridData();
+    const index = data.findIndex((x) => x.id === id);
+    gridRef.current.setCellValue(index, "observaciones", valor);
+  };
+
+  const handleReversarCuota = (id: number) => {
+    const data: ICredito[] = gridRef.current.getGridData();
+    const index = data.findIndex((x) => x.id === id);
+    Swal.fire({
+      title: "Retirar crédito",
+      html: `<div> 
+          <p> Realmente desea reversar la ultima cuota del cliente ${data[index].cliente.titular}? </p>
+         </div>`,
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, lo quiero reversar",
+    }).then(async (result) => {
+      if (result.value) {
+        gridRef.current.setCellValue(index, "reversar_cuota", true);
+      }
+    });
+  };
+
+  const changeMora = (event: any) => {
+    if (typeof event.newValue === "number")
+      event.node.setDataValue("update_mora", true);
+    else event.node.setDataValue("mora", event.oldValue);
+  };
+
+  const icons = [
+    <IconButton
+      disabled={disabled}
+      color="primary"
+      onClick={() => modalAction("addCliente")}
+      title="Agregar cliente a la ruta"
+    >
+      <PlusCircleIcon />
+    </IconButton>,
+    <IconButton
+      disabled={disabled}
+      color="primary"
+      onClick={() => drawerAccion("enrutar")}
+      title="Enrutar"
+    >
+      <Repeat />
+    </IconButton>,
+    <IconButton
+      disabled={disabled}
+      color="primary"
+      onClick={() => modalAction("saveCoteos")}
+      title="Guardar ruta"
+    >
+      <Save />
+    </IconButton>,
+    <IconButton
+      disabled={disabled}
+      color="primary"
+      onClick={() => modalAction("exportRuta")}
+      title="Exportar"
+    >
+      <Printer />
+    </IconButton>,
+  ];
+
   useEffect(() => {
     setOpenModal(false);
     toggleDrawer(false);
@@ -306,6 +413,7 @@ const Rutas = () => {
     setRutaId(0);
     setDisable(true);
     clearNuevos();
+    clearPeriodos();
     setData({
       cartera: 0,
       cobrador: UsuarioVacio,
@@ -319,7 +427,7 @@ const Rutas = () => {
     }
 
     const handleResize = () => {
-      const calculatedHeight = window.innerHeight - 185;
+      const calculatedHeight = window.innerHeight - (isMobile ? 210 : 185);
       setHeight(calculatedHeight);
     };
 
@@ -346,6 +454,8 @@ const Rutas = () => {
           actionCancelarRen={handleCancelarRen}
           actionRenEditable={handleRenovacionEditable}
           actionDetallesCredito={modalAction}
+          actionCancelarEliminacion={handleCancelarEliminacion}
+          actionReversarCuota={handleReversarCuota}
         />
       ),
     },
@@ -387,6 +497,8 @@ const Rutas = () => {
           case params.value === "RN":
           case params.value === "DEL":
             return { backgroundColor: "#DAD8D8", color: "white" };
+          case params.value === "NEW":
+            return { backgroundColor: "#caf7c3", color: "white" };
           default:
             return { backgroundColor: "#f0f8ff", color: "default" };
         }
@@ -396,16 +508,18 @@ const Rutas = () => {
       field: "mora",
       headerName: "Mora",
       pinned: "left",
+      editable: true,
       cellClass: "ag-cell-center",
       width: 70,
+      onCellValueChanged: changeMora,
       cellStyle: (params) => {
         switch (true) {
           case params.value >= 5 && params.value <= 9:
             return { backgroundColor: "#FBF462", color: "black" };
           case params.value >= 10 && params.value <= 19:
-            return { backgroundColor: "#F1775C", color: "white" };
-          case params.value > 20:
-            return { backgroundColor: "#A25EEA", color: "white" };
+            return { backgroundColor: "#F1775C", color: "black" };
+          case params.value >= 20:
+            return { backgroundColor: "#A25EEA", color: "black" };
           default:
             return { backgroundColor: "", color: "black" };
         }
@@ -492,6 +606,27 @@ const Rutas = () => {
       width: 50,
       hide: true,
     },
+    {
+      field: "update_mora",
+      headerName: "Actualizar mora",
+      width: 50,
+      editable: true,
+      hide: true,
+    },
+    {
+      field: "reversar_cuota",
+      headerName: "Reversar Cuota",
+      width: 50,
+      editable: true,
+      hide: true,
+    },
+    {
+      field: "observaciones",
+      headerName: "Reversar Cuota",
+      width: 50,
+      editable: true,
+      hide: true,
+    },
   ]);
 
   return (
@@ -506,7 +641,9 @@ const Rutas = () => {
       )}
       <div className="h-full w-full grid mt-4 border-l-4 rounded-l border-sky-600">
         <div className="flex justify-between items-center p-2 bg-[#E5E5E7] border-b-2 border-sky-600 rounded-br">
+          {/* Información de la Ruta, Cartera y Cobrador */}
           <div className="flex w-3/4 pr-2">
+            {/* Sección de Ruta */}
             <div className="flex flex-col mx-4">
               <p className="font-light">Ruta</p>
               <p className="flex font-semibold">
@@ -522,10 +659,14 @@ const Rutas = () => {
                 />
               </p>
             </div>
+
+            {/* Sección de Cartera */}
             <div className="flex flex-col mx-4">
               <p className="font-light">Cartera</p>
               <p className="font-semibold">{NumberFormat(cartera)}</p>
             </div>
+
+            {/* Sección de Cobrador */}
             <div className="flex flex-col mx-4">
               <p className="font-light">Cobrador</p>
               <p className="font-semibold">
@@ -534,45 +675,18 @@ const Rutas = () => {
             </div>
           </div>
 
-          <div className="w-1/4 pl-2 flex justify-end">
-            <div className="flex space-x-2">
-              <IconButton
-                disabled={disabled}
-                color="primary"
-                onClick={() => modalAction("addCliente")}
-                title="Agregar cliente a la ruta"
-              >
-                <PlusCircleIcon />
-              </IconButton>
-
-              <IconButton
-                disabled={disabled}
-                color="primary"
-                onClick={() => drawerAccion("enrutar")}
-                title="Enrutar"
-              >
-                <Repeat />
-              </IconButton>
-
-              <IconButton
-                disabled={disabled}
-                color="primary"
-                onClick={() => modalAction("saveCoteos")}
-                title="Guardar ruta"
-              >
-                <Save />
-              </IconButton>
-
-              <IconButton
-                disabled={disabled}
-                color="primary"
-                onClick={() => modalAction("exportRuta")}
-                title="Exportar"
-              >
-                <Printer />
-              </IconButton>
+          {/* Botones de acción */}
+          {!isMobile && (
+            <div className="w-1/4 pl-2 flex justify-end">
+              <div className="flex space-x-2">
+                {icons.map((icon) => {
+                  return icon;
+                })}
+              </div>
             </div>
-          </div>
+          )}
+
+          {isMobile && <SpeedDial buttons={icons} />}
         </div>
 
         <div className="border">

@@ -42,14 +42,14 @@ export const NavBar: React.FC = () => {
   };
 
   return (
-    <header className="bg-sky-700 dark:bg-gray-800 shadow">
+    <header className="bg-sky-700 shadow">
       <nav
         className="max-w mx-auto px-4 sm:px-6 lg:px-8"
         ref={menuRef}
       >
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center">
-            <span className="text-white dark:text-white">
+            <span className="text-white">
               <span className="text-2xl font-bold">
                 <Link to="/">CreadiApp</Link>
               </span>
@@ -57,7 +57,8 @@ export const NavBar: React.FC = () => {
               <span className="font-light">Gestión de cartera</span>
             </span>
           </div>
-          <div className="flex items-center space-x-4">
+          {/* Botones y menú para dispositivos grandes */}
+          <div className="hidden sm:flex items-center space-x-4">
             {menuItems.map((item) => (
               <div
                 key={item.name}
@@ -65,21 +66,23 @@ export const NavBar: React.FC = () => {
               >
                 <button
                   onClick={() => toggleSubmenu(item.name)}
-                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium text-white dark:text-gray-200 hover:text-white dark:hover:text-white hover:bg-sky-500 dark:hover:bg-gray-700 ${
+                  className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-sky-500 ${
                     location.pathname === item.path
                       ? "border-indigo-500 text-gray-900"
                       : ""
                   }`}
                 >
-                  <item.icon
-                    className="w-5 h-5 mr-2"
-                    aria-hidden="true"
-                  />
-                  {item.name}
-                  {item.subItems && <ChevronDown className="ml-1 h-4 w-4" />}
+                  <div className="flex items-center">
+                    <item.icon
+                      className="w-5 h-5 mr-2"
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </div>
+                  {item.subItems && <ChevronDown className="ml-2 h-4 w-4" />}
                 </button>
                 {item.subItems && openSubmenu === item.name && (
-                  <div className="absolute z-10 left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
+                  <div className="absolute z-10 left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     {item.subItems.map((subItem) => {
                       const acceso = user.roles_permiso.find(
                         (x: any) => x.Pantalla === subItem.name
@@ -89,7 +92,7 @@ export const NavBar: React.FC = () => {
                           <Link
                             key={subItem.name}
                             to={subItem.path}
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           >
                             <subItem.icon
                               className="inline-block w-4 h-4 mr-2"
@@ -106,7 +109,7 @@ export const NavBar: React.FC = () => {
             ))}
             <button
               onClick={logout}
-              className="p-2 rounded-full text-white dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="p-2 rounded-full text-white hover:text-gray-900 hover:bg-gray-200"
               aria-label="Logout"
             >
               <LogOut
@@ -115,27 +118,28 @@ export const NavBar: React.FC = () => {
               />
             </button>
           </div>
+          {/* Botón del menú móvil */}
+          <div className="sm:hidden flex items-center">
+            <button
+              type="button"
+              className="p-2 rounded-md text-white hover:bg-sky-600 focus:outline-none"
+              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X
+                  className="h-6 w-6"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Menu
+                  className="h-6 w-6"
+                  aria-hidden="true"
+                />
+              )}
+            </button>
+          </div>
         </div>
-        <div className="-mr-2 flex items-center sm:hidden">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-            onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <span className="sr-only">Abrir menú principal</span>
-            {isMobileMenuOpen ? (
-              <X
-                className="block h-6 w-6"
-                aria-hidden="true"
-              />
-            ) : (
-              <Menu
-                className="block h-6 w-6"
-                aria-hidden="true"
-              />
-            )}
-          </button>
-        </div>
+        {/* Menú para móviles */}
         {isMobileMenuOpen && (
           <div className="sm:hidden">
             <div className="pt-2 pb-3 space-y-1">
@@ -143,17 +147,17 @@ export const NavBar: React.FC = () => {
                 <div key={item.name}>
                   <button
                     onClick={() => toggleSubmenu(item.name)}
-                    className={`border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium w-full text-left flex justify-between items-center ${
+                    className={`block w-full text-left flex justify-between items-center pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
                       location.pathname === item.path
                         ? "bg-indigo-50 border-indigo-500 text-indigo-700"
-                        : ""
+                        : "border-transparent text-white hover:bg-sky-500 hover:border-gray-300 hover:text-white"
                     }`}
                   >
                     {item.name}
-                    {item.subItems && <ChevronDown className="h-4 w-4" />}
+                    {item.subItems && <ChevronDown className="ml-2 h-4 w-4" />}
                   </button>
                   {item.subItems && openSubmenu === item.name && (
-                    <div className="bg-gray-50 pl-6">
+                    <div className="pl-6 bg-sky-600">
                       {item.subItems.map((subItem) => {
                         const acceso = user.roles_permiso.find(
                           (x: any) => x.Pantalla === subItem.name
@@ -163,7 +167,7 @@ export const NavBar: React.FC = () => {
                             <Link
                               key={subItem.name}
                               to={subItem.path}
-                              className="block py-2 text-sm text-gray-600 hover:text-gray-800"
+                              className="block py-2 text-sm text-white hover:bg-sky-700 hover:text-white"
                             >
                               {subItem.name}
                             </Link>

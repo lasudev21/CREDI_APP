@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { IToast } from "../types/IToast";
+import { IItemsCBoxV1 } from "../types/IRuta";
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 
 interface ILogin {
@@ -12,9 +13,9 @@ interface ILogin {
 interface DashboardStore {
   sessionData: ILogin;
   openModal: boolean;
+  dias: IItemsCBoxV1[];
+  setDias: (dias: IItemsCBoxV1[]) => void;
   setOpenModal: (status: boolean) => void;
-  darkMode: boolean;
-  toggleDarkMode: () => void;
   loading: boolean;
   setLoader: (status: boolean) => void;
   showDrawer: boolean;
@@ -26,6 +27,8 @@ interface DashboardStore {
   setSessionData: (data: ILogin) => void;
   logout: () => void;
   validarPermiso: (pantalla: string) => boolean;
+  isMobile: boolean;
+  setIsMobile: (status: boolean) => void;
 }
 
 export const useDashboardStore = create<DashboardStore>()(
@@ -33,9 +36,9 @@ export const useDashboardStore = create<DashboardStore>()(
     (set) => ({
       sessionData: { apiURL: "", pageName: "" },
       openModal: false,
+      dias: [],
+      setDias: (dias: IItemsCBoxV1[]) => set({ dias: dias }),
       setOpenModal: (status: boolean) => set(() => ({ openModal: status })),
-      darkMode: false,
-      toggleDarkMode: () => set((state) => ({ darkMode: !state.darkMode })),
       loading: false,
       setLoader: (status) => set(() => ({ loading: status })),
       showDrawer: false,
@@ -63,6 +66,8 @@ export const useDashboardStore = create<DashboardStore>()(
         }
         return ver;
       },
+      isMobile: false,
+      setIsMobile: (status: boolean) => set({ isMobile: status }),
     }),
     {
       name: "dashboard-storage",

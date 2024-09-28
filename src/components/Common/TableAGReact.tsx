@@ -97,6 +97,13 @@ const TableAGReact = forwardRef(
       setPage(1);
     };
 
+    const getRowStyle = (params: any) => {
+      if (params.data.reversar_cuota) {
+        return { backgroundColor: "#ffefe0" }; // Estilo para la fila cuando `reversar_cuota` es true
+      }
+      return null;
+    };
+
     useImperativeHandle(ref, () => ({
       getGridData: () => {
         const rowData: T[] = [];
@@ -128,6 +135,7 @@ const TableAGReact = forwardRef(
             onCellKeyDown={onCellKeyDown}
             stopEditingWhenCellsLoseFocus={true}
             onGridReady={onGridReady}
+            getRowStyle={getRowStyle}
           />
         </div>
         <div className="t">

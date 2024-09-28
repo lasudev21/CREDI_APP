@@ -42,7 +42,7 @@ const VerRutas: React.FC<IModalRutasProps> = ({ rutas }) => {
         {rutas.map((button, index) => (
           <button
             key={index}
-            className={`text-sky-700 hover:text-white border border-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-sky-400 dark:text-sky-400 dark:hover:text-white dark:hover:bg-sky-500 dark:focus:ring-sky-900 ${
+            className={`text-sky-700 hover:text-white border border-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 ${
               selected === button.value ? "bg-sky-600 " : ""
             }`}
             onClick={() => setSelected(button.value)}

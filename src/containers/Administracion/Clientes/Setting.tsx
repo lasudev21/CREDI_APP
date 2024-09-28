@@ -10,7 +10,7 @@ import { useDashboardStore } from "../../../store/DashboardStore";
 import { postCliente, putCliente } from "../../../services/clienteService";
 import { useClienteStore } from "../../../store/ClienteStore";
 import { TypeToastEnum } from "../../../types/IToast";
-import Referencias from "../../../components/Administracion/Creditos/Referencias";
+import Referencias from "../../../components/Administracion/Clientes/Referencias";
 import {
   IClienteReferencia,
   ReferenciasHandle,
@@ -154,16 +154,16 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
   };
 
   return (
-    <div className="sm:p-4 md:p-4">
+    <div className="p-4 sm:p-2 md:p-4">
       <form
-        className="space-y-6 "
+        className="space-y-6"
         onSubmit={handleSubmit}
       >
-        <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
+        <p className="text-xl text-sky-500 font-extralight italic">
           Información titular
         </p>
-        <div className="grid grid-cols-12 gap-6 border-2 p-6 rounded-md shadow-md shadow-gray-200">
-          <div className="col-span-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border-2 p-4 rounded-md shadow-md shadow-gray-200">
+          <div>
             <FloatingLabel
               property={"titular"}
               type="text"
@@ -174,7 +174,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-2">
+          <div>
             <FloatingLabel
               property={"cc_titular"}
               type="number"
@@ -185,7 +185,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-6">
+          <div>
             <FloatingLabel
               property={"neg_titular"}
               type="text"
@@ -196,7 +196,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"dir_cobro"}
               type="text"
@@ -207,7 +207,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"barrio_cobro"}
               type="text"
@@ -218,7 +218,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"tel_cobro"}
               type="number"
@@ -229,7 +229,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"dir_casa"}
               type="text"
@@ -240,7 +240,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"barrio_casa"}
               type="text"
@@ -251,7 +251,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"tel_casa"}
               type="number"
@@ -264,11 +264,11 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
           </div>
         </div>
 
-        <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
+        <p className="text-xl text-sky-500 font-extralight italic">
           Información fiador
         </p>
-        <div className="grid grid-cols-12 gap-6 border-2 p-6 rounded-md shadow-md shadow-gray-200">
-          <div className="col-span-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border-2 p-4 rounded-md shadow-md shadow-gray-200">
+          <div>
             <FloatingLabel
               property={"fiador"}
               type="text"
@@ -279,7 +279,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-2">
+          <div>
             <FloatingLabel
               property={"cc_fiador"}
               type="number"
@@ -290,7 +290,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-6">
+          <div>
             <FloatingLabel
               property={"neg_fiador"}
               type="text"
@@ -301,8 +301,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"dir_fiador"}
               type="text"
@@ -313,7 +312,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"barrio_fiador"}
               type="text"
@@ -324,7 +323,7 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
               disabled={false}
             />
           </div>
-          <div className="col-span-4">
+          <div>
             <FloatingLabel
               property={"tel_fiador"}
               type="number"
@@ -336,35 +335,27 @@ const Setting: React.FC<DrawerProps> = ({ cliente }) => {
             />
           </div>
         </div>
-
         <p className="text-xl text-sky-500 font-extralight italic dark:text-white">
           Referencias
         </p>
-        <div className="grid grid-cols-120">
-          <div className="col-span-12 mb-4">
-            <Referencias
-              ref={titularRef}
-              data={refTitular}
-              tipo="TITULAR"
-              idCliente={cliente.id}
-            />
-          </div>
-          <div className="col-span-12">
-            <Referencias
-              ref={fiadorRef}
-              data={refFiador}
-              tipo="FIADOR"
-              idCliente={cliente.id}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-row-reverse items-center justify-between">
+        <Referencias
+          ref={titularRef}
+          data={refTitular}
+          tipo="TITULAR"
+          idCliente={cliente.id}
+        />
+        <Referencias
+          ref={fiadorRef}
+          data={refFiador}
+          tipo="FIADOR"
+          idCliente={cliente.id}
+        />
+        <div className="flex justify-center mt-4">
           <button
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
+            className="w-full bg-blue-600 text-white p-2 rounded-md shadow-md hover:bg-blue-700 transition duration-200"
           >
-            {formData.id === 0 ? "Guardar" : "Actualizar"}
+            Guardar
           </button>
         </div>
       </form>

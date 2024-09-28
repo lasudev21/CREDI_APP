@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ICrearCredito, ICredito, IFlujoCajaRuta } from "../types/ICredito";
 import { ICuota } from "../types/IRuta";
 import { ManageErrors } from "../utils/ErrorUtils";
@@ -41,20 +42,39 @@ export const saveAbonos = async (
   CalculoMoras: boolean
 ) => {
   try {
-    const eliminar = [];
+    const Eliminar: any[] = [];
     const Abonos: ICuota[] = [];
-    const renovaciones = [];
+    const renovaciones: any[] = [];
 
     data.map((x: ICredito) => {
       if (x.delete) {
-        eliminar.push({ Id: x.id });
+        Eliminar.push({ Id: x.id });
       } else {
         Abonos.push({
           Id: x.id,
           Cuota: x.cuota ? Number(x.cuota) * 1000 : null,
           Orden: x.orden,
           Obs: x.obs_dia,
+          Observaciones: x.observaciones,
           Congelar: x.congelar,
+          Mora: x.update_mora ? Number(x.mora) : null,
+          Nuevo: x.nuevo
+            ? {
+                Cliente: x.cliente,
+                ClienteId: x.cliente_id,
+                ClienteText: x.cliente.titular,
+                InicioCredito: x.inicio_credito,
+                modalidad: x.modalidad,
+                ModCuota: x.mod_cuota,
+                ModDias: x.mod_dias,
+                ObsDia: x.obs_dia,
+                Observaciones: x.observaciones,
+                Orden: x.orden,
+                RutaId: rutaId,
+                ValorPrestamo: x.valor_prestamo,
+              }
+            : null,
+          ReversarCuota: x.reversar_cuota ? x.reversar_cuota : false,
         });
 
         if (x.renovacion) {
@@ -71,13 +91,12 @@ export const saveAbonos = async (
         }
       }
     });
-
     const response = await api.post("creditos/abonos", {
       IdRuta: rutaId,
       Abonos,
       CalculoMoras,
-      Renovaciones: [],
-      Eliminar: [],
+      Renovaciones: renovaciones,
+      Eliminar,
       FlujoCaja: {
         Entrada: flujoCaja.entrada,
         Salida: flujoCaja.salida,

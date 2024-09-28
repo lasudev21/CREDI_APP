@@ -1,7 +1,6 @@
 import { Building2 } from "lucide-react";
 import routes from "../../routes";
 import { useDashboardStore } from "../../store/DashboardStore";
-// import { NavItem } from "../../components/Layout/NavItem";
 import Loader from "../../components/Common/Loader";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -10,9 +9,21 @@ import { NavBar } from "../../components/Layout/NavBar";
 
 export function Layout() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const { darkMode, loading, errors, setErrorsToast, sessionData } =
-    useDashboardStore();
-console.log(user)
+
+  const {
+    loading,
+    errors,
+    setErrorsToast,
+    sessionData,
+    isMobile,
+    setIsMobile,
+  } = useDashboardStore();
+  
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    setIsMobile(isMobile);
+  }, [isMobile, setIsMobile]);
+
   useEffect(() => {
     if (errors.length > 0) {
       errors.map((item) => {
@@ -33,24 +44,28 @@ console.log(user)
   }, [errors, setErrorsToast]);
 
   return (
-    <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
+    <div className={`min-h-screen`}>
       {loading && <Loader />}
-      <div className="bg-[#f3f4f6] dark:bg-gray-900 min-h-screen">
+      <div className="bg-[#f3f4f6] min-h-screen">
         <NavBar />
 
-        <main className="max-w mx-auto sm:px-6 lg:px-8">
+        <main className="mx-auto sm:px-6 lg:px-8">
           <div className="px-4 sm:px-0 mt-4">{routes}</div>
         </main>
 
-        <footer className="bg-sky-700 fixed bottom-0 left-0 right-0 text-white h-[25px] flex items-center justify-between px-4">
-          <div className="text-sm">
-            © {new Date().getFullYear()} Larry Suarez Dev, todos los derechos
-            reservados
-          </div>
+        <footer className="bg-sky-700 fixed bottom-0 left-0 right-0 text-white flex items-center justify-between px-4 sm:px-6 md:px-8">
+          {!isMobile && (
+            <div className="text-sm">
+              © {new Date().getFullYear()} Larry Suarez Dev
+            </div>
+          )}
           <div className="flex items-center space-x-2">
             <Building2 className="w-5 h-5" />
             <span className="text-lg font-bold">{sessionData.pageName}</span>
-            <span className="text-sm font-extralight italic">(<span className="font-semibold">Usuario</span>: {`${user.Nombres} ${user.Apellidos}`})</span>
+            <span className="text-sm font-extralight italic">
+              (<span className="font-semibold">Usuario</span>:{" "}
+              {`${user.Nombres} ${user.Apellidos}`})
+            </span>
           </div>
         </footer>
       </div>

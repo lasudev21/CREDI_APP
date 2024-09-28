@@ -120,7 +120,7 @@ const LineChart: React.FC<LineChartProps> = ({ dataNuevos, dataRenovados }) => {
   };
 
   return (
-    <div style={{ height }}>
+    <div style={{ height, maxHeight: height  }}>
       <Line
         // height={"100%"}
         data={chartData}

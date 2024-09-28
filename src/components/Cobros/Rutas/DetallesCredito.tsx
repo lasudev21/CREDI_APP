@@ -5,23 +5,37 @@ import { ICreditoRenovacion } from "../../../types/ICreditoRenovacion";
 import { ColDef, ValueFormatterParams } from "ag-grid-community";
 import TableAGReact from "../../Common/TableAGReact";
 import moment from "moment";
-import { Download } from "lucide-react";
+import { Download, Save } from "lucide-react";
 import { ICliente } from "../../../types/ICliente";
 import { ExportarDetallesCredito } from "../../../utils/sjPDFExport";
+import { ICredito } from "../../../types/ICredito";
+import { useDashboardStore } from "../../../store/DashboardStore";
 
 interface IDetallesCreditoProps {
   creditos_detalles: ICreditoDetalle[];
   creditos_renovaciones: ICreditoRenovacion[];
   cliente: ICliente;
+  data: ICredito | undefined;
+  actionActualizarObservaciones: (id: number, value: string) => void;
 }
 
 const DetallesCredito: React.FC<IDetallesCreditoProps> = ({
   creditos_detalles,
   creditos_renovaciones,
   cliente,
+  data,
+  actionActualizarObservaciones,
 }) => {
+  const { setOpenModal } = useDashboardStore();
+  const [observaciones, setObservaciones] = useState<string>(
+    String(data?.observaciones ?? "")
+  );
   const handleImprimir = () => {
     ExportarDetallesCredito(creditos_detalles, creditos_renovaciones, cliente);
+  };
+  const handleGuardar = () => {
+    actionActualizarObservaciones(Number(data?.id), observaciones);
+    setOpenModal(false);
   };
 
   const [colDefsAbonos] = useState<ColDef[]>([
@@ -60,12 +74,17 @@ const DetallesCredito: React.FC<IDetallesCreditoProps> = ({
           onClick={handleImprimir}
           className="hover:text-sky-600 ml-2 rounded transition-all"
         />
+        <Save
+          size={20}
+          onClick={handleGuardar}
+          className="hover:text-sky-600 ml-2 rounded transition-all"
+        />
       </div>
       <div className="sm:px-4 md:px-4 p-4">
         <form className="space-y-6">
           <div className="grid grid-cols-12 gap-4 mb-2">
             <div className="col-span-6">
-              <p className="text-xl text-sky-500 font-extralight italic dark:text-white mb-2">
+              <p className="text-xl text-sky-500 font-extralight italic  mb-2">
                 Abonos
               </p>
               <TableAGReact
@@ -80,7 +99,7 @@ const DetallesCredito: React.FC<IDetallesCreditoProps> = ({
               />
             </div>
             <div className="col-span-6">
-              <p className="text-xl text-sky-500 font-extralight italic dark:text-white mb-2">
+              <p className="text-xl text-sky-500 font-extralight italic  mb-2">
                 Renovaciones
               </p>
               <TableAGReact
@@ -101,12 +120,14 @@ const DetallesCredito: React.FC<IDetallesCreditoProps> = ({
                 <textarea
                   id="observaciones"
                   name="observaciones"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-sky-500 focus:outline-none focus:ring-0 focus:border-sky-600 peerl"
+                  value={observaciones}
+                  onChange={(e) => setObservaciones(e.target.value)}
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-sky-600 peerl"
                   rows={3}
                 />
                 <label
                   htmlFor="observaciones"
-                  className={`absolute text-xl text-sky-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-sky-600 peer-focus:dark:text-sky-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`}
+                  className={`absolute text-xl text-sky-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-sky-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`}
                 >
                   Observaciones
                 </label>

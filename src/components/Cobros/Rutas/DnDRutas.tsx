@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -7,11 +8,10 @@ import { ColDef, RowDragEndEvent } from "ag-grid-community";
 import { ICredito, IEnrutarCredito } from "../../../types/ICredito";
 import { useRutaStore } from "../../../store/RutaStore";
 import { Save } from "lucide-react";
-import { recalculate } from "../../../utils/helper";
 import { useDashboardStore } from "../../../store/DashboardStore";
 
 const DnDRutas = () => {
-  const { data, setData, cobrador } = useRutaStore();
+  const { data, updateOrdenById } = useRutaStore();
   const { toggleDrawer } = useDashboardStore();
   const [rowData, setRowData] = useState<IEnrutarCredito[]>([]);
   const [height, setHeight] = useState<number>(0);
@@ -59,7 +59,7 @@ const DnDRutas = () => {
           overNode.rowIndex !== undefined ? overNode.rowIndex : 0;
 
         const newRowData = rowData.filter((row) => row.id !== movingData.id);
-        newRowData.splice(targetIndex, 0, movingData);
+        newRowData.splice(Number(targetIndex), 0, movingData);
 
         const updatedRowData = newRowData.map((row, index) => ({
           ...row,
@@ -84,12 +84,8 @@ const DnDRutas = () => {
       return item;
     });
 
-    const result = recalculate(
-      newData.sort((a, b) => a.orden - b.orden),
-      true
-    );
-
-    setData({ cobrador: cobrador, cartera: result.cartera, data: result.data });
+    console.log(newData);
+    updateOrdenById(newData.sort((a, b) => a.orden - b.orden))
     toggleDrawer(false);
   };
 
