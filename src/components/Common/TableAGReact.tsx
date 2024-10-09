@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "ag-grid-community/styles/ag-grid.css";
-// import "ag-grid-community/styles/ag-theme-quartz.css";
-import "ag-grid-community/styles/ag-theme-balham.css";
+import "ag-grid-community/styles/ag-theme-material.css";
 
 import { CellKeyDownEvent, ColDef, GridApi } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
@@ -48,7 +47,10 @@ const TableAGReact = forwardRef(
         width: 150,
         filter: false,
         editable: false,
+        resizable: false,
+        sortable: false,
         lockPosition: "left",
+        headerClass: "bg-stone-50 text-gray-700 font-bold",
       };
     }, []);
 
@@ -121,7 +123,7 @@ const TableAGReact = forwardRef(
     return (
       <div>
         <div
-          className="ag-theme-balham"
+          className="ag-theme-material"
           style={{ height }}
         >
           <AgGridReact<T>

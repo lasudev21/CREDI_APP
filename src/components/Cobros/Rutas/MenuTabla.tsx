@@ -7,6 +7,7 @@ import {
   ListRestart,
   ListX,
   NotebookTabs,
+  Pen,
   RefreshCwOff,
   Undo2,
 } from "lucide-react";
@@ -22,6 +23,7 @@ interface MenuTablaProps {
   actionDetallesCredito: (tipo: string, id: number) => void;
   actionCancelarEliminacion: (id: number) => void;
   actionReversarCuota: (id: number) => void;
+  actionModificarCredito: (tipo: string, id: number) => void;
 }
 
 const MenuTabla: React.FC<MenuTablaProps> = ({
@@ -33,6 +35,7 @@ const MenuTabla: React.FC<MenuTablaProps> = ({
   actionDetallesCredito,
   actionCancelarEliminacion,
   actionReversarCuota,
+  actionModificarCredito,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -79,6 +82,11 @@ const MenuTabla: React.FC<MenuTablaProps> = ({
     actionReversarCuota(data.id);
   };
 
+  const handleModificarCredito = () => {
+    handleMenuClose();
+    actionModificarCredito("editCredito", data.id);
+  };
+
   return (
     <>
       <span
@@ -101,6 +109,9 @@ const MenuTabla: React.FC<MenuTablaProps> = ({
           </MenuItem>
           <MenuItem onClick={handleCancelarRenovacion}>
             <RefreshCwOff className="mr-2" /> Cancelar renovación
+          </MenuItem>
+          <MenuItem onClick={handleModificarCredito}>
+            <Pen className="mr-2" /> Modificar crédito
           </MenuItem>
           <MenuItem onClick={handleDetallesCredito}>
             <NotebookTabs className="mr-2" /> Detalles del crédito

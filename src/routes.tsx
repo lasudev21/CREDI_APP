@@ -9,6 +9,7 @@ import FlujoCaja from "./containers/Cobros/Flujo Caja/Main";
 import FlujoUtilidades from "./containers/Cobros/Flujo Utilidades/Main";
 import Coteos from "./containers/Reportes/Coteos/Main";
 import Permisos from "./components/Common/Permisos";
+import Nomina from "./containers/Reportes/Mensual/Main";
 
 export default (
   <Routes>
@@ -47,6 +48,10 @@ export default (
     <Route
       path="/reportes/coteos"
       element={<Coteos />}
+    />
+    <Route
+      path="/reportes/mensual"
+      element={<Nomina />}
     />
     <Route
       path="/permisos"

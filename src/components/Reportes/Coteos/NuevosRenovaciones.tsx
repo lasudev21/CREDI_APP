@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GridApi } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { NuevosYRenovados } from "../../../types/IReporte";
 
 interface UtilityTableProps {
@@ -14,12 +15,13 @@ export default function NuevosRenovaciones({
 }: UtilityTableProps) {
   const [columnDefs] = useState([
     {
-      headerName: "Cobrador",
+      headerName: "COBRADOR",
       field: "cobrador",
-      cellStyle: { backgroundColor: "rgb(3 105 161 / 62%)", color: "white" },
+      pinned: "left",
     },
     {
       headerName: "CLIENTES CORTE 1",
+      headerClass: "bg-stone-50 text-gray-700 font-bold",
       children: [
         {
           columnGroupShow: "open",
@@ -35,8 +37,8 @@ export default function NuevosRenovaciones({
     },
     {
       headerName: "CLIENTES CORTE 2",
+      headerClass: "bg-stone-50 text-gray-700 font-bold",
       children: [
-        // { columnGroupShow: "closed", field: "total" },
         {
           columnGroupShow: "open",
           field: "nuevos_corte2",
@@ -51,6 +53,7 @@ export default function NuevosRenovaciones({
     },
     {
       headerName: "CLIENTES CORTE 3",
+      headerClass: "bg-stone-50 text-gray-700 font-bold",
       children: [
         {
           columnGroupShow: "open",
@@ -88,6 +91,24 @@ export default function NuevosRenovaciones({
     },
   ]);
 
+  const defaultColDef = useMemo(
+    () => ({
+      flex: 1,
+      headerClass: "bg-stone-50 text-gray-700 font-bold",
+      minWidth: 120,
+      editable: false,
+      resizable: false,
+      sorteable: false,
+      cellStyle: (params: { value: number }) => {
+        switch (true) {
+          case params.value !== 0 && typeof params.value === "number":
+            return { backgroundColor: "#f0f8ff", color: "default" };
+        }
+      },
+    }),
+    []
+  );
+
   const onGridReady = (params: { api: GridApi }) => {
     params.api.sizeColumnsToFit();
     params.api.setGridOption("rowData", rowData);
@@ -95,12 +116,13 @@ export default function NuevosRenovaciones({
 
   return (
     <div
-      className="ag-theme-alpine"
+      className="ag-theme-material"
       style={{ height: height, width: "100%" }}
     >
       <AgGridReact
         rowHeight={30}
         rowData={rowData}
+        defaultColDef={defaultColDef}
         columnDefs={columnDefs}
         onGridReady={onGridReady}
       />

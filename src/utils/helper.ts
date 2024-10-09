@@ -60,6 +60,12 @@ export function recalculate(data: ICredito[], cargue: boolean = false) {
     x.update_mora = false;
     x.eliminado = false;
     x.reversar_cuota = false;
+    x.modificado = false;
+    x.estado_credito_actual = {
+      mod_cuota: x.mod_cuota,
+      mod_dias: x.mod_dias,
+      valor_prestamo: x.valor_prestamo,
+    };
 
     cartera = cartera + x.saldo;
     res.push(x);
@@ -88,7 +94,9 @@ export function DateFormat(params: ValueFormatterParams) {
   }
 }
 
-export function eliminarPassword(usuario: IUsuario): Omit<IUsuario, 'password'> {
+export function eliminarPassword(
+  usuario: IUsuario
+): Omit<IUsuario, "password"> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...usuarioSinPassword } = usuario;
   return usuarioSinPassword;

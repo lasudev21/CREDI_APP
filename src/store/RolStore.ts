@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { IRolePermiso, IRolePermisoData } from "../types/IRolPermiso";
 import { IItemsCBox } from "../types/IRuta";
 
@@ -13,17 +12,12 @@ interface UserStore {
 }
 
 export const useRolStore = create<UserStore>()(
-  persist(
-    (set) => ({
-      permisos: [],
-      setPermisos: (data: IRolePermisoData) => set({ permisos: data.data }),
-      roles: [],
-      setRoles: (roles: IItemsCBox[]) => set({ roles: roles }),
-      vaciarRoles: () => set({ roles: [] }),
-      vaciarPermisos: () => set({ permisos: [] }),
-    }),
-    {
-      name: "dashboard-storage",
-    }
-  )
+  (set) => ({
+    permisos: [],
+    setPermisos: (data: IRolePermisoData) => set({ permisos: data.data }),
+    roles: [],
+    setRoles: (roles: IItemsCBox[]) => set({ roles: roles }),
+    vaciarRoles: () => set({ roles: [] }),
+    vaciarPermisos: () => set({ permisos: [] }),
+  })
 );

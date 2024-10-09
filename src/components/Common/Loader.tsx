@@ -1,6 +1,6 @@
 const Loader = () => {
   return (
-    <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75">
+    <div className="fixed z-50 inset-0 flex flex-col justify-center items-center bg-gray-800 bg-opacity-75">
       <svg
         aria-hidden="true"
         className="w-8 h-8 text-gray-200 animate-spin fill-blue-600"
@@ -17,8 +17,9 @@ const Loader = () => {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
+      <span className="text-sky-400 mt-2">Cargando, un momento por favor...</span>
     </div>
   );
 };
+
 export default Loader;

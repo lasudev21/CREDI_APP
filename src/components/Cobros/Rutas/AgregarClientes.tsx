@@ -31,6 +31,7 @@ import { ClienteVacio, ICliente } from "../../../types/ICliente";
 import { getClientes, saveCreditos } from "../../../services/creditoService";
 import { DeleteForever, PeopleAlt } from "@mui/icons-material";
 import { useDashboardStore } from "../../../store/DashboardStore";
+import { TypeToastEnum } from "../../../types/IToast";
 
 interface IAgregarClientesProps {
   accion: (tipo: string) => void;
@@ -44,7 +45,9 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
   const [formData, setFormData] = useState<ICrearCredito>(CrearCreditoVacio);
   const [nuevosCreditos, setNuevosCreditos] = useState<ICrearCredito[]>([]);
   const [errors, setErrors] = useState<Partial<IErrorsCrearCredito>>({});
-  const { setLoader, setOpenModal } = useDashboardStore((state) => state);
+  const { setLoader, setOpenModal, setErrorsToast } = useDashboardStore(
+    (state) => state
+  );
   const [clientes, setClientes] = useState<ICliente[]>([]);
 
   const Clientes = async () => {
@@ -103,6 +106,20 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
     return errors;
   };
 
+  function validarDuplicados(arregloCreditos: ICrearCredito[]): boolean {
+    const clienteIds = new Set<number>(); // Usamos un Set para almacenar los ClienteId únicos
+
+    for (const credito of arregloCreditos) {
+      if (clienteIds.has(credito.ClienteId)) {
+        // Si el ClienteId ya está en el Set, significa que está repetido
+        return true; // Hay un duplicado
+      }
+      clienteIds.add(credito.ClienteId); // Si no está en el Set, lo añadimos
+    }
+
+    return false; // No hay duplicados
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
@@ -125,10 +142,19 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
 
   const handleAddCredito = async () => {
     setLoader(true);
-    const response = await saveCreditos(nuevosCreditos, rutaId);
-    if (response) {
-      setNuevosData(nuevosCreditos);
-      setOpenModal(false);
+    if (!validarDuplicados(nuevosCreditos)) {
+      const response = await saveCreditos(nuevosCreditos, rutaId);
+      if (response) {
+        setNuevosData(nuevosCreditos);
+        setOpenModal(false);
+      }
+    } else {
+      setErrorsToast([
+        {
+          message: "Hay clientes repetidos, por favor revise antes de guardar",
+          type: TypeToastEnum.Warning,
+        },
+      ]);
     }
     setLoader(false);
   };

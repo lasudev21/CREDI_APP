@@ -4,15 +4,19 @@ import { ICredito } from "../types/ICredito";
 import pdfMake from "pdfmake/build/pdfmake";
 import { useRutaStore } from "../store/RutaStore";
 import { NumberFormat } from "./helper";
+import { INominaCobrador, IVale } from "../types/INomina";
 
 pdfMake.vfs = {};
 pdfMake.fonts = {
   Roboto: {
-    normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
-    bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf',
-    italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf',
-    bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
-  }
+    normal:
+      "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf",
+    bold: "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf",
+    italics:
+      "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf",
+    bolditalics:
+      "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf",
+  },
 };
 
 export const exportarRuta = (data: ICredito[], fecha: string) => {
@@ -701,4 +705,140 @@ export const exportarCoteos = (
   pdfMake
     .createPdf(docDefinition)
     .download("Reporte de coteos del " + moment().format("YYYY-MM-DD"));
+};
+
+export const exportarMensual = (data: INominaCobrador[]) => {
+  const docDefinition = {
+    pageSize: "LEGAL",
+    pageOrientation: "landscape",
+    pageMargins: 20,
+    fontSize: 3,
+    content: [
+      {
+        table: {
+          headerRows: 1,
+          widths: [
+            200,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+          ],
+          body: [
+            [
+              {
+                text: "COBRADOR",
+                style: "header",
+              },
+              {
+                text: "Salario",
+                style: "header",
+              },
+              {
+                text: "Días laborados",
+                style: "header",
+              },
+              {
+                text: "Salario bruto",
+                style: "header",
+              },
+              {
+                text: "EPS",
+                style: "header",
+              },
+              {
+                text: "Ahorro",
+                style: "header",
+              },
+              {
+                text: "Vales",
+                style: "header",
+              },
+              {
+                text: "Descuento",
+                style: "header",
+              },
+              {
+                text: "Total a pagar",
+                style: "header",
+              },
+            ],
+          ],
+        },
+        margin: [20, 0, 20, 0],
+      },
+    ],
+    styles: {
+      header: {
+        fontSize: 7,
+        bold: true,
+        italics: true,
+        fillColor: "#f9f9f9",
+      },
+      tableBody: {
+        alignment: "right",
+        fontSize: 7,
+      },
+    },
+  };
+
+  data.map((x: INominaCobrador) => {
+    docDefinition.content[0].table.body.push([
+      {
+        text: x.cobrador.nombres + " " + x.cobrador.apellidos,
+        style: "tableBody",
+      },
+      {
+        text: x.salario,
+        style: "tableBody",
+      },
+      {
+        text: x.dias_laborados,
+        style: "tableBody",
+      },
+      {
+        text: x.salario * x.dias_laborados,
+        style: "tableBody",
+      },
+      {
+        text: x.eps,
+        style: "tableBody",
+      },
+      {
+        text: x.ahorro,
+        style: "tableBody",
+      },
+      {
+        text: x.vales.reduce((acc: number, vale: IVale) => {
+          return acc + (vale.valor || 0);
+        }, 0),
+        style: "tableBody",
+      },
+      {
+        text:
+          Number(x.eps) +
+          x.vales.reduce((acc: number, vale: IVale) => {
+            return acc + (vale.valor || 0);
+          }, 0),
+        style: "tableBody",
+      },
+      {
+        text:
+          Number(x.salario) * Number(x.dias_laborados) -
+          (Number(x.eps) +
+            x.vales.reduce((acc: number, vale: IVale) => {
+              return acc + (vale.valor || 0);
+            }, 0)),
+        style: "tableBody",
+      },
+    ]);
+  });
+
+  pdfMake
+    .createPdf(docDefinition)
+    .download("Listado Ruta del " + moment().format("YYYY-MM-DD"));
 };

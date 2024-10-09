@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ICrearCredito, ICredito, IFlujoCajaRuta } from "../types/ICredito";
+import {
+  ICrearCredito,
+  ICredito,
+  IEstadoCreditoActualVacio,
+  IFlujoCajaRuta,
+} from "../types/ICredito";
 import { ICuota } from "../types/IRuta";
 import { ManageErrors } from "../utils/ErrorUtils";
 import api from "./api";
@@ -75,6 +80,14 @@ export const saveAbonos = async (
               }
             : null,
           ReversarCuota: x.reversar_cuota ? x.reversar_cuota : false,
+          Modificado: x.modificado,
+          ModificadoData: x.modificado
+            ? {
+                mod_cuota: x.mod_cuota,
+                mod_dias: Number(x.mod_dias),
+                valor_prestamo: x.valor_prestamo,
+              }
+            : IEstadoCreditoActualVacio,
         });
 
         if (x.renovacion) {

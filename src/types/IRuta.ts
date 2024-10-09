@@ -1,4 +1,4 @@
-import { ICrearCredito } from "./ICredito";
+import { ICrearCredito, IEstadoCreditoActual } from "./ICredito";
 
 export interface IPeriodos {
   modosPago: IItemsCBox[];
@@ -30,4 +30,6 @@ export interface ICuota {
   Mora: number | null;
   Nuevo: ICrearCredito | null;
   ReversarCuota: boolean;
+  Modificado: boolean;
+  ModificadoData: IEstadoCreditoActual;
 }

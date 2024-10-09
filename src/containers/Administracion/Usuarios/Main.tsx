@@ -155,8 +155,6 @@ export default function Usuarios() {
     }
   }, []);
 
-  console.log(isMobile)
-
   return (
     <>
       <Card
@@ -170,11 +168,7 @@ export default function Usuarios() {
             isLoading={isLoading}
             enableButtons={true}
             enablePagination={false}
-            blockLeft={[
-              "mrt-row-expand",
-              "mrt-row-select",
-              "mrt-row-actions",
-            ]}
+            blockLeft={["mrt-row-expand", "mrt-row-select", "mrt-row-actions"]}
             actions={actionsUsuario}
             typeAction="usuario"
             clickEvent={handleRowClick}

@@ -108,6 +108,7 @@ const TableMaterialR = <T extends object>({
     enableRowActions: enableButtons, //habilitar botones
     renderRowActionMenuItems: ({ closeMenu, row }) => [
       <ChildMenu
+        key={`LI[0][${row.original}]`}
         menuType={typeAction}
         row={row}
         closeMenu={closeMenu}

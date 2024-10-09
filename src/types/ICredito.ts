@@ -40,6 +40,44 @@ export interface ICredito {
   update_mora: boolean;
   nuevo: boolean;
   reversar_cuota: boolean;
+  modificado: boolean;
+  estado_credito_actual: IEstadoCreditoActual;
+}
+
+export interface IEstadoCreditoActual {
+  mod_cuota: number;
+  mod_dias: number;
+  valor_prestamo: number;
+}
+
+export const IEstadoCreditoActualVacio = {
+  mod_cuota: 0,
+  mod_dias: 0,
+  valor_prestamo: 0,
+};
+
+export interface IErrorsCredito {
+  id: string;
+  orden: string;
+  obs_dia: string;
+  cliente_id: string;
+  cliente: ICliente;
+  valor_total: string;
+  ruta_id: string;
+  mora: string;
+  cuotas_pagas: string;
+  valor_prestamo: string;
+  mod_cuota: string;
+  mod_dias: string;
+  observaciones: string;
+  modalidad: string;
+  activo: boolean;
+  eliminado: boolean;
+  inicio_credito: string;
+  valor_ultimo_pago: string;
+  fecha_ultimo_pago: string;
+  saldo: string;
+  cuota: string;
 }
 
 export interface IRenovacion {

@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// ChildMenu.tsx
 import React from "react";
 import { ListItemIcon, MenuItem } from "@mui/material";
-// import { ICliente } from "../../types/ICliente";
 import { AccountCircle, PersonSearch } from "@mui/icons-material";
 import { ListOrdered, UserPen } from "lucide-react";
 import { ICliente } from "../../types/ICliente";
@@ -26,7 +24,7 @@ const ChildMenu: React.FC<ChildMenuProps> = ({
       {menuType === "cliente" ? (
         <>
           <MenuItem
-            key={10000000000}
+            key="view-client"
             onClick={() => {
               const cliente = Object.assign({}, row.original) as ICliente;
               closeMenu();
@@ -40,7 +38,7 @@ const ChildMenu: React.FC<ChildMenuProps> = ({
             Ver cliente
           </MenuItem>
           <MenuItem
-            key={10000000001}
+            key="change-status"
             onClick={() => {
               const cliente = Object.assign({}, row.original) as ICliente;
               closeMenu();
@@ -54,7 +52,7 @@ const ChildMenu: React.FC<ChildMenuProps> = ({
             Cambiar estado
           </MenuItem>
           <MenuItem
-            key={10000000002}
+            key="credit-history"
             onClick={() => {
               const cliente = Object.assign({}, row.original) as ICliente;
               closeMenu();
@@ -71,7 +69,7 @@ const ChildMenu: React.FC<ChildMenuProps> = ({
       ) : menuType === "usuario" ? (
         <>
           <MenuItem
-            key={10000000003}
+            key="view-user"
             onClick={() => {
               const usuario = Object.assign({}, row.original) as IUsuario;
               closeMenu();

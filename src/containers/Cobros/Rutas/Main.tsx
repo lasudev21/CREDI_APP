@@ -32,6 +32,8 @@ import DetallesCredito from "../../../components/Cobros/Rutas/DetallesCredito";
 import ExportarRuta from "../../../components/Cobros/Rutas/ExportarRuta";
 import { useNavigate } from "react-router-dom";
 import SpeedDial from "../../../components/Common/SpeedDial";
+import EditarCredito from "../../../components/Cobros/Rutas/EditarCredito";
+import { TypeToastEnum } from "../../../types/IToast";
 
 function currencyFormatter(params: ValueFormatterParams) {
   const value = Math.floor(params.value);
@@ -79,6 +81,7 @@ const Rutas = () => {
     setOpenModal,
     validarPermiso,
     isMobile,
+    setErrorsToast,
   } = useDashboardStore();
 
   const Periodos = async () => {
@@ -130,6 +133,21 @@ const Rutas = () => {
 
             if (x.reversar_cuota) {
               salida = salida + x.valor_ultimo_pago / 1000;
+            }
+
+            if (x.modificado) {
+              if (x.valor_prestamo > x.estado_credito_actual.valor_prestamo) {
+                salida =
+                  salida +
+                  (x.valor_prestamo / 1000 -
+                    x.estado_credito_actual.valor_prestamo / 1000);
+              } else if (
+                x.valor_prestamo < x.estado_credito_actual.valor_prestamo
+              ) {
+                entrada =
+                  x.estado_credito_actual.valor_prestamo / 1000 -
+                  x.valor_prestamo / 1000;
+              }
             }
           }
         });
@@ -196,6 +214,18 @@ const Rutas = () => {
         setTitle("Exportar ruta");
         setSize("max-w-2xl");
         break;
+      case "editCredito": {
+        const row = data.find((x) => x.id === id) as ICredito;
+        setContentModal(
+          <EditarCredito
+            data={row}
+            action={handleModificarCredito}
+          />
+        );
+        setTitle("Modificar crédito actual");
+        setSize("max-w-2xl");
+        break;
+      }
     }
     setOpenModal(true);
   };
@@ -365,6 +395,33 @@ const Rutas = () => {
     });
   };
 
+  const handleModificarCredito = (credito: ICredito) => {
+    // modalAction("editCredito", id);
+    const data: ICredito[] = gridRef.current.getGridData();
+    const index = data.findIndex((x) => x.id === credito.id);
+    if (!data[index].nuevo) {
+      gridRef.current.setCellValue(index, "modificado", true);
+      gridRef.current.setCellValue(index, "mod_dias", String(credito.mod_dias));
+      gridRef.current.setCellValue(index, "mod_cuota", credito.mod_cuota);
+      gridRef.current.setCellValue(
+        index,
+        "valor_prestamo",
+        credito.valor_prestamo
+      );
+      gridRef.current.setCellValue(
+        index,
+        "valor_total",
+        credito.mod_cuota * credito.mod_dias
+      );
+      gridRef.current.setCellValue(
+        index,
+        "observaciones",
+        credito.observaciones
+      );
+    }
+    setOpenModal(false);
+  };
+
   const changeMora = (event: any) => {
     if (typeof event.newValue === "number")
       event.node.setDataValue("update_mora", true);
@@ -373,6 +430,7 @@ const Rutas = () => {
 
   const icons = [
     <IconButton
+      key={"btn[0][0]"}
       disabled={disabled}
       color="primary"
       onClick={() => modalAction("addCliente")}
@@ -381,6 +439,7 @@ const Rutas = () => {
       <PlusCircleIcon />
     </IconButton>,
     <IconButton
+      key={"btn[0][1]"}
       disabled={disabled}
       color="primary"
       onClick={() => drawerAccion("enrutar")}
@@ -389,6 +448,7 @@ const Rutas = () => {
       <Repeat />
     </IconButton>,
     <IconButton
+      key={"btn[0][2]"}
       disabled={disabled}
       color="primary"
       onClick={() => modalAction("saveCoteos")}
@@ -397,6 +457,7 @@ const Rutas = () => {
       <Save />
     </IconButton>,
     <IconButton
+      key={"btn[0][3]"}
       disabled={disabled}
       color="primary"
       onClick={() => modalAction("exportRuta")}
@@ -427,7 +488,7 @@ const Rutas = () => {
     }
 
     const handleResize = () => {
-      const calculatedHeight = window.innerHeight - (isMobile ? 210 : 185);
+      const calculatedHeight = window.innerHeight - (isMobile ? 210 : 180);
       setHeight(calculatedHeight);
     };
 
@@ -456,6 +517,7 @@ const Rutas = () => {
           actionDetallesCredito={modalAction}
           actionCancelarEliminacion={handleCancelarEliminacion}
           actionReversarCuota={handleReversarCuota}
+          actionModificarCredito={modalAction}
         />
       ),
     },
@@ -464,7 +526,7 @@ const Rutas = () => {
       field: "obs_dia",
       headerName: "Día",
       pinned: "left",
-      width: 70,
+      width: 80,
       editable: true,
       cellEditor: "agSelectCellEditor",
       cellEditorParams: {
@@ -482,10 +544,22 @@ const Rutas = () => {
       headerName: "Cuota",
       pinned: "left",
       editable: true,
-      width: 70,
+      width: 90,
       valueParser: (params) => {
+        let response = params.oldValue;
         const newValue = Number(params.newValue);
-        return isNaN(newValue) ? params.oldValue : newValue;
+        if (!isNaN(newValue)) {
+          if (newValue * 1000 <= params.data.saldo) response = newValue;
+          else {
+            setErrorsToast([
+              {
+                message: "No puede digitar un valor mayor al saldo",
+                type: TypeToastEnum.Warning,
+              },
+            ]);
+          }
+        }
+        return response;
       },
       valueFormatter: (params: ValueFormatterParams) => {
         return params.value !== null && params.value !== undefined
@@ -510,7 +584,7 @@ const Rutas = () => {
       pinned: "left",
       editable: true,
       cellClass: "ag-cell-center",
-      width: 70,
+      width: 80,
       onCellValueChanged: changeMora,
       cellStyle: (params) => {
         switch (true) {
@@ -525,7 +599,7 @@ const Rutas = () => {
         }
       },
     },
-    { field: "cuotas_pagas", headerName: "PAG", width: 70 },
+    { field: "cuotas_pagas", headerName: "PAG", width: 90 },
     {
       field: "valor_prestamo",
       headerName: "Prestamo",
@@ -540,7 +614,7 @@ const Rutas = () => {
       type: "currency",
       valueFormatter: currencyFormatter,
     },
-    { field: "mod_dias", headerName: "Días", width: 70 },
+    { field: "mod_dias", headerName: "Días", width: 90 },
     {
       field: "saldo",
       headerName: "Saldo",
@@ -622,7 +696,14 @@ const Rutas = () => {
     },
     {
       field: "observaciones",
-      headerName: "Reversar Cuota",
+      headerName: "Observaciones",
+      width: 50,
+      editable: true,
+      hide: true,
+    },
+    {
+      field: "modificado",
+      headerName: "Modificado",
       width: 50,
       editable: true,
       hide: true,
@@ -690,10 +771,7 @@ const Rutas = () => {
         </div>
 
         <div className="border">
-          <div
-            className="ag-theme-quartz"
-            style={{ height: "100%" }}
-          >
+          <div style={{ height: "100%" }}>
             <TableAGReact
               ref={gridRef}
               colDefs={colDefs}

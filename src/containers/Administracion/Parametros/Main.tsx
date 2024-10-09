@@ -79,50 +79,35 @@ const Maestras = () => {
           >
             Configuración de parámetros
           </Typography>
-          <Demo key={`DEMO[0][0]`}>
-            <List
-              key={"LT[0][0]"}
-              className="max-h-80 overflow-y-auto"
-            >
+          <Demo>
+            <List className="max-h-80 overflow-y-auto">
               {data &&
-                data.map((item: IParametro, index: number) => {
-                  return (
-                    <>
-                      <ListItemButton
-                        key={`LIB[0][${index}]`}
-                        onClick={(event) => handleListItemClick(event, item.id)}
-                        selected={selectedIndex === item.id}
-                      >
-                        <ListItemAvatar key={`LIA[0][${index}]`}>
-                          <Avatar>
-                            {
-                              <IconRenderer
-                                iconName={item.icono}
-                                key={item.icono}
-                              />
-                            }
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={item.nombre}
-                          key={`LIT[0][${index}]`}
-                        />
-                        {item.editable && (
-                          <IconButton
-                            key={`IB[0][${index}]`}
-                            edge="end"
-                            aria-label="delete"
-                          >
-                            <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">
-                              {item.parametros_detalles.length}
-                            </span>
-                          </IconButton>
-                        )}
-                      </ListItemButton>
-                      <Divider />
-                    </>
-                  );
-                })}
+                data.map((item: IParametro) => (
+                  <div key={item.id}>
+                    <ListItemButton
+                      onClick={(event) => handleListItemClick(event, item.id)}
+                      selected={selectedIndex === item.id}
+                    >
+                      <ListItemAvatar>
+                        <Avatar>
+                          <IconRenderer iconName={item.icono} />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary={item.nombre} />
+                      {item.editable && (
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                        >
+                          <span className="bg-sky-100 text-sky-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">
+                            {item.parametros_detalles.length}
+                          </span>
+                        </IconButton>
+                      )}
+                    </ListItemButton>
+                    <Divider />
+                  </div>
+                ))}
             </List>
           </Demo>
         </Grid>
@@ -140,4 +125,5 @@ const Maestras = () => {
     </div>
   );
 };
+
 export default Maestras;

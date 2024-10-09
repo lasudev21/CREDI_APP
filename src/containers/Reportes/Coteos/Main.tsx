@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getFechasReporte } from "../../../services/parametroService";
 import { IItemsCBox } from "../../../types/IRuta";
-import { Cog, Printer } from "lucide-react";
+import { Printer, Search } from "lucide-react";
 import { IconButton } from "@mui/material";
 import { useDashboardStore } from "../../../store/DashboardStore";
 import VerReporte from "../../../components/Reportes/Coteos/VerReporte";
@@ -28,10 +28,11 @@ import { ICreditoRenovacion } from "../../../types/ICreditoRenovacion";
 import Corte from "../../../components/Reportes/Coteos/Corte";
 import { exportarCoteos } from "../../../utils/pdfMakeExport";
 import { useNavigate } from "react-router-dom";
+import { ColDef } from "ag-grid-community";
 
 const Main = () => {
   const navigate = useNavigate();
-  const { validarPermiso, isMobile } = useDashboardStore();
+  const { validarPermiso } = useDashboardStore();
   const [_dates, _setDates] = useState<IItemsCBox[]>([]);
   const [allDates, setAllDates] = useState<string[]>([]);
   const [month, setMonth] = useState<number>(new Date().getMonth());
@@ -62,7 +63,7 @@ const Main = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      const calculatedHeight = window.innerHeight - 230;
+      const calculatedHeight = window.innerHeight - 210;
       setHeight(calculatedHeight);
     };
 
@@ -81,18 +82,24 @@ const Main = () => {
     endDate: Date,
     corte: number
   ) => {
-    const cols = [
+    const cols: ColDef[] = [
       {
         headerName: "COBRADOR",
         field: "cobrador",
         pinned: "left",
-        cellStyle: { backgroundColor: "rgb(3 105 161 / 62%)", color: "white" },
       },
       {
         headerName: "CLIENTES CORTE " + corte,
+        headerClass: "bg-stone-50 text-gray-700 font-bold",
         children: [
-          { headerName: "DIARIOS", field: "diarios" },
-          { headerName: "SEMANALES", field: "semanales" },
+          {
+            headerName: "DIARIOS",
+            field: "diarios",
+          },
+          {
+            headerName: "SEMANALES",
+            field: "semanales",
+          },
         ],
       },
     ];
@@ -101,13 +108,22 @@ const Main = () => {
     const currentDate = new Date(startDate);
     while (currentDate <= endDate) {
       const dateString = currentDate.toISOString().split("T")[0];
-      cols.push({ headerName: dateString, field: dateString });
+      cols.push({
+        headerName: dateString,
+        field: dateString,
+      });
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
     cols.push(
-      { headerName: "COTEADO", field: "coteado" },
-      { headerName: "QUEDADO", field: "quedado" }
+      {
+        headerName: "COTEADO",
+        field: "coteado",
+      },
+      {
+        headerName: "QUEDADO",
+        field: "quedado",
+      }
     );
 
     return cols;
@@ -608,7 +624,7 @@ const Main = () => {
                 color="primary"
                 onClick={() => setOpenModal(true)}
               >
-                <Cog />
+                <Search />
               </IconButton>
 
               <IconButton

@@ -16,7 +16,7 @@ const VerRutas: React.FC<IModalRutasProps> = ({ rutas }) => {
   const { setData, setRutaId, setDisable, clearNuevos } = useRutaStore(
     (state) => state
   );
-  const { setLoader, setOpenModal } = useDashboardStore((state) => state);
+  const { setLoader, setOpenModal, isMobile } = useDashboardStore((state) => state);
   const [selected, setSelected] = useState<number>(0);
 
   const handleConsultarCredito = async () => {
@@ -38,7 +38,7 @@ const VerRutas: React.FC<IModalRutasProps> = ({ rutas }) => {
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-2 p-4">
+      <div className={`grid ${isMobile ? "grid-cols-3" :"grid-cols-4"} gap-2 p-4`}>
         {rutas.map((button, index) => (
           <button
             key={index}
@@ -60,7 +60,7 @@ const VerRutas: React.FC<IModalRutasProps> = ({ rutas }) => {
       <div className="w-full p-4">
         <button
           onClick={() => handleConsultarCredito()}
-          className="middle none center w-full rounded-lg bg-cyan-500 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-cyan-500/20 transition-all hover:shadow-lg hover:shadow-cyan-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          className="middle none center w-full rounded-lg bg-cyan-700 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-cyan-500/20 transition-all hover:shadow-lg hover:shadow-cyan-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           data-ripple-light="true"
         >
           Consultar

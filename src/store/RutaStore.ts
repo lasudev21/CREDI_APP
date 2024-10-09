@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { IItemsCBox, IPeriodos } from "../types/IRuta";
-import { ICrearCredito, ICredito, ICreditoData } from "../types/ICredito";
+import { ICrearCredito, ICredito, ICreditoData, IEstadoCreditoActualVacio } from "../types/ICredito";
 import { IUsuario, UsuarioVacio } from "../types/IUsuario";
 import moment from "moment";
 
@@ -73,6 +73,8 @@ export const useRutaStore = create<State>()((set, get) => ({
           update_mora: false,
           nuevo: true,
           reversar_cuota: false,
+          modificado: false,
+          estado_credito_actual: IEstadoCreditoActualVacio
         } as ICredito;
       });
 
@@ -122,7 +124,6 @@ export const useRutaStore = create<State>()((set, get) => ({
     });
 
     const sortedData = updatedData.sort((a, b) => a.orden - b.orden);
-    // Setear el estado con los nuevos valores
     set({ data: sortedData });
   },
 }));

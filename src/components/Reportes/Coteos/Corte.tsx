@@ -10,30 +10,23 @@ import React, {
 } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-community/styles/ag-theme-material.css";
+import { ColDef } from "ag-grid-community";
 
 interface RowData {
   [key: string]: string | number;
 }
 
-interface ColumnDef {
-  headerName: string;
-  field: string;
-  children?: ColumnDef[];
-  pinned?: "left" | "right";
-  cellStyle?: React.CSSProperties;
-}
-
-interface DynamicTableProps<T> {
+interface DynamicTableProps {
   rowData: RowData[];
-  columnDefs: ColumnDef[];
+  columnDefs: ColDef[];
   height?: number;
   width?: string | number;
 }
 
 const Corte = forwardRef(
   <T,>(
-    { rowData, columnDefs, height = 700, width = "100%" }: DynamicTableProps<T>,
+    { rowData, columnDefs, height = 700, width = "100%" }: DynamicTableProps,
     ref: Ref<unknown> | undefined
   ) => {
     const gridRef = useRef<any>();
@@ -42,9 +35,16 @@ const Corte = forwardRef(
       () => ({
         flex: 1,
         minWidth: 120,
+        headerClass: "bg-stone-50 text-gray-700 font-bold",
         editable: false,
         resizable: false,
         sorteable: false,
+        cellStyle: (params: { value: number | string }) => {
+          switch (true) {
+            case params.value !== 0 && typeof params.value  === "number":
+              return { backgroundColor: "#f0f8ff", color: "default" };
+          }
+        },
       }),
       []
     );
@@ -59,7 +59,7 @@ const Corte = forwardRef(
 
     return (
       <div
-        className="ag-theme-quartz"
+        className="ag-theme-material"
         style={{ height, width }}
       >
         <AgGridReact

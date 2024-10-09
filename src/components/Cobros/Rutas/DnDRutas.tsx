@@ -2,9 +2,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
+import "ag-grid-community/styles/ag-theme-material.css";
 
-import { ColDef, RowDragEndEvent } from "ag-grid-community";
+import { ColDef, GridApi, RowDragEndEvent } from "ag-grid-community";
 import { ICredito, IEnrutarCredito } from "../../../types/ICredito";
 import { useRutaStore } from "../../../store/RutaStore";
 import { Save } from "lucide-react";
@@ -20,7 +20,7 @@ const DnDRutas = () => {
   const [columnDefs] = useState<ColDef[]>([
     { rowDrag: true, headerName: "", width: 50 },
     { field: "id", headerName: "Id", hide: true },
-    { field: "newPos", headerName: "Nueva Pos" },
+    { field: "newPos", headerName: "Nueva Pos", width: 80 },
     { field: "orden" },
     {
       field: "cliente.titular",
@@ -32,10 +32,12 @@ const DnDRutas = () => {
     return {
       width: 100,
       filter: false,
+      sortable: false,
+      headerClass: "bg-stone-50 text-gray-700 font-bold",
     };
   }, []);
 
-  const onGridReady = useCallback(() => {
+  const onGridReady = useCallback((params: { api: GridApi }) => {
     const dataMap: IEnrutarCredito[] = [];
     data.map((item: ICredito) => {
       dataMap.push({
@@ -46,6 +48,8 @@ const DnDRutas = () => {
       });
     });
     setRowData(dataMap);
+    // params.api.sizeColumnsToFit();
+    // params.api.setGridOption("rowData", data);
   }, []);
 
   const onRowDragEnd = useCallback(
@@ -85,7 +89,7 @@ const DnDRutas = () => {
     });
 
     console.log(newData);
-    updateOrdenById(newData.sort((a, b) => a.orden - b.orden))
+    updateOrdenById(newData.sort((a, b) => a.orden - b.orden));
     toggleDrawer(false);
   };
 
@@ -118,7 +122,7 @@ const DnDRutas = () => {
         className="mt-0"
       >
         <div
-          className="ag-theme-quartz mt-2"
+          className="ag-theme-material mt-2"
           style={{ height: "100%" }}
         >
           <AgGridReact<IEnrutarCredito>
