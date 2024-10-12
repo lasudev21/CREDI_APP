@@ -19,7 +19,12 @@ interface UserStore {
   month: number | null;
   year: number | null;
   setNuevosData: (data: IUsuario) => void;
-  addValeToNominaCobrador: (nominaCobradorId: number, newVale: IVale) => void;
+  addValeToNominaCobrador: (
+    nominaCobradorId: number,
+    newVale: IVale,
+    indexVale: number | null
+  ) => void;
+  deleteValeToNominaCobrador: (indexNomina: number, indexVale: number) => void;
 }
 
 export const useNominaStore = create<UserStore>()((set) => ({
@@ -57,16 +62,44 @@ export const useNominaStore = create<UserStore>()((set) => ({
       return { ...state, list: [...state.list, newData] };
     });
   },
-  addValeToNominaCobrador: (nominaCobradorId: number, newVale: IVale) => {
+  addValeToNominaCobrador: (
+    nominaCobradorId: number,
+    newVale: IVale,
+    indexVale: number | null
+  ) => {
     set((state) => {
       const updatedList = state.list.map((nomina, index) => {
-        newVale.nomina_cobrador_id = state.nomina_id;
-        if (index === nominaCobradorId) {
-          return {
-            ...nomina,
-            vales: [...nomina.vales, newVale],
-          };
+        if (indexVale != null) {
+          const lVales = nomina.vales.map((item: IVale, index: number) => {
+            if (index === indexVale) item = newVale;
+
+            return item;
+          });
+
+          return { ...nomina, vales: lVales };
+        } else {
+          newVale.nomina_cobrador_id = state.nomina_id;
+          if (index === nominaCobradorId) {
+            return {
+              ...nomina,
+              vales: [...nomina.vales, newVale],
+            };
+          }
         }
+        return nomina;
+      });
+      return { list: updatedList };
+    });
+  },
+  deleteValeToNominaCobrador: (indexNomina: number, indexVale: number) => {
+    set((state) => {
+      const updatedList = state.list.map((nomina, index) => {
+        if (indexNomina === index) {
+          const lVales = nomina.vales.filter((_, i) => i !== indexVale);
+
+          return { ...nomina, vales: lVales };
+        }
+
         return nomina;
       });
       return { list: updatedList };

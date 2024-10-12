@@ -147,6 +147,7 @@ export default function Login() {
               <option
                 value="4"
                 data-url="http://crediappdbtest.creditoscali.com/api"
+                // data-url="http://127.0.0.1:8000/api"
               >
                 Pruebas
               </option>

@@ -28,6 +28,15 @@ export const postNomina = async (
   }
 };
 
+export const deleteVale = async (id: number, nomina_id: number) => {
+  try {
+    const response = await api.post("nomina/deleteVale", { id, nomina_id });
+    return response.data;
+  } catch (error) {
+    await ManageErrors(error);
+  }
+};
+
 export const getCobradores = async () => {
   try {
     const response = await api.get("nomina/cobradores");

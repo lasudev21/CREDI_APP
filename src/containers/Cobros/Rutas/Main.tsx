@@ -93,10 +93,7 @@ const Rutas = () => {
   };
 
   const modalAction = (tipo: string, id: number = 0) => {
-    let entrada = 0,
-      salida = 0,
-      utilidad = 0,
-      coteos = 0;
+    let [entrada, salida, reversion, utilidad, coteos] = [0, 0, 0, 0, 0];
 
     const data: ICredito[] = gridRef.current.getGridData();
 
@@ -133,6 +130,7 @@ const Rutas = () => {
 
             if (x.reversar_cuota) {
               salida = salida + x.valor_ultimo_pago / 1000;
+              reversion = reversion + x.valor_ultimo_pago / 1000;
             }
 
             if (x.modificado) {
@@ -154,12 +152,13 @@ const Rutas = () => {
 
         entrada = entrada * 1000;
         salida = salida * 1000;
+        reversion = reversion * 1000;
 
         if (nuevos > 0) salida = salida + nuevos;
 
         setContentModal(
           <GuardarCoteos
-            flujoCaja={{ entrada, salida, utilidad, coteos }}
+            flujoCaja={{ entrada, salida, utilidad, coteos, reversion }}
             dataCoteos={data}
           />
         );

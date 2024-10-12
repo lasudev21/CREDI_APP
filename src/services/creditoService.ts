@@ -6,6 +6,7 @@ import {
   IFlujoCajaRuta,
 } from "../types/ICredito";
 import { ICuota } from "../types/IRuta";
+import { IUsuario } from "../types/IUsuario";
 import { ManageErrors } from "../utils/ErrorUtils";
 import api from "./api";
 
@@ -44,7 +45,9 @@ export const saveAbonos = async (
   rutaId: number,
   data: ICredito[],
   flujoCaja: IFlujoCajaRuta,
-  CalculoMoras: boolean
+  CalculoMoras: boolean,
+  vales: number,
+  cobrador: IUsuario
 ) => {
   try {
     const Eliminar: any[] = [];
@@ -115,8 +118,11 @@ export const saveAbonos = async (
         Salida: flujoCaja.salida,
         Utilidad: flujoCaja.utilidad,
         Coteos: flujoCaja.coteos,
+        Reversion: flujoCaja.reversion,
       },
+      Vale: vales * 1000,
       User: user.Id,
+      Cobrador: cobrador
     });
     return response.data;
   } catch (error) {

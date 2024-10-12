@@ -1,6 +1,7 @@
 import {
   CalendarDays,
   ChartNetwork,
+  Handshake,
   List,
   Receipt,
   Route,
@@ -61,6 +62,7 @@ export const useNavbarStore = create<NavbarStore>((set) => ({
       subItems: [
         { icon: Receipt, name: "Coteos", path: "/reportes/coteos" },
         { icon: CalendarDays, name: "Nómina mensual", path: "/reportes/mensual" },
+        { icon: Handshake, name: "Cuentas", path: "/reportes/cuentas" },
       ],
     },
   ],

@@ -121,6 +121,7 @@ export interface IFlujoCajaRuta {
   salida: number;
   utilidad: number;
   coteos: number;
+  reversion: number;
 }
 
 export interface IEnrutarCredito {

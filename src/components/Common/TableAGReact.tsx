@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-material.css";
-
 import { CellKeyDownEvent, ColDef, GridApi } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import {

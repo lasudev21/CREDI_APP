@@ -1,9 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-material.css";
-
 import { ColDef, GridApi, RowDragEndEvent } from "ag-grid-community";
 import { ICredito, IEnrutarCredito } from "../../../types/ICredito";
 import { useRutaStore } from "../../../store/RutaStore";
@@ -88,7 +85,6 @@ const DnDRutas = () => {
       return item;
     });
 
-    console.log(newData);
     updateOrdenById(newData.sort((a, b) => a.orden - b.orden));
     toggleDrawer(false);
   };

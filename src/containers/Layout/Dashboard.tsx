@@ -60,7 +60,6 @@ export default function Dashboard() {
 
     const handleResize = () => {
       const isMobile = window.innerWidth <= 768;
-      console.log(isMobile);
       const calculatedHeight = isMobile ? 300 : window.innerHeight - 290;
       setHeight(calculatedHeight);
     };

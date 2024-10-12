@@ -5,6 +5,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import { useRutaStore } from "../store/RutaStore";
 import { NumberFormat } from "./helper";
 import { INominaCobrador, IVale } from "../types/INomina";
+import { ICierres, ICuentas } from "../types/IReporte";
 
 pdfMake.vfs = {};
 pdfMake.fonts = {
@@ -717,17 +718,7 @@ export const exportarMensual = (data: INominaCobrador[]) => {
       {
         table: {
           headerRows: 1,
-          widths: [
-            200,
-            50,
-            50,
-            50,
-            50,
-            50,
-            50,
-            50,
-            50,
-          ],
+          widths: [200, 50, 50, 50, 50, 50, 50, 50, 50],
           body: [
             [
               {
@@ -793,7 +784,7 @@ export const exportarMensual = (data: INominaCobrador[]) => {
         style: "tableBody",
       },
       {
-        text: x.salario,
+        text: x.salario * 1000,
         style: "tableBody",
       },
       {
@@ -801,15 +792,15 @@ export const exportarMensual = (data: INominaCobrador[]) => {
         style: "tableBody",
       },
       {
-        text: x.salario * x.dias_laborados,
+        text: x.salario * x.dias_laborados * 1000,
         style: "tableBody",
       },
       {
-        text: x.eps,
+        text: x.eps * 1000,
         style: "tableBody",
       },
       {
-        text: x.ahorro,
+        text: x.ahorro * 1000,
         style: "tableBody",
       },
       {
@@ -820,7 +811,7 @@ export const exportarMensual = (data: INominaCobrador[]) => {
       },
       {
         text:
-          Number(x.eps) +
+          Number(x.eps * 1000) +
           x.vales.reduce((acc: number, vale: IVale) => {
             return acc + (vale.valor || 0);
           }, 0),
@@ -828,8 +819,8 @@ export const exportarMensual = (data: INominaCobrador[]) => {
       },
       {
         text:
-          Number(x.salario) * Number(x.dias_laborados) -
-          (Number(x.eps) +
+          Number(x.salario * 1000) * Number(x.dias_laborados) -
+          (Number(x.eps * 1000) +
             x.vales.reduce((acc: number, vale: IVale) => {
               return acc + (vale.valor || 0);
             }, 0)),
@@ -841,4 +832,214 @@ export const exportarMensual = (data: INominaCobrador[]) => {
   pdfMake
     .createPdf(docDefinition)
     .download("Listado Ruta del " + moment().format("YYYY-MM-DD"));
+};
+
+export const exportarCuentas = (
+  cierres: ICierres[],
+  cuentas: ICuentas[],
+  year: number
+) => {
+  const docDefinition = {
+    pageSize: "LEGAL",
+    pageOrientation: "landscape",
+    pageMargins: 20,
+    fontSize: 3,
+    content: [
+      {
+        table: {
+          widths: ["*", "*", "*", "*", "*", "*", "*", "*", "*", "*"],
+          body: [
+            [
+              "CAJA",
+              {
+                text: "",
+                italics: true,
+                color: "gray",
+                alignment: "center",
+                fontSize: 8,
+              },
+              "CARTERA",
+              {
+                text: "",
+                italics: true,
+                color: "gray",
+                alignment: "center",
+                fontSize: 8,
+              },
+              "VALUACIÓN",
+              {
+                text: "",
+                italics: true,
+                color: "gray",
+                alignment: "center",
+                fontSize: 8,
+              },
+              "ACTIVOS FIJOS",
+              {
+                text: "",
+                italics: true,
+                color: "gray",
+                alignment: "center",
+                fontSize: 8,
+              },
+              "PROMEDIO",
+              {
+                text: "",
+                italics: true,
+                color: "gray",
+                alignment: "center",
+                fontSize: 8,
+              },
+            ],
+          ],
+        },
+        margin: [20, 0, 20, 10],
+      },
+      {
+        table: {
+          headerRows: 1,
+          widths: [130, 130, 130, 130, 130, 130, 130, 130, 130],
+          body: [
+            [
+              {
+                text: "MES",
+                style: "header",
+              },
+              {
+                text: "COBROS",
+                style: "header",
+              },
+              {
+                text: "PRESTAMOS",
+                style: "header",
+              },
+              {
+                text: "UTILIDAD BRUTA",
+                style: "header",
+              },
+              {
+                text: "GASTOS",
+                style: "header",
+              },
+              {
+                text: "UTILIDAD NETA",
+                style: "header",
+              },
+            ],
+          ],
+        },
+        margin: [20, 0, 20, 20],
+      },
+      {
+        table: {
+          headerRows: 1,
+          widths: [200, 200, 200, 200],
+          body: [
+            [
+              {
+                text: "MES",
+                style: "header",
+              },
+              {
+                text: "ENTRADAS",
+                style: "header",
+              },
+              {
+                text: "SALIDAS",
+                style: "header",
+              },
+              {
+                text: "TOTAL",
+                style: "header",
+              },
+            ],
+          ],
+        },
+        margin: [20, 0, 20, 0],
+      },
+    ],
+    styles: {
+      header: {
+        fontSize: 7,
+        bold: true,
+        italics: true,
+        fillColor: "#f9f9f9",
+      },
+      tableBody: {
+        alignment: "right",
+        fontSize: 7,
+      },
+    },
+    footer: function (currentPage: number, pageCount: number) {
+      return {
+        columns: [
+          {
+            text: "Informe de Cuentas año: " + year,
+            alignment: "left",
+            margin: [40, 0],
+          },
+          {
+            text: "Página " + currentPage + " de " + pageCount,
+            alignment: "right",
+            margin: [0, 0, 40, 0],
+          },
+        ],
+        margin: [0, 0, 0, 20], // margen del footer
+      };
+    },
+  };
+
+  cierres.map((x: ICierres) => {
+    docDefinition.content[1].table.body.push([
+      {
+        text: x.mes,
+        style: "tableBody",
+      },
+      {
+        text: x.cobros,
+        style: "tableBody",
+      },
+      {
+        text: x.prestamos,
+        style: "tableBody",
+      },
+      {
+        text: x.utilidad,
+        style: "tableBody",
+      },
+      {
+        text: x.gastos,
+        style: "tableBody",
+      },
+      {
+        text: x.utilidad - x.gastos,
+        style: "tableBody",
+      },
+    ]);
+  });
+
+  cuentas.map((x: ICuentas) => {
+    docDefinition.content[2].table.body.push([
+      {
+        text: x.mes,
+        style: "tableBody",
+      },
+      {
+        text: x.entradas,
+        style: "tableBody",
+      },
+      {
+        text: x.salidas,
+        style: "tableBody",
+      },
+      {
+        text: x.entradas - x.salidas,
+        style: "tableBody",
+      },
+    ]);
+  });
+
+  pdfMake
+    .createPdf(docDefinition)
+    .download("Reporte de Cuentas - " + moment().format("YYYY-MM-DD"));
 };

@@ -29,9 +29,6 @@ export interface ApiResponseV1 {
   corte1: number;
   corte2: number;
   corte3: number;
-  // utilidades: IDataFU[];
-  // ruta: number;
-  // [key: string]: string | number | IDataFU[];
 }
 
 export interface ICoteo {
@@ -53,4 +50,31 @@ export interface NuevosYRenovados {
   renovados_corte2: number;
   nuevos_corte3: number;
   renovados_corte3: number;
+}
+
+export interface IReporteCuentasData {
+  cierres: ICierres[];
+  cuentas: ICuentas[];
+}
+
+export interface ICierres {
+  id: number;
+  mes: string;
+  cobros: number;
+  prestamos: number;
+  utilidad: number;
+  gastos: number;
+}
+
+export interface ICuentas {
+  id: number;
+  mes: string;
+  entradas: number;
+  salidas: number;
+}
+
+export interface ISalidaCuentas {
+  anio: number;
+  mes: number;
+  salidas: number;
 }

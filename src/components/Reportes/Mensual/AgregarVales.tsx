@@ -8,9 +8,13 @@ import { useDashboardStore } from "../../../store/DashboardStore";
 interface IAgregarValesProps {
   // data: ICredito;
   index: number;
+  vale: IVale;
+  indexVale: number | null
 }
-const AgregarVales: React.FC<IAgregarValesProps> = ({ index }) => {
-  const [formData, setFormData] = useState<IVale>(ValeVacio);
+const AgregarVales: React.FC<IAgregarValesProps> = ({ index, vale, indexVale }) => {
+  const [formData, setFormData] = useState<IVale>(
+    vale.id === 0 ? ValeVacio : vale
+  );
   const [errors, setErrors] = useState<Partial<IErrorsVale>>({});
   const { addValeToNominaCobrador } = useNominaStore();
   const { setOpenModal } = useDashboardStore();
@@ -44,7 +48,7 @@ const AgregarVales: React.FC<IAgregarValesProps> = ({ index }) => {
       return;
     }
     setErrors({});
-    addValeToNominaCobrador(index, formData);
+    addValeToNominaCobrador(index, formData, indexVale);
     setOpenModal(false);
   };
 
@@ -60,7 +64,7 @@ const AgregarVales: React.FC<IAgregarValesProps> = ({ index }) => {
               value={formData?.fecha.toLocaleString() ?? ""}
               action={handleInputChange}
               errors={errors}
-              disabled={false}
+              disabled={formData.id === 0 ? false : true}
             />
           </div>
           <div className="col-span-12 sm:col-span-6">
@@ -82,7 +86,7 @@ const AgregarVales: React.FC<IAgregarValesProps> = ({ index }) => {
               value={formData.descripcion}
               action={handleInputChange}
               errors={errors}
-              disabled={false}
+              disabled={formData.id === 0 ? false : true}
             />
           </div>
           <div className="col-span-12 sm:col-span-6">

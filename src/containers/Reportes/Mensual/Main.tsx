@@ -1,7 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useRef, useState } from "react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-material.css";
 import {
   getCobradores,
   getNomina,
@@ -12,6 +11,7 @@ import {
   INominaCobradorData,
   INominaData,
   IVale,
+  ValeVacio,
 } from "../../../types/INomina";
 import { useNominaStore } from "../../../store/NominaStore";
 import { IconButton } from "@mui/material";
@@ -20,13 +20,14 @@ import { useDashboardStore } from "../../../store/DashboardStore";
 import Modal from "../../../components/Common/Modal";
 import VerReporte from "../../../components/Reportes/Mensual/VerReporte";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef, GridApi } from "ag-grid-community";
+import { ColDef, GridApi, ValueFormatterParams } from "ag-grid-community";
 import AgregarCobrador from "../../../components/Reportes/Mensual/AgregarCobrador";
 import { TypeToastEnum } from "../../../types/IToast";
 import MenuTabla from "../../../components/Reportes/Mensual/MenuTabla";
 import AgregarVales from "../../../components/Reportes/Mensual/AgregarVales";
 import VerVales from "../../../components/Reportes/Mensual/VerVales";
 import { exportarMensual } from "../../../utils/pdfMakeExport";
+import { NumberFormat } from "../../../utils/helper";
 
 const Nomina = () => {
   const gridRef = useRef<any>();
@@ -76,7 +77,12 @@ const Nomina = () => {
     return nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
   }
 
-  const AbrirModal = (tipo: string, index: number | null = null) => {
+  const AbrirModal = (
+    tipo: string,
+    index: number | null = null,
+    vale: IVale = ValeVacio,
+    indexVale: number | null = null
+  ) => {
     switch (tipo) {
       case "agregarCobrador":
         setContentModal(<AgregarCobrador />);
@@ -92,11 +98,32 @@ const Nomina = () => {
         setTitle("Buscar nomina");
         break;
       case "agregarVale":
-        setContentModal(<AgregarVales index={Number(index)} />);
+        setContentModal(
+          <AgregarVales
+            index={Number(index)}
+            vale={vale}
+            indexVale={indexVale}
+          />
+        );
         setTitle("Agregar nuevo vale");
         break;
+      case "editarVale":
+        setContentModal(
+          <AgregarVales
+            index={Number(index)}
+            vale={vale}
+            indexVale={indexVale}
+          />
+        );
+        setTitle("Editar vale");
+        break;
       case "verVales":
-        setContentModal(<VerVales index={Number(index)} />);
+        setContentModal(
+          <VerVales
+            index={Number(index)}
+            AbrirModal={AbrirModal}
+          />
+        );
         setTitle("Ver vales");
         break;
     }
@@ -187,7 +214,7 @@ const Nomina = () => {
         },
         {
           headerName: "Apellidos",
-          field: "cobrador.nombres",
+          field: "cobrador.apellidos",
         },
       ],
     },
@@ -196,6 +223,19 @@ const Nomina = () => {
       field: "salario",
       editable: true,
       cellEditor: "agNumberCellEditor",
+      valueParser: (params) => {
+        let response = params.oldValue;
+        const newValue = Number(params.newValue);
+        if (!isNaN(newValue)) {
+          response = newValue;
+        }
+        return response;
+      },
+      valueFormatter: (params: ValueFormatterParams) => {
+        return params.value !== null && params.value !== undefined
+          ? NumberFormat(params.value * 1000).toString()
+          : "";
+      },
     },
     {
       headerName: "Días laborados",
@@ -207,7 +247,11 @@ const Nomina = () => {
       headerName: "Salario bruto",
       field: "bruto",
       valueGetter: (params: any) => {
-        return Number(params.data.salario) * Number(params.data.dias_laborados);
+        return NumberFormat(
+          Number(params.data.salario) *
+            Number(params.data.dias_laborados) *
+            1000
+        );
       },
     },
     {
@@ -215,12 +259,38 @@ const Nomina = () => {
       field: "eps",
       editable: true,
       cellEditor: "agNumberCellEditor",
+      valueParser: (params) => {
+        let response = params.oldValue;
+        const newValue = Number(params.newValue);
+        if (!isNaN(newValue)) {
+          response = newValue;
+        }
+        return response;
+      },
+      valueFormatter: (params: ValueFormatterParams) => {
+        return params.value !== null && params.value !== undefined
+          ? NumberFormat(params.value * 1000).toString()
+          : "";
+      },
     },
     {
       headerName: "Ahorro",
       field: "ahorro",
       editable: true,
       cellEditor: "agNumberCellEditor",
+      valueParser: (params) => {
+        let response = params.oldValue;
+        const newValue = Number(params.newValue);
+        if (!isNaN(newValue)) {
+          response = newValue;
+        }
+        return response;
+      },
+      valueFormatter: (params: ValueFormatterParams) => {
+        return params.value !== null && params.value !== undefined
+          ? NumberFormat(params.value * 1000).toString()
+          : "";
+      },
     },
     {
       headerName: "Totales",
@@ -230,17 +300,7 @@ const Nomina = () => {
           headerName: "Vales",
           field: "vales",
           valueGetter: (params: any) => {
-            return params.data.vales.reduce((acc: number, vale: IVale) => {
-              return acc + (vale.valor || 0);
-            }, 0);
-          },
-        },
-        {
-          headerName: "Descuento",
-          field: "total",
-          valueGetter: (params: any) => {
-            return (
-              Number(params.data.eps) +
+            return NumberFormat(
               params.data.vales.reduce((acc: number, vale: IVale) => {
                 return acc + (vale.valor || 0);
               }, 0)
@@ -248,15 +308,28 @@ const Nomina = () => {
           },
         },
         {
+          headerName: "Descuento",
+          field: "total",
+          valueGetter: (params: any) => {
+            return NumberFormat(
+              Number(params.data.eps * 1000) +
+                params.data.vales.reduce((acc: number, vale: IVale) => {
+                  return acc + (vale.valor || 0);
+                }, 0)
+            );
+          },
+        },
+        {
           headerName: "Total a pagar",
           field: "total",
           valueGetter: (params: any) => {
-            return (
-              Number(params.data.salario) * Number(params.data.dias_laborados) -
-              (Number(params.data.eps) +
-                params.data.vales.reduce((acc: number, vale: IVale) => {
-                  return acc + (vale.valor || 0);
-                }, 0))
+            return NumberFormat(
+              Number(params.data.salario * 1000) *
+                Number(params.data.dias_laborados) -
+                (Number(params.data.eps * 1000) +
+                  params.data.vales.reduce((acc: number, vale: IVale) => {
+                    return acc + (vale.valor || 0);
+                  }, 0))
             );
           },
         },
@@ -267,7 +340,6 @@ const Nomina = () => {
   const exportar = () => {
     const data: INominaCobrador[] = [];
     gridRef.current.api.forEachNode((node: any) => data.push(node.data));
-    console.log(data)
     exportarMensual(data);
   };
 
