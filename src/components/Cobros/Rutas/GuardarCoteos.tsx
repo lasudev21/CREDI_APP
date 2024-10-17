@@ -93,6 +93,12 @@ const GuardarCoteos: React.FC<IGuardarCoteoProps> = ({
               </span>
             </p>
             <p className="text-xl text-gray-900 ">
+              Reversiones:{" "}
+              <span className="text-sky-500 italic">
+                {NumberFormat(flujoCaja.reversion)}
+              </span>
+            </p>
+            <p className="text-xl text-gray-900 ">
               Coteos:{" "}
               <span className="text-sky-500">
                 {NumberFormat(flujoCaja.coteos)}

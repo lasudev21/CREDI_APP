@@ -28,16 +28,26 @@ import AgregarVales from "../../../components/Reportes/Mensual/AgregarVales";
 import VerVales from "../../../components/Reportes/Mensual/VerVales";
 import { exportarMensual } from "../../../utils/pdfMakeExport";
 import { NumberFormat } from "../../../utils/helper";
+import { useNavigate } from "react-router-dom";
 
 const Nomina = () => {
   const gridRef = useRef<any>();
+  const navigate = useNavigate();
   const [height, setHeight] = useState<number>(0);
   const [nombre, setNombre] = useState<string>("");
   const [contentModal, setContentModal] = useState<React.ReactNode>(null);
   const [title, setTitle] = useState<string>("");
-  const { setCobradores, fechas, setList, list, nomina_id, month, year } =
-    useNominaStore();
-  const { setOpenModal, openModal, isMobile, setLoader, setErrorsToast } =
+  const {
+    setCobradores,
+    fechas,
+    setList,
+    list,
+    nomina_id,
+    month,
+    year,
+    Clear,
+  } = useNominaStore();
+  const { setOpenModal, openModal, isMobile, setLoader, setErrorsToast, validarPermiso } =
     useDashboardStore();
 
   const Cobradores = async () => {
@@ -49,7 +59,13 @@ const Nomina = () => {
   };
 
   useEffect(() => {
-    Cobradores();
+    Clear();
+
+    if (!validarPermiso("Nómina mensual")) {
+      navigate("/permisos");
+    } else {
+      Cobradores();
+    }
 
     const handleResize = () => {
       const calculatedHeight = window.innerHeight - (isMobile ? 210 : 180);
@@ -67,6 +83,7 @@ const Nomina = () => {
 
   useEffect(() => {
     if (month !== null) setNombre(obtenerNombreMes(Number(month)));
+    else setNombre("");
   }, [month]);
 
   function obtenerNombreMes(numeroMes: number): string {

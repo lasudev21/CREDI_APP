@@ -101,7 +101,7 @@ export const saveAbonos = async (
             Modalidad: x.renovacion.modalidad,
             Dias: x.renovacion.dias,
             Cuota: x.renovacion.cuota * 1000,
-            ValorPrestamo: x.renovacion.valor,
+            ValorPrestamo: x.renovacion.valor * 1000,
             Utilidad: x.renovacion.editable ? x.renovacion.utilidad : 0,
           });
         }

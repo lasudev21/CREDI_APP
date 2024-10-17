@@ -35,6 +35,7 @@ export const useUserStore = create<UserStore>()((set) => ({
         view: item.pantalla,
         editar: find ? find.editar : false,
         ver: find ? find.ver : false,
+        especial: find ? find.especial : false,
         idPermmision: find ? find.id : null,
       });
     });

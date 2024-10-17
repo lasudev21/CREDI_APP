@@ -16,6 +16,7 @@ export interface IRolDetalle {
   user_id: number;
   ver: boolean;
   editar: boolean;
+  especial: boolean;
   created_at: Date;
   updated_at: Date;
 }
@@ -25,5 +26,6 @@ export interface IPermiso {
   view: string;
   ver: boolean;
   editar: boolean;
+  especial: boolean;
   idPermmision: number | null;
 }

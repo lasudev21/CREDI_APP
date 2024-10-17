@@ -27,6 +27,7 @@ interface DashboardStore {
   setSessionData: (data: ILogin) => void;
   logout: () => void;
   validarPermiso: (pantalla: string) => boolean;
+  validarPermisoEspecial: (pantalla: string) => boolean;
   isMobile: boolean;
   setIsMobile: (status: boolean) => void;
 }
@@ -65,6 +66,19 @@ export const useDashboardStore = create<DashboardStore>()(
           if (RolDetalle) ver = RolDetalle.Ver;
         }
         return ver;
+      },
+      validarPermisoEspecial: (pantalla: string) => {
+        let especial = false;
+        const acceso = user.roles_permiso.find(
+          (x: any) => x.Pantalla === pantalla
+        );
+        if (acceso) {
+          const RolDetalle = acceso.roles_detalles.find(
+            (x: any) => x.RolPermisoId === acceso.Id
+          );
+          if (RolDetalle) especial = RolDetalle.Especial;
+        }
+        return especial;
       },
       isMobile: false,
       setIsMobile: (status: boolean) => set({ isMobile: status }),

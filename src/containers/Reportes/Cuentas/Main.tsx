@@ -22,14 +22,22 @@ import Tabs from "../../../components/Common/Tab";
 import CuentasSocios from "../../../components/Reportes/Cuentas/CuentasSocios";
 import { exportarCuentas } from "../../../utils/pdfMakeExport";
 import { TypeToastEnum } from "../../../types/IToast";
+import { useNavigate } from "react-router-dom";
 
 const Cuentas = () => {
+  const navigate = useNavigate();
   const [height, setHeight] = useState<number>(0);
   const [activeTab, setActiveTab] = useState(0);
   const [contentModal, setContentModal] = useState<React.ReactNode>(null);
   const [title, setTitle] = useState<string>("");
-  const { isMobile, setLoader, openModal, setOpenModal, setErrorsToast } =
-    useDashboardStore();
+  const {
+    isMobile,
+    setLoader,
+    openModal,
+    setOpenModal,
+    setErrorsToast,
+    validarPermiso,
+  } = useDashboardStore();
   const { year, setFechas, fechas, setList, reset, list, list1 } =
     useCuentaStore();
 
@@ -42,7 +50,11 @@ const Cuentas = () => {
   };
 
   useEffect(() => {
-    Fechas();
+    if (!validarPermiso("Cuentas")) {
+      navigate("/permisos");
+    } else {
+      Fechas();
+    }
     reset();
     const handleResize = () => {
       const calculatedHeight = window.innerHeight - (isMobile ? 240 : 240);

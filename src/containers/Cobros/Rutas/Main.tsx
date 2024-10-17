@@ -34,6 +34,8 @@ import { useNavigate } from "react-router-dom";
 import SpeedDial from "../../../components/Common/SpeedDial";
 import EditarCredito from "../../../components/Cobros/Rutas/EditarCredito";
 import { TypeToastEnum } from "../../../types/IToast";
+import { PictureAsPdf } from "@mui/icons-material";
+import CargarPDF from "../../../components/Cobros/Rutas/CargarPDF";
 
 function currencyFormatter(params: ValueFormatterParams) {
   const value = Math.floor(params.value);
@@ -80,6 +82,7 @@ const Rutas = () => {
     openModal,
     setOpenModal,
     validarPermiso,
+    validarPermisoEspecial,
     isMobile,
     setErrorsToast,
   } = useDashboardStore();
@@ -129,7 +132,7 @@ const Rutas = () => {
             } else coteos = coteos + getCoteoCuota(x);
 
             if (x.reversar_cuota) {
-              salida = salida + x.valor_ultimo_pago / 1000;
+              // salida = salida + x.valor_ultimo_pago / 1000;
               reversion = reversion + x.valor_ultimo_pago / 1000;
             }
 
@@ -225,6 +228,11 @@ const Rutas = () => {
         setSize("max-w-2xl");
         break;
       }
+      case "cargarRuta":
+        setContentModal(<CargarPDF />)
+        setTitle("Cargar PDF");
+        setSize("max-w-2xl");
+        break;
     }
     setOpenModal(true);
   };
@@ -464,6 +472,15 @@ const Rutas = () => {
     >
       <Printer />
     </IconButton>,
+    <IconButton
+    key={"btn[0][4]"}
+    disabled={disabled}
+    color="primary"
+    onClick={() => modalAction("cargarRuta")}
+    title="Exportar"
+  >
+    <PictureAsPdf />
+  </IconButton>,
   ];
 
   useEffect(() => {
@@ -525,7 +542,7 @@ const Rutas = () => {
       field: "obs_dia",
       headerName: "Día",
       pinned: "left",
-      width: 80,
+      width: 90,
       editable: true,
       cellEditor: "agSelectCellEditor",
       cellEditorParams: {
@@ -581,7 +598,7 @@ const Rutas = () => {
       field: "mora",
       headerName: "Mora",
       pinned: "left",
-      editable: true,
+      editable: validarPermisoEspecial("Rutas"),
       cellClass: "ag-cell-center",
       width: 80,
       onCellValueChanged: changeMora,
@@ -627,6 +644,14 @@ const Rutas = () => {
       width: 150,
       type: "currency",
       valueFormatter: currencyFormatter,
+    },
+    {
+      field: "modalidad",
+      headerName: "Modalidad",
+      width: 110,
+      valueFormatter: (params: ValueFormatterParams) => {
+        return params.value === 1 ? "Diario" : "Semanal";
+      },
     },
     {
       field: "valor_ultimo_pago",

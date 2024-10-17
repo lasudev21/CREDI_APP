@@ -25,6 +25,7 @@ interface UserStore {
     indexVale: number | null
   ) => void;
   deleteValeToNominaCobrador: (indexNomina: number, indexVale: number) => void;
+  Clear: () => void;
 }
 
 export const useNominaStore = create<UserStore>()((set) => ({
@@ -105,4 +106,5 @@ export const useNominaStore = create<UserStore>()((set) => ({
       return { list: updatedList };
     });
   },
+  Clear: () => set({ list: [], month: null, year: null, nomina_id: 0 }),
 }));

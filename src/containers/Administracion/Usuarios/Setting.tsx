@@ -378,6 +378,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
                   <TableCell>Pantalla</TableCell>
                   <TableCell align="center">Ver</TableCell>
                   <TableCell align="center">Editar/Guardar</TableCell>
+                  <TableCell align="center">Especial?</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -422,6 +423,24 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
                             checked={row.editar}
                             onChange={(e) =>
                               setPermiso(index, { editar: e.target.checked })
+                            }
+                          />
+                          <span className="custom-switch-indicator"></span>
+                        </label>
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
+                        <label className="custom-switch">
+                          <input
+                            type="checkbox"
+                            name="custom-switch-checkbox"
+                            className="custom-switch-input"
+                            checked={row.especial}
+                            onChange={(e) =>
+                              setPermiso(index, { especial: e.target.checked })
                             }
                           />
                           <span className="custom-switch-indicator"></span>
