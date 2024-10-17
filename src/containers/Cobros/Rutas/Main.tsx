@@ -34,8 +34,6 @@ import { useNavigate } from "react-router-dom";
 import SpeedDial from "../../../components/Common/SpeedDial";
 import EditarCredito from "../../../components/Cobros/Rutas/EditarCredito";
 import { TypeToastEnum } from "../../../types/IToast";
-import { PictureAsPdf } from "@mui/icons-material";
-import CargarPDF from "../../../components/Cobros/Rutas/CargarPDF";
 
 function currencyFormatter(params: ValueFormatterParams) {
   const value = Math.floor(params.value);
@@ -228,11 +226,6 @@ const Rutas = () => {
         setSize("max-w-2xl");
         break;
       }
-      case "cargarRuta":
-        setContentModal(<CargarPDF />)
-        setTitle("Cargar PDF");
-        setSize("max-w-2xl");
-        break;
     }
     setOpenModal(true);
   };
@@ -472,15 +465,6 @@ const Rutas = () => {
     >
       <Printer />
     </IconButton>,
-    <IconButton
-    key={"btn[0][4]"}
-    disabled={disabled}
-    color="primary"
-    onClick={() => modalAction("cargarRuta")}
-    title="Exportar"
-  >
-    <PictureAsPdf />
-  </IconButton>,
   ];
 
   useEffect(() => {

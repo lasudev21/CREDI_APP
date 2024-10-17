@@ -38,7 +38,7 @@ export const exportarRuta = (data: ICredito[], fecha: string) => {
             [
               "COBRADOR",
               {
-                text: cobrador.nombres,
+                text: cobrador.nombres + " " + cobrador.apellidos,
                 italics: true,
                 color: "gray",
                 alignment: "center",
@@ -46,7 +46,7 @@ export const exportarRuta = (data: ICredito[], fecha: string) => {
               },
               "TELEFONO",
               {
-                text: NumberFormat(cartera),
+                text: cobrador.telefono1,
                 italics: true,
                 color: "gray",
                 alignment: "center",
