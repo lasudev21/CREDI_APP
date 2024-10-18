@@ -255,7 +255,7 @@ export default function Clientes() {
         <Modal
           title="Historial de créditos"
           content={<Historial data={historial} />}
-          size="max-w-3xl"
+          size="max-w-4xl"
         />
       )}
       <Card

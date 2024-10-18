@@ -97,6 +97,7 @@ function Row(props: { row: ICreditoHistorialCliente }) {
                       <TableCell>Abono</TableCell>
                       <TableCell>Fecha</TableCell>
                       <TableCell>Usuario</TableCell>
+                      <TableCell>Renovación</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -112,6 +113,7 @@ function Row(props: { row: ICreditoHistorialCliente }) {
                           {moment(historyRow.fecha_abono).format("YYYY-MM-DD")}
                         </TableCell>
                         <TableCell>{historyRow.user.nombres}</TableCell>
+                        <TableCell>{historyRow.renovacion_id}</TableCell>
                       </StyledTableRow>
                     ))}
                   </TableBody>
@@ -126,25 +128,9 @@ function Row(props: { row: ICreditoHistorialCliente }) {
 }
 
 const Historial: React.FC<HistorialProps> = ({ data }) => {
-  // const [height, setHeight] = useState<number>(0);
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     const calculatedHeight = window.innerHeight - 600;
-  //     setHeight(calculatedHeight);
-  //   };
-
-  //   handleResize();
-
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
 
   return (
-    <div className="p-2">
+    <div className="p-4">
       <TableContainer component={Paper}>
         <Table
           aria-label="collapsible table"

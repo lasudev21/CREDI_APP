@@ -4,6 +4,7 @@ export interface ICreditoDetalle {
   id: number;
   credito_id: number;
   usuario_id: number;
+  renovacion_id: number;
   abono: number;
   fecha_abono: Date;
   estado: boolean;
