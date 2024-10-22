@@ -66,3 +66,34 @@ export const ManageErrors = async (error: unknown) => {
   }
   setLoader(false);
 };
+
+export const ManageErrorsV2 = async (error: unknown) => {
+  const _error = error as IErrorCallAPI;
+  console.log(_error);
+
+  const { setErrorsToast, setLoader } = useDashboardStore.getState();
+  let errors: IToast[] = [];
+
+  switch (_error.status) {
+    case 401:
+      errors = [
+        ...errors,
+        { message: _error.response.data.Error, type: TypeToastEnum.Warning },
+      ];
+      setErrorsToast(errors);
+      break;
+    case 500:
+      Swal.fire({
+        title: "Ups! Algo salió mal...",
+        text: _error.message,
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#1e40af",
+        confirmButtonText: "Entendido",
+      }).then(() => {});
+      break;
+    default:
+      break;
+  }
+  setLoader(false);
+};

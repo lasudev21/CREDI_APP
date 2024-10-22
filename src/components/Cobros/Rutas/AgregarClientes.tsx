@@ -162,11 +162,13 @@ const AgregarClientes: React.FC<IAgregarClientesProps> = ({
   return (
     <>
       <div className="flex flex-row-reverse bg-[#E5E5E7] p-2 border-b-2 border-sky-600 ">
-        <Save
-          size={20}
+        <IconButton
+          disabled={nuevosCreditos.length > 0 ? false : true}
+          color="primary"
           onClick={handleAddCredito}
-          className="hover:text-sky-600 ml-2 rounded transition-all"
-        />
+        >
+          <Save size={20} />
+        </IconButton>
       </div>
       <div className="sm:px-4 md:px-4 p-4">
         <form className="space-y-6">

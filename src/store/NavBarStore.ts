@@ -3,10 +3,13 @@ import {
   ChartNetwork,
   Handshake,
   List,
+  LogOut,
   Receipt,
   Route,
   SettingsIcon,
+  Store,
   User,
+  User2,
   UserCog,
   Users,
 } from "lucide-react";
@@ -61,8 +64,21 @@ export const useNavbarStore = create<NavbarStore>((set) => ({
       path: "/reportes",
       subItems: [
         { icon: Receipt, name: "Coteos", path: "/reportes/coteos" },
-        { icon: CalendarDays, name: "Nómina mensual", path: "/reportes/mensual" },
+        {
+          icon: CalendarDays,
+          name: "Nómina mensual",
+          path: "/reportes/mensual",
+        },
         { icon: Handshake, name: "Cuentas", path: "/reportes/cuentas" },
+      ],
+    },
+    {
+      icon: User2,
+      name: "",
+      path: "/",
+      subItems: [
+        { icon: Store, name: "Cambiar empresa", path: "/" },
+        { icon: LogOut, name: "Cerrar sesión", path: "/" },
       ],
     },
   ],

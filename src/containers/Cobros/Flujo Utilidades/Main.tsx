@@ -117,7 +117,7 @@ const FlujoUtilidades = () => {
       Descripcion: formData.descripcion,
       Fecha: formData.fecha,
       Tipo: formData.tipo,
-      Valor: formData.valor,
+      Valor: formData.valor * 1000,
     });
 
     if (data) {

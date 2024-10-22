@@ -3,8 +3,6 @@ import routes from "../../routes";
 import { useDashboardStore } from "../../store/DashboardStore";
 import Loader from "../../components/Common/Loader";
 import { useEffect, useState } from "react";
-// import { toast } from "react-toastify";
-// import { TypeToastEnum } from "../../types/IToast";
 import { NavBar } from "../../components/Layout/NavBar";
 import ToastMsg from "../../components/Common/ToastMsg";
 import { IToast } from "../../types/IToast";
@@ -30,17 +28,6 @@ export function Layout() {
     if (errors.length > 0) {
       errors.map((item) => {
         _error.push(item);
-        // switch (item.type) {
-        //   case TypeToastEnum.Error:
-        //     toast.error(item.message);
-        //     break;
-        //   case TypeToastEnum.Warning:
-        //     toast.warning(item.message);
-        //     break;
-        //   case TypeToastEnum.Susccess:
-        //     toast.success(item.message);
-        //     break;
-        // }
         setErrorsToast([]);
         _setError([]);
       });

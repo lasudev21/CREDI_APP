@@ -254,7 +254,7 @@ export const exportarRuta = (data: ICredito[], fecha: string) => {
         style: "tableBody",
       },
       {
-        text: NumberFormat(x.saldo),
+        text: NumberFormat(x.saldo / 1000),
         style: "tableBody",
       },
       {
@@ -262,7 +262,7 @@ export const exportarRuta = (data: ICredito[], fecha: string) => {
         style: "tableBody",
       },
       {
-        text: x.valor_ultimo_pago / 100,
+        text: x.valor_ultimo_pago / 1000,
         style: "tableBody",
       },
       {

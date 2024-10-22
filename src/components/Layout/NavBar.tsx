@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useNavbarStore } from "../../store/NavBarStore";
 import { useDashboardStore } from "../../store/DashboardStore";
+import SwitchCompany from "./SwitchCompany";
+import DrawerCompany from "../Common/DrawerCompany";
 
 export const NavBar: React.FC = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -15,12 +17,14 @@ export const NavBar: React.FC = () => {
     setMobileMenuOpen,
     closeAllMenus,
   } = useNavbarStore();
-  const { logout } = useDashboardStore();
+  const { logout, toggleDrawerCompany, showDrawerCompany, isMobile } =
+    useDashboardStore();
 
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    toggleDrawerCompany(false);
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         closeAllMenus();
@@ -31,7 +35,7 @@ export const NavBar: React.FC = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [closeAllMenus]);
+  }, [closeAllMenus, toggleDrawerCompany]);
 
   useEffect(() => {
     closeAllMenus();
@@ -41,8 +45,19 @@ export const NavBar: React.FC = () => {
     setOpenSubmenu(openSubmenu === menuName ? null : menuName);
   };
 
+  const handleSwitchCompany = () => {
+    toggleDrawerCompany(true);
+  };
+
   return (
     <header className="bg-sky-700 shadow">
+      {showDrawerCompany && (
+        <DrawerCompany
+          content={<SwitchCompany />}
+          title="Cambiar empresa"
+          size={isMobile ? "w-full" : "w-1/4"}
+        />
+      )}
       <nav
         className="max-w mx-auto px-4 sm:px-6 lg:px-8"
         ref={menuRef}
@@ -82,41 +97,59 @@ export const NavBar: React.FC = () => {
                   {item.subItems && <ChevronDown className="ml-2 h-4 w-4" />}
                 </button>
                 {item.subItems && openSubmenu === item.name && (
-                  <div className="absolute z-10 left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     {item.subItems.map((subItem) => {
-                      const acceso = user.roles_permiso.find(
-                        (x: any) => x.Pantalla === subItem.name
-                      );
-                      if (acceso) {
+                      if (subItem.name === "Cerrar sesión") {
                         return (
-                          <Link
-                            key={subItem.name}
-                            to={subItem.path}
+                          <div
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={logout}
                           >
                             <subItem.icon
                               className="inline-block w-4 h-4 mr-2"
                               aria-hidden="true"
                             />
                             {subItem.name}
-                          </Link>
+                          </div>
                         );
+                      } else if (subItem.name === "Cambiar empresa") {
+                        return (
+                          <div
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={handleSwitchCompany}
+                          >
+                            <subItem.icon
+                              className="inline-block w-4 h-4 mr-2"
+                              aria-hidden="true"
+                            />
+                            {subItem.name}
+                          </div>
+                        );
+                      } else {
+                        const acceso = user.roles_permiso.find(
+                          (x: any) => x.Pantalla === subItem.name
+                        );
+                        if (acceso) {
+                          return (
+                            <Link
+                              key={subItem.name}
+                              to={subItem.path}
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              <subItem.icon
+                                className="inline-block w-4 h-4 mr-2"
+                                aria-hidden="true"
+                              />
+                              {subItem.name}
+                            </Link>
+                          );
+                        }
                       }
                     })}
                   </div>
                 )}
               </div>
             ))}
-            <button
-              onClick={logout}
-              className="p-2 rounded-full text-white hover:text-gray-900 hover:bg-gray-200"
-              aria-label="Logout"
-            >
-              <LogOut
-                className="w-5 h-5"
-                aria-hidden="true"
-              />
-            </button>
           </div>
           {/* Botón del menú móvil */}
           <div className="sm:hidden flex items-center">
@@ -147,31 +180,50 @@ export const NavBar: React.FC = () => {
                 <div key={item.name}>
                   <button
                     onClick={() => toggleSubmenu(item.name)}
-                    className={`block w-full text-left flex justify-between items-center pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+                    className={`w-full flex text-left justify-between items-center pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
                       location.pathname === item.path
-                        ? "bg-indigo-50 border-indigo-500 text-indigo-700"
+                        ? "border-transparent text-white hover:bg-sky-500 hover:border-gray-300 hover:text-white"
                         : "border-transparent text-white hover:bg-sky-500 hover:border-gray-300 hover:text-white"
                     }`}
                   >
+                    <item.icon
+                      className="w-5 h-5 mr-2"
+                      aria-hidden="true"
+                    />
                     {item.name}
                     {item.subItems && <ChevronDown className="ml-2 h-4 w-4" />}
                   </button>
                   {item.subItems && openSubmenu === item.name && (
                     <div className="pl-6 bg-sky-600">
                       {item.subItems.map((subItem) => {
-                        const acceso = user.roles_permiso.find(
-                          (x: any) => x.Pantalla === subItem.name
-                        );
-                        if (acceso) {
+                        if (subItem.name === "Cerrar sesión") {
                           return (
-                            <Link
-                              key={subItem.name}
-                              to={subItem.path}
-                              className="block py-2 text-sm text-white hover:bg-sky-700 hover:text-white"
+                            <div
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={logout}
                             >
+                              <subItem.icon
+                                className="inline-block w-4 h-4 mr-2"
+                                aria-hidden="true"
+                              />
                               {subItem.name}
-                            </Link>
+                            </div>
                           );
+                        } else {
+                          const acceso = user.roles_permiso.find(
+                            (x: any) => x.Pantalla === subItem.name
+                          );
+                          if (acceso) {
+                            return (
+                              <Link
+                                key={subItem.name}
+                                to={subItem.path}
+                                className="block py-2 text-sm text-white hover:bg-sky-700 hover:text-white"
+                              >
+                                {subItem.name}
+                              </Link>
+                            );
+                          }
                         }
                       })}
                     </div>

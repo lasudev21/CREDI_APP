@@ -17,7 +17,6 @@ import { useClienteStore } from "../../../store/ClienteStore";
 import Swal from "sweetalert2";
 import { TypeToastEnum } from "../../../types/IToast";
 import { ICreditoHistorialCliente } from "../../../types/ICredito";
-import Modal from "../../../components/Common/Modal";
 import { IconButton } from "@mui/material";
 import { IUsuario } from "../../../types/IUsuario";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +24,8 @@ import Historial from "../../../components/Administracion/Clientes/Historial";
 
 export default function Clientes() {
   const navigate = useNavigate();
+  const [contentDrawer, setContentDrawer] = useState<React.ReactNode>(null);
+  const [titleDrawer, setTitleDrawer] = useState<string>("");
   const {
     toggleDrawer,
     setLoader,
@@ -42,7 +43,7 @@ export default function Clientes() {
     setFormData,
     formData,
   } = useClienteStore();
-  const { setOpenModal, openModal } = useDashboardStore();
+  const { setOpenModal } = useDashboardStore();
   const [historial, setHistorial] = useState<ICreditoHistorialCliente[]>([]);
 
   const columns = useMemo<MRT_ColumnDef<ICliente>[]>(
@@ -155,9 +156,37 @@ export default function Clientes() {
     []
   );
 
+  useEffect(() => {
+    toggleDrawer(false);
+    setOpenModal(false);
+
+    if (!validarPermiso("Clientes")) {
+      navigate("/permisos");
+    } else {
+      Clientes();
+    }
+  }, []);
+
+  useEffect(() => {
+    setLoader(true);
+    setContentDrawer(<Setting cliente={formData} />);
+    setTitleDrawer("Agregar/Editar Cliente");
+    setTimeout(() => {
+      setLoader(false);
+    }, 500);
+  }, [formData]);
+
+  useEffect(() => {
+    setTitleDrawer("Historial de créditos");
+    setContentDrawer(<Historial data={historial} />);
+    setLoader(false);
+  }, [historial]);
+
   const AddClient = () => {
-    toggleDrawer(true);
     setFormData(ClienteVacio);
+    setTimeout(() => {
+      toggleDrawer(true);
+    }, 500);
   };
 
   const actionsCliente = (action: number, cliente: ICliente | IUsuario) => {
@@ -169,8 +198,10 @@ export default function Clientes() {
   };
 
   const SeeClient = (cliente: ICliente) => {
-    toggleDrawer(true);
     setFormData(cliente);
+    setTimeout(() => {
+      toggleDrawer(true);
+    }, 500);
   };
 
   const SeeHistory = async (cliente: ICliente) => {
@@ -178,9 +209,11 @@ export default function Clientes() {
     const response: ICreditoHistorialCliente[] = await getHistorialCliente(
       cliente.id
     );
+
     setHistorial(response);
-    setOpenModal(true);
-    setLoader(false);
+    setTimeout(() => {
+      toggleDrawer(true);
+    }, 500);
   };
 
   const StateClient = async (cliente: ICliente) => {
@@ -238,26 +271,8 @@ export default function Clientes() {
     setIsloading(false);
   };
 
-  useEffect(() => {
-    toggleDrawer(false);
-    setOpenModal(false);
-
-    if (!validarPermiso("Clientes")) {
-      navigate("/permisos");
-    } else {
-      Clientes();
-    }
-  }, []);
-
   return (
     <>
-      {openModal && (
-        <Modal
-          title="Historial de créditos"
-          content={<Historial data={historial} />}
-          size="max-w-4xl"
-        />
-      )}
       <Card
         key={"Card[0][1]"}
         title="Gestión de clientes"
@@ -310,8 +325,8 @@ export default function Clientes() {
       {showDrawer && (
         <Drawer
           size={isMobile ? "w-full" : "w-3/4"}
-          title="Agregar/Editar Cliente"
-          content={<Setting cliente={formData} />}
+          title={titleDrawer}
+          content={contentDrawer}
           accion={() => {}}
         />
       )}

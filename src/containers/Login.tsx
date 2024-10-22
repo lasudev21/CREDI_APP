@@ -6,6 +6,7 @@ import { useApiNoAuth } from "../hooks/useApiNoAuth";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import { EyeIcon } from "lucide-react";
+import { links } from "../utils/company";
 
 const cookie = new Cookies();
 
@@ -126,31 +127,14 @@ export default function Login() {
               >
                 Seleccione...
               </option>
-              <option
-                value="1"
-                data-url="http://crediappdbfenix1.creditoscali.com/api"
-              >
-                Credifenix I
-              </option>
-              <option
-                value="2"
-                data-url="http://crediappdbfenix2.creditoscali.com/api"
-              >
-                Credifenix II
-              </option>
-              <option
-                value="3"
-                data-url="https://crediappdbprestaloto.creditoscali.com/api"
-              >
-                Prestaloto
-              </option>
-              <option
-                value="4"
-                data-url="http://crediappdbtest.creditoscali.com/api"
-                // data-url="http://127.0.0.1:8000/api"
-              >
-                Pruebas
-              </option>
+              {links.map((item) => (
+                <option
+                  value={item.value}
+                  data-url={item.url}
+                >
+                  {item.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">

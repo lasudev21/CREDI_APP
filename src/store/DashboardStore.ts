@@ -19,7 +19,9 @@ interface DashboardStore {
   loading: boolean;
   setLoader: (status: boolean) => void;
   showDrawer: boolean;
+  showDrawerCompany: boolean;
   toggleDrawer: (status: boolean) => void;
+  toggleDrawerCompany: (status: boolean) => void;
   errors: IToast[];
   setErrorsToast: (errors: IToast[]) => void;
   isAuthenticated: boolean;
@@ -43,7 +45,10 @@ export const useDashboardStore = create<DashboardStore>()(
       loading: false,
       setLoader: (status) => set(() => ({ loading: status })),
       showDrawer: false,
+      showDrawerCompany: false,
       toggleDrawer: (status: boolean) => set(() => ({ showDrawer: status })),
+      toggleDrawerCompany: (status: boolean) =>
+        set(() => ({ showDrawerCompany: status })),
       errors: [],
       setErrorsToast: (errors) => set(() => ({ errors: errors })),
       isAuthenticated: false,
