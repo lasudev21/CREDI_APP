@@ -354,7 +354,7 @@ const Setting: React.FC<DrawerProps> = ({ usuario }) => {
         {formData.login && (
           <div className="mb-4">
             <p className="text-xl text-sky-500 font-extralight italic ">
-              Asignacion de permisos
+              Asignación de permisos
             </p>
             <span className="text-xs text-gray-400">
               Recuerde que solo puede adicionar los permisos una vez este

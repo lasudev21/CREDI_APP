@@ -4,7 +4,7 @@ import { IItemsCBox } from "../types/IRuta";
 import { IPermiso, IRolePermisoData } from "../types/IRolPermiso";
 
 interface UserStore {
-  usuarios: IUsuarios;
+  usuarios: IUsuario[];
   setClientes: (users: IUsuarios) => void;
   rutas: IItemsCBox[];
   setRutas: (rutas: IItemsCBox[]) => void;
@@ -19,8 +19,8 @@ interface UserStore {
 }
 
 export const useUserStore = create<UserStore>()((set) => ({
-  usuarios: { data: [] },
-  setClientes: (users: IUsuarios) => set({ usuarios: users }),
+  usuarios: [],
+  setClientes: (users: IUsuarios) => set({ usuarios: users.data }),
   rutas: [],
   setRutas: (rutas: IItemsCBox[]) => set({ rutas: rutas }),
   roles: [],

@@ -49,3 +49,9 @@ export const UsuarioVacio = {
   rol: null,
   coteos: [],
 };
+
+export enum RoleEnum {
+  ADMINISTRADOR = 1,
+  SUPERVISOR = 2,
+  EMPLEADO = 3,
+}
