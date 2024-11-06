@@ -11,6 +11,8 @@ import Coteos from "./containers/Reportes/Coteos/Main";
 import Permisos from "./components/Common/Permisos";
 import Nomina from "./containers/Reportes/Mensual/Main";
 import Cuentas from "./containers/Reportes/Cuentas/Main";
+import Perfil from "./containers/Layout/Perfil";
+const user = JSON.parse(localStorage.getItem("user") || "{}");
 
 export default (
   <Routes>
@@ -61,6 +63,10 @@ export default (
     <Route
       path="/permisos"
       element={<Permisos />}
+    />
+    <Route
+      path="/perfil"
+      element={<Perfil userData={user} />}
     />
   </Routes>
 );

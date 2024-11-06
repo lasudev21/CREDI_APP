@@ -1,6 +1,7 @@
 import {
   CalendarDays,
   ChartNetwork,
+  CircleUserRound,
   Handshake,
   List,
   LogOut,
@@ -77,6 +78,7 @@ export const useNavbarStore = create<NavbarStore>((set) => ({
       name: "",
       path: "/",
       subItems: [
+        { icon: CircleUserRound, name: "Mi perfil", path: "/perfil" },
         { icon: Store, name: "Cambiar empresa", path: "/" },
         { icon: LogOut, name: "Cerrar sesión", path: "/" },
       ],

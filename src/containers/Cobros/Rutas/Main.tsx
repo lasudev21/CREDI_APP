@@ -10,7 +10,6 @@ import VerRutas from "../../../components/Cobros/Rutas/VerRutas";
 import { NumberFormat } from "../../../utils/helper";
 import TableAGReact from "../../../components/Common/TableAGReact";
 import { useDashboardStore } from "../../../store/DashboardStore";
-import DnDRutas from "../../../components/Cobros/Rutas/DnDRutas";
 import Drawer from "../../../components/Common/Drawer";
 import Modal from "../../../components/Common/Modal";
 import AgregarClientes from "../../../components/Cobros/Rutas/AgregarClientes";
@@ -34,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import SpeedDial from "../../../components/Common/SpeedDial";
 import EditarCredito from "../../../components/Cobros/Rutas/EditarCredito";
 import { TypeToastEnum } from "../../../types/IToast";
+import Enrutar from "../../../components/Cobros/Rutas/Enrutar";
 
 function currencyFormatter(params: ValueFormatterParams) {
   const value = Math.floor(params.value);
@@ -233,7 +233,8 @@ const Rutas = () => {
   const drawerAccion = async (tipo: string) => {
     switch (tipo) {
       case "enrutar":
-        setContentDrawer(<DnDRutas />);
+        // setContentDrawer(<DnDRutas />);
+        setContentDrawer(<Enrutar />);
         setSizeDrawer(isMobile ? "w-full" : "w-2/5");
         setTitleDrawer("Enrutar clientes");
         break;

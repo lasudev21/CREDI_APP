@@ -81,11 +81,10 @@ export const NavBar: React.FC = () => {
               >
                 <button
                   onClick={() => toggleSubmenu(item.name)}
-                  className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-sky-500 ${
-                    location.pathname === item.path
-                      ? "border-indigo-500 text-gray-900"
-                      : ""
-                  }`}
+                  className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-sky-500 ${location.pathname === item.path
+                    ? "border-indigo-500 text-gray-900"
+                    : ""
+                    }`}
                 >
                   <div className="flex items-center">
                     <item.icon
@@ -125,7 +124,22 @@ export const NavBar: React.FC = () => {
                             {subItem.name}
                           </div>
                         );
-                      } else {
+                      } else if (subItem.name === "Mi perfil") {
+                        return (
+                          <Link
+                            key={subItem.name}
+                            to={subItem.path}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            <subItem.icon
+                              className="inline-block w-4 h-4 mr-2"
+                              aria-hidden="true"
+                            />
+                            {subItem.name}
+                          </Link>
+                        );
+                      }
+                      else {
                         const acceso = user.roles_permiso.find(
                           (x: any) => x.Pantalla === subItem.name
                         );
@@ -180,11 +194,10 @@ export const NavBar: React.FC = () => {
                 <div key={item.name}>
                   <button
                     onClick={() => toggleSubmenu(item.name)}
-                    className={`w-full flex text-left justify-between items-center pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                      location.pathname === item.path
-                        ? "border-transparent text-white hover:bg-sky-500 hover:border-gray-300 hover:text-white"
-                        : "border-transparent text-white hover:bg-sky-500 hover:border-gray-300 hover:text-white"
-                    }`}
+                    className={`w-full flex text-left justify-between items-center pl-3 pr-4 py-2 border-l-4 text-base font-medium ${location.pathname === item.path
+                      ? "border-transparent text-white hover:bg-sky-500 hover:border-gray-300 hover:text-white"
+                      : "border-transparent text-white hover:bg-sky-500 hover:border-gray-300 hover:text-white"
+                      }`}
                   >
                     <item.icon
                       className="w-5 h-5 mr-2"

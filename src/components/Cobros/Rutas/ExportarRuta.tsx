@@ -11,7 +11,7 @@ interface IExportarRutaProps {
 }
 
 const ExportarRuta: React.FC<IExportarRutaProps> = ({ data }) => {
-  const [day, setDay] = useState(moment(new Date()).format("YYYY-MM-DD"));
+  const [day, setDay] = useState(moment(new Date()).add(1, 'days').format("YYYY-MM-DD"));
   const { setOpenModal } = useDashboardStore();
 
   const handleDescargarRuta = () => {
