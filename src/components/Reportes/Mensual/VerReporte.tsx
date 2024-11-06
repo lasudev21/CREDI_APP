@@ -1,37 +1,41 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { IItemsCBox } from "../../../types/IRuta";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye } from "lucide-react";
 
 interface IVerReporteProps {
   data: IItemsCBox[];
-  action: (month: number, year: number) => void;
+  action: (month: string, year: number) => void;
 }
 
+const getCurrentWeek = (): string => {
+  const now = new Date();
+  const year = now.getFullYear();
+
+  // Obtener el primer día del año y calcular el número de la semana
+  const startOfYear = new Date(year, 0, 1);
+  const dayOfYear = ((now.getTime() - startOfYear.getTime()) / 86400000) + 1;
+  const week = Math.ceil(dayOfYear / 7);
+
+  // Formatear la semana para que siempre tenga dos dígitos (e.g., 01, 02, ..., 52)
+  return `${year}-W${week.toString().padStart(2, '0')}`;
+};
+
 const VerReporte: React.FC<IVerReporteProps> = ({ data, action }) => {
-  const [month, setMonth] = useState<number>(new Date().getMonth());
+  const [selectedWeek, setSelectedWeek] = useState<string>('');
   const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [meses] = useState<IItemsCBox[]>([
-    { label: "Enero", value: 0 },
-    { label: "Febrero", value: 1 },
-    { label: "Marzo", value: 2 },
-    { label: "Abril", value: 3 },
-    { label: "Mayo", value: 4 },
-    { label: "Junio", value: 5 },
-    { label: "Julio", value: 6 },
-    { label: "Agosto", value: 7 },
-    { label: "Septiembre", value: 8 },
-    { label: "Octubre", value: 9 },
-    { label: "Noviembre", value: 10 },
-    { label: "Diciembre", value: 11 },
-  ]);
+
+  useEffect(() => {
+    // Asigna la semana actual al cargar el componente
+    setSelectedWeek(getCurrentWeek());
+  }, []);
 
   return (
     <>
       <div className="flex flex-row-reverse bg-[#E5E5E7] p-2 border-b-2 border-sky-600 ">
         <Eye
           size={20}
-          onClick={() => action(month, year)}
+          onClick={() => action(selectedWeek, year)}
           className="hover:text-sky-600 ml-2 rounded transition-all"
         />
       </div>
@@ -73,27 +77,8 @@ const VerReporte: React.FC<IVerReporteProps> = ({ data, action }) => {
             size="small"
             margin="normal"
           >
-            <InputLabel htmlFor="mes">Mes</InputLabel>
-            <Select
-              label="Mes"
-              onChange={(e) => setMonth(Number(e.target.value))}
-              defaultValue={month}
-              inputProps={{
-                name: "mes",
-                id: "mes",
-              }}
-            >
-              {meses.map((periodo: IItemsCBox) => {
-                return (
-                  <MenuItem
-                    value={periodo.value}
-                    key={periodo.label}
-                  >
-                    {periodo.label}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+            <InputLabel htmlFor="semana">Semana</InputLabel>
+            <Input type="week" id="semana" name="semana" value={selectedWeek} onChange={(e) => setSelectedWeek(e.target.value)} />
           </FormControl>
         </div>
       </div>

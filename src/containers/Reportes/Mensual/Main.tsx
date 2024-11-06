@@ -43,7 +43,7 @@ const Nomina = () => {
     setList,
     list,
     nomina_id,
-    month,
+    week,
     year,
     Clear,
   } = useNominaStore();
@@ -82,17 +82,10 @@ const Nomina = () => {
   }, []);
 
   useEffect(() => {
-    if (month !== null) setNombre(obtenerNombreMes(Number(month)));
-    else setNombre("");
-  }, [month]);
-
-  function obtenerNombreMes(numeroMes: number): string {
-    const fecha = new Date();
-    fecha.setMonth(numeroMes);
-    const nombreMes = fecha.toLocaleString("es-ES", { month: "long" });
-
-    return nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
-  }
+    if (week) {
+      getStartAndEndDateOfISOWeek(week)
+    };
+  }, [week]);
 
   const AbrirModal = (
     tipo: string,
@@ -147,7 +140,7 @@ const Nomina = () => {
     setOpenModal(true);
   };
 
-  const handleVerNomina = async (month: number, year: number) => {
+  const handleVerNomina = async (month: string, year: number) => {
     setLoader(true);
     const response = await getNomina(month, year);
     const data: INominaCobradorData = response;
@@ -170,11 +163,11 @@ const Nomina = () => {
     const response = await postNomina(
       nomina_id,
       Number(year),
-      Number(month),
+      week,
       list
     );
     const data: INominaCobradorData = response;
-    setList(data.data, Number(month), Number(year));
+    setList(data.data, week, Number(year));
     setErrorsToast([
       {
         message: "Se han guardado los cambios a la nomina",
@@ -191,6 +184,22 @@ const Nomina = () => {
   const handleVerVales = (id: number) => {
     AbrirModal("verVales", id);
   };
+
+  const getStartAndEndDateOfISOWeek = (fecha: string) => {
+    const [year, week] = fecha.split("-W").map(Number);
+    const firstThursday = new Date(year, 0, 4);
+
+    const firstMonday = new Date(firstThursday);
+    firstMonday.setDate(firstThursday.getDate() - ((firstThursday.getDay() + 6) % 7));
+
+    const startOfWeek = new Date(firstMonday);
+    startOfWeek.setDate(firstMonday.getDate() + (week - 1) * 7);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    setNombre(`${startOfWeek.toISOString().split('T')[0]} - ${endOfWeek.toISOString().split('T')[0]} `);
+  }
 
   const onGridReady = (params: { api: GridApi }) => {
     params.api.sizeColumnsToFit();
@@ -266,8 +275,8 @@ const Nomina = () => {
       valueGetter: (params: any) => {
         return NumberFormat(
           Number(params.data.salario) *
-            Number(params.data.dias_laborados) *
-            1000
+          Number(params.data.dias_laborados) *
+          1000
         );
       },
     },
@@ -330,9 +339,9 @@ const Nomina = () => {
           valueGetter: (params: any) => {
             return NumberFormat(
               Number(params.data.eps * 1000) +
-                params.data.vales.reduce((acc: number, vale: IVale) => {
-                  return acc + (vale.valor || 0);
-                }, 0)
+              params.data.vales.reduce((acc: number, vale: IVale) => {
+                return acc + (vale.valor || 0);
+              }, 0)
             );
           },
         },
@@ -342,11 +351,11 @@ const Nomina = () => {
           valueGetter: (params: any) => {
             return NumberFormat(
               Number(params.data.salario * 1000) *
-                Number(params.data.dias_laborados) -
-                (Number(params.data.eps * 1000) +
-                  params.data.vales.reduce((acc: number, vale: IVale) => {
-                    return acc + (vale.valor || 0);
-                  }, 0))
+              Number(params.data.dias_laborados) -
+              (Number(params.data.eps * 1000) +
+                params.data.vales.reduce((acc: number, vale: IVale) => {
+                  return acc + (vale.valor || 0);
+                }, 0))
             );
           },
         },
@@ -389,7 +398,7 @@ const Nomina = () => {
               <div className="flex flex-col mx-4">
                 <p className="font-light">Fecha</p>
                 <p className="font-semibold">
-                  {nombre} - {year}
+                  {nombre}
                 </p>
               </div>
             </div>

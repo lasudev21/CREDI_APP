@@ -2,10 +2,11 @@ import { INominaCobrador } from "../types/INomina";
 import { ManageErrors } from "../utils/ErrorUtils";
 import api from "./api";
 
-export const getNomina = async (month: number, year: number) => {
+export const getNomina = async (week: string, year: number) => {
   try {
+    const _week = parseInt(week.split('-W')[1], 10);
     const response = await api.post("nomina/verNomina", {
-      month: month + 1,
+      week: _week,
       year,
     });
     return response.data;
@@ -17,11 +18,12 @@ export const getNomina = async (month: number, year: number) => {
 export const postNomina = async (
   nomina_id: number,
   anio: number,
-  mes: number,
+  semana: string,
   data: INominaCobrador[]
 ) => {
   try {
-    const response = await api.post("nomina", { nomina_id, anio, mes, data });
+    const _week = parseInt(semana.split('-W')[1], 10);
+    const response = await api.post("nomina", { nomina_id, anio, semana: _week, data });
     return response.data;
   } catch (error) {
     await ManageErrors(error);

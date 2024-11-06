@@ -10,13 +10,13 @@ import { IUsuario } from "../types/IUsuario";
 
 interface UserStore {
   list: INominaCobrador[];
-  setList: (data: INominaCobrador[], month: number, year: number) => void;
+  setList: (data: INominaCobrador[], week: string, year: number) => void;
   cobradores: IItemsCBox[];
   fechas: IItemsCBox[];
   setCobradores: (data: INominaData) => void;
   nomina_id: number;
   setNominaId: (id: number) => void;
-  month: number | null;
+  week: string;
   year: number | null;
   setNuevosData: (data: IUsuario) => void;
   addValeToNominaCobrador: (
@@ -30,12 +30,12 @@ interface UserStore {
 
 export const useNominaStore = create<UserStore>()((set) => ({
   list: [],
-  setList: (data: INominaCobrador[], month: number, year: number) => {
+  setList: (data: INominaCobrador[], week: string, year: number) => {
     if (data.length > 0) {
       const nomina_id = data[0].nomina_id;
-      set({ list: data, nomina_id, month, year });
+      set({ list: data, nomina_id, week, year });
     } else {
-      set({ list: [], nomina_id: 0, month, year });
+      set({ list: [], nomina_id: 0, week, year });
     }
   },
   cobradores: [],
@@ -44,7 +44,7 @@ export const useNominaStore = create<UserStore>()((set) => ({
     set({ cobradores: data.cobradores, fechas: data.fechas }),
   nomina_id: 0,
   setNominaId: (id: number) => set({ nomina_id: id }),
-  month: null,
+  week: "",
   year: null,
   setNuevosData: (data: IUsuario) => {
     set((state) => {
@@ -106,5 +106,5 @@ export const useNominaStore = create<UserStore>()((set) => ({
       return { list: updatedList };
     });
   },
-  Clear: () => set({ list: [], month: null, year: null, nomina_id: 0 }),
+  Clear: () => set({ list: [], week: "", year: null, nomina_id: 0 }),
 }));
