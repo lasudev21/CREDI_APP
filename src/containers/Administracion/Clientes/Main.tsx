@@ -6,6 +6,7 @@ import {
   changeCliente,
   getClientes,
   getHistorialCliente,
+  getReferencias,
 } from "../../../services/clienteService";
 import Card from "../../../components/Common/Card";
 import Drawer from "../../../components/Common/Drawer";
@@ -21,6 +22,7 @@ import { IconButton } from "@mui/material";
 import { IUsuario } from "../../../types/IUsuario";
 import { useNavigate } from "react-router-dom";
 import Historial from "../../../components/Administracion/Clientes/Historial";
+import { IClienteReferencia } from "../../../types/IClienteReferencia";
 
 export default function Clientes() {
   const navigate = useNavigate();
@@ -197,8 +199,13 @@ export default function Clientes() {
     else SeeHistory(cliente);
   };
 
-  const SeeClient = (cliente: ICliente) => {
+  const SeeClient = async (cliente: ICliente) => {
+    const referencias = await getReferencias(cliente.id);
+    const data: IClienteReferencia[] = referencias.data;
+    
+    cliente.clientes_referencias = data;
     setFormData(cliente);
+    
     setTimeout(() => {
       toggleDrawer(true);
     }, 500);

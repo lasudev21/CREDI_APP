@@ -11,6 +11,15 @@ export const getClientes = async () => {
   }
 };
 
+export const getReferencias = async (id: number) => {
+  try {
+    const response = await api.get(`clientes/referencias/${id}`);
+    return response.data;
+  } catch (error) {
+    await ManageErrors(error);
+  }
+};
+
 export const postCliente = async (data: ICliente) => {
   try {
     const response = await api.post("clientes", data);

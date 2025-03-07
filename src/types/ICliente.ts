@@ -4,6 +4,7 @@ import { ICredito } from "./ICredito";
 export interface IClientes {
   data: ICliente[];
   creditosActivos: number;
+  total: number;
 }
 
 export interface ICliente {
