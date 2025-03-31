@@ -4,6 +4,7 @@ import {
   ChevronUp,
   CreditCard,
   DollarSign,
+  Route,
 } from "lucide-react";
 import { ICreditoHistorialCliente } from "../../../types/ICredito";
 import { useState } from "react";
@@ -28,10 +29,7 @@ const CardHistorial: React.FC<HistorialProps> = ({ prestamo }) => {
     >
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
-          <DollarSign
-            className="mr-1 text-sky-700 font-extrabold"
-            size={14}
-          />
+          <DollarSign className="mr-1 text-sky-700 font-extrabold" size={14} />
           <span className="text-sm font-semibold">
             ${prestamo.ValorPrestamo.toLocaleString()}
           </span>
@@ -49,19 +47,13 @@ const CardHistorial: React.FC<HistorialProps> = ({ prestamo }) => {
       <div className="border-t my-2"></div>
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
-          <CreditCard
-            className="mr-1 text-sky-700 font-extrabold"
-            size={14}
-          />
+          <CreditCard className="mr-1 text-sky-700 font-extrabold" size={14} />
           <span className="text-sm">
             ${(prestamo.ModCuota * Number(prestamo.ModDias)).toLocaleString()}
           </span>
         </div>
         <div className="flex items-center">
-          <Calendar
-            className="mr-1 text-sky-700 font-extrabold"
-            size={14}
-          />
+          <Calendar className="mr-1 text-sky-700 font-extrabold" size={14} />
           <span className="text-sm">
             {new Date(prestamo.Finalizacion).toLocaleDateString()}
           </span>
@@ -70,6 +62,26 @@ const CardHistorial: React.FC<HistorialProps> = ({ prestamo }) => {
       <div className="flex justify-between items-center text-xs text-gray-600">
         <span>Total</span>
         <span>Fecha fin</span>
+      </div>
+      <div className="border-t my-2"></div>
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center">
+          <Route className="mr-1 text-sky-700 font-extrabold" size={14} />
+          <span className="text-sm font-semibold">{prestamo.RutaId}</span>
+        </div>
+        <div className="flex items-center">
+          <span className="text-sm">
+            {prestamo.Activo ? (
+              <span className="text-green-500 font-bold">Activo</span>
+            ) : (
+              <span className="text-red-500 font-bold">Inactivo</span>
+            )}
+          </span>
+        </div>
+      </div>
+      <div className="flex justify-between items-center text-xs text-gray-600">
+        <span>Ruta</span>
+        <span>Estado</span>
       </div>
       <div className="flex flex-row-reverse text-center mt-2 ">
         {expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
